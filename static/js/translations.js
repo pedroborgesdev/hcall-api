@@ -25,7 +25,7 @@ const translations = {
         'status-codes': 'Status Codes',
         
         // Content
-        'api-title': 'Ticket Management API Documentation',
+        'api-title': 'HCall API',
         'api-description': 'This API allows managing technical support tickets, including user authentication, creation, editing, querying, and removal of tickets.',
         'api-features': 'Features:',
         'api-feature-1': 'User authentication and management',
