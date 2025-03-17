@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="api-title">Documentação da API de Gerenciamento de Tickets</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Adicionar Prism.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="static/img/logo.png" alt="API Logo" class="sidebar-logo">
+                </div>
+                <div class="header-buttons">
+                    <div class="language-selector">
+                        <select id="language-select" title="Select language">
+                            <option value="en-us">English</option>
+                            <option value="pt-br">Português</option>
+                        </select>
+                    </div>
+                    <a href="#" class="github-button" id="github-link" title="View on GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <button id="mobile-toggle" class="mobile-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button id="mobile-close" class="mobile-close" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-section">
+                    <div class="section-header">
+                        <span data-lang-key="introduction">Introdução</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="subsection">
+                        <li><a href="#what-is-this" data-lang-key="what-is-this">O que é esta API?</a></li>
+                        <li><a href="#base-url" data-lang-key="base-url">URL Base</a></li>
+                    </ul>
+                </li>
+                <li class="nav-section">
+                    <div class="section-header">
+                        <span data-lang-key="authentication">Autenticação</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="subsection">
+                        <li><a href="#auth-login" data-lang-key="login">Login</a></li>
+                        <li><a href="#auth-register" data-lang-key="register">Registro</a></li>
+                    </ul>
+                </li>
+                <li class="nav-section">
+                    <div class="section-header">
+                        <span data-lang-key="users">Usuários</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="subsection">
+                        <li><a href="#user-fetch" data-lang-key="user-fetch">Obter Informações do Usuário</a></li>
+                        <li><a href="#user-create" data-lang-key="user-create">Criar Usuário</a></li>
+                        <li><a href="#user-delete" data-lang-key="user-delete">Remover Usuário</a></li>
+                    </ul>
+                </li>
+                <li class="nav-section">
+                    <div class="section-header">
+                        <span data-lang-key="tickets">Tickets</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="subsection">
+                        <li><a href="#ticket-create" data-lang-key="ticket-create">Criar Ticket</a></li>
+                        <li><a href="#ticket-edit" data-lang-key="ticket-edit">Atualizar Status do Ticket</a></li>
+                        <li><a href="#ticket-update" data-lang-key="ticket-update">Atualizar Histórico do Ticket</a></li>
+                        <li><a href="#ticket-fetch" data-lang-key="ticket-fetch">Listar Tickets</a></li>
+                        <li><a href="#ticket-info" data-lang-key="ticket-info">Obter Informações do Ticket</a></li>
+                        <li><a href="#ticket-remove" data-lang-key="ticket-remove">Remover Ticket</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div class="sidebar-overlay"></div>
+        <main class="content">
+            <!-- Botão de menu hamburger fixo para dispositivos móveis -->
+            <div class="mobile-menu-fixed">
+                <button id="mobile-toggle-fixed" class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <button id="mobile-close-fixed" class="mobile-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <section id="what-is-this" class="content-section">
+                <div class="intro-header">
+                    <div class="main-logo-container">
+                        <img src="static/img/logo.png" alt="API Logo" class="main-logo">
+                    </div>
+                    <div class="intro-content">
+                        <h1 data-lang-key="what-is-this">O que é esta API?</h1>
+                        <p data-lang-key="api-description">Esta API permite gerenciar tickets de suporte técnico, incluindo autenticação de usuários, criação, edição, consulta e remoção de tickets.</p>
+                        <div class="api-explanation">
+                            <p data-lang-key="api-explanation-intro">A API de Gerenciamento de Tickets é uma solução completa para empresas e organizações que precisam gerenciar solicitações de suporte técnico de forma eficiente. Ela oferece um conjunto abrangente de endpoints que permitem:</p>
+                            <ul>
+                                <li><strong data-lang-key="api-feature-user-management">Gerenciamento de Usuários:</strong> <span data-lang-key="api-feature-user-management-desc">Crie, consulte e remova usuários com facilidade, permitindo controle total sobre quem pode acessar o sistema.</span></li>
+                                <li><strong data-lang-key="api-feature-ticket-tracking">Criação e Rastreamento de Tickets:</strong> <span data-lang-key="api-feature-ticket-tracking-desc">Registre novos tickets técnicos com informações detalhadas como categoria, equipamento e descrição do problema.</span></li>
+                                <li><strong data-lang-key="api-feature-status-updates">Atualizações de Status:</strong> <span data-lang-key="api-feature-status-updates-desc">Acompanhe o progresso dos tickets alterando seu status (pendente, em andamento, concluído).</span></li>
+                                <li><strong data-lang-key="api-feature-history">Histórico Completo:</strong> <span data-lang-key="api-feature-history-desc">Mantenha um registro detalhado e cronológico de todas as atualizações feitas em cada ticket.</span></li>
+                                <li><strong data-lang-key="api-feature-filtering">Filtragem Avançada:</strong> <span data-lang-key="api-feature-filtering-desc">Recupere tickets específicos usando filtros por autor e status, facilitando a organização e priorização.</span></li>
+                            </ul>
+                            <p data-lang-key="api-explanation-conclusion">Com uma arquitetura RESTful simples, esta API pode ser facilmente integrada a qualquer sistema frontend, proporcionando flexibilidade para diferentes implementações de interface do usuário.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="base-url" class="content-section">
+                <h1 data-lang-key="base-url">URL Base</h1>
+                <div class="code-block">
+                    <pre><code class="language-http">domain/api</code></pre>
+                </div>
+            </section>
+
+            <!-- Seção de Autenticação -->
+            <section id="auth-login" class="content-section">
+                <h1 data-lang-key="login">Login</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/auth/enter</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="login-desc">Autentica um usuário no sistema, verificando suas credenciais e permitindo acesso às funcionalidades protegidas da API.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "username": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "Password123"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "User has been loged in",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="email-not-registered">Email não registrado</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email aren't registered",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="incorrect-password">Senha incorreta</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Password is incorrect",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="auth-register" class="content-section">
+                <h1 data-lang-key="register">Registro</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/auth/register</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="register-desc">Registra um novo usuário no sistema, permitindo que ele crie uma conta para acessar a plataforma.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "username": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "Password123"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "User has been registered",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="email-exists">Email já existe</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email already exists",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="invalid-password">Senha inválida</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Password is invalid",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Seção de Usuários -->
+            <section id="user-fetch" class="content-section">
+                <h1 data-lang-key="user-fetch">Obter Informações do Usuário</h1>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <div class="path">/user/fetch</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-fetch-desc">Recupera informações de um usuário específico ou lista todos os usuários do sistema.</span></p>
+                <h3 data-lang-key="query-params">Query Parameters:</h3>
+                <ul>
+                    <li><code>email</code>: Email do usuário (opcional, exemplo: <code>email=johndoe@example.com</code>)</li>
+                </ul>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200) - Usuário específico:</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "username": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "********",
+    "created_at": "2023-01-01T12:00:00Z",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="success">Sucesso</strong> (200) - Lista de usuários:</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "users": [
+        {
+            "username": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        {
+            "username": "Jane Smith",
+            "email": "janesmith@example.com"
+        }
+    ],
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="user-not-found">Usuário não encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email aren't registered",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="user-fetchall" class="content-section">
+                <h1 data-lang-key="user-fetchall">List All Users</h1>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <div class="path">/user/fetchall</div>
+                </div>
+                <p><strong data-lang-key="description">Description:</strong> <span data-lang-key="user-fetchall-desc">Retrieves a list of all users registered in the system, showing only basic information (name and email) for each one.</span></p>
+                <h3 data-lang-key="responses">Responses:</h3>
+                <p><strong data-lang-key="success">Success</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "users": [
+        {
+            "username": "John Doe",
+            "email": "johndoe@example.com"
+        },
+        {
+            "username": "Jane Smith",
+            "email": "janesmith@example.com"
+        }
+    ],
+    "status": true
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="user-delete" class="content-section">
+                <h1 data-lang-key="user-delete">Remover Usuário</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/user/delete</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-delete-desc">Remove um usuário do sistema.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "email": "johndoe@example.com"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "User has been deleted",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="user-not-found">Usuário não encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email aren't registered",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="user-create" class="content-section">
+                <h1 data-lang-key="user-create">Criar Usuário</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/user/create</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-create-desc">Cria um novo usuário no sistema.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "username": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "Password123"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "User has been created",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="email-exists">Email já existe</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email already exists",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="invalid-data">Dados inválidos</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Dados inválidos",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Seção de Tickets -->
+            <section id="ticket-create" class="content-section">
+                <h1 data-lang-key="ticket-create">Criar Ticket</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/ticket/create</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-create-desc">Cria um novo ticket de suporte técnico.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "author_email": "johndoe@example.com",
+    "ticket_name": "Problema com impressora",
+    "ticket_label": "Hardware",
+    "ticket_equipment": "Impressora HP LaserJet",
+    "ticket_explain": "A impressora não está conectando à rede"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket has been created",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="invalid-data">Dados inválidos</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Dados inválidos",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="author-not-found">Autor não encontrado</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email aren't registered",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="ticket-edit" class="content-section">
+                <h1 data-lang-key="ticket-edit">Atualizar Status do Ticket</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/ticket/edit</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-edit-desc">Atualiza o status de um ticket existente.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
+    "ticket_status": "doing"
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="observations">Observações:</strong></p>
+                <ul>
+                    <li>Os valores válidos para <code>ticket_status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></li>
+                </ul>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket has been edited",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket hasn't found",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="invalid-status">Status inválido</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Dados inválidos",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="ticket-update" class="content-section">
+                <h1 data-lang-key="ticket-update">Atualizar Histórico do Ticket</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/ticket/update</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-update-desc">Adiciona uma nova entrada no histórico de um ticket existente.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "ticket_id": "ticket_028492wsd88178",
+    "ticket_return": "Comprando roteadores"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Update has been setting up",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket hasn't found",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="observations">Observações:</strong></p>
+                <ul>
+                    <li>O histórico atualizado pode ser consultado através do endpoint <code>/ticket/info</code></li>
+                    <li>Cada atualização é registrada com a data e hora em que foi realizada</li>
+                    <li>O histórico é exibido em ordem cronológica</li>
+                </ul>
+            </section>
+
+            <section id="ticket-fetch" class="content-section">
+                <h1 data-lang-key="ticket-fetch">Listar Tickets</h1>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <div class="path">/ticket/fetch</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-fetch-desc">Lista tickets de um autor específico ou todos os tickets do sistema.</span></p>
+                <h3 data-lang-key="query-params">Query Parameters:</h3>
+                <ul>
+                    <li><code>author</code>: Email do autor (opcional, exemplo: <code>author=johndoe@example.com</code>)</li>
+                    <li><code>status</code>: Status dos tickets (opcional, exemplo: <code>status=pending</code>)</li>
+                </ul>
+                <p><strong data-lang-key="observations">Observações:</strong></p>
+                <ul>
+                    <li>Os valores válidos para <code>status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></li>
+                    <li>Se o parâmetro <code>status</code> não for fornecido, serão retornados tickets de todos os status</li>
+                    <li>Se o parâmetro <code>author</code> não for fornecido, serão retornados tickets de todos os autores</li>
+                </ul>
+                <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
+                <ul>
+                    <li>Listar todos os tickets: <code>/ticket/fetch</code></li>
+                    <li>Listar tickets pendentes: <code>/ticket/fetch?status=pending</code></li>
+                    <li>Listar tickets de um autor: <code>/ticket/fetch?author=johndoe@example.com</code></li>
+                    <li>Listar tickets pendentes de um autor: <code>/ticket/fetch?author=johndoe@example.com&status=pending</code></li>
+                </ul>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "tickets": [
+        {
+            "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
+            "ticket_name": "Problema com impressora",
+            "ticket_status": "pending"
+        },
+        {
+            "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174001",
+            "ticket_name": "Problema com monitor",
+            "ticket_status": "doing"
+        }
+    ],
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="no-tickets-found">Nenhum ticket encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Author don't have tickets",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="ticket-info" class="content-section">
+                <h1 data-lang-key="ticket-info">Obter Informações do Ticket</h1>
+                <div class="endpoint">
+                    <div class="method get">GET</div>
+                    <div class="path">/ticket/info</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-info-desc">Recupera informações detalhadas de um ticket específico, incluindo seu histórico completo.</span></p>
+                <h3 data-lang-key="query-params">Query Parameters:</h3>
+                <ul>
+                    <li><code>ticket_id</code>: ID do ticket (obrigatório)</li>
+                </ul>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "ticket_id": "ticket_028492wsd88178",
+    "ticket_name": "Problema com roteadores",
+    "ticket_status": "doing",
+    "ticket_explain": "Necessário comprar novos roteadores",
+    "history": [
+        {
+            "ticket_return": "Purchasing routers",
+            "ticket_date": "2023-07-15T14:30:45Z"
+        },
+        {
+            "ticket_return": "Configuring notebook",
+            "ticket_date": "2023-07-16T09:15:22Z"
+        },
+        {
+            "ticket_return": "Clean screen",
+            "ticket_date": "2023-07-17T11:45:30Z"
+        }
+    ],
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket hasn't found",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="invalid-id">ID não fornecido</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Dados inválidos",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="ticket-remove" class="content-section">
+                <h1 data-lang-key="ticket-remove">Remover Ticket</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/ticket/remove</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-remove-desc">Remove um ticket do sistema. Apenas o autor do ticket pode removê-lo.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "author_email": "johndoe@example.com",
+    "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket has been removed",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado ou autor incorreto</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Ticket hasn't found",
+    "status": false
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="invalid-data">Dados inválidos</strong> (400):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Dados inválidos",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h1 data-lang-key="status-codes">Códigos de Status</h1>
+                <p data-lang-key="status-codes-desc">A API utiliza os seguintes códigos de status HTTP:</p>
+                <ul>
+                    <li><code>200 OK</code>: A requisição foi bem-sucedida</li>
+                    <li><code>400 Bad Request</code>: A requisição contém dados inválidos ou está mal formatada</li>
+                    <li><code>404 Not Found</code>: O recurso solicitado não foi encontrado</li>
+                    <li><code>500 Internal Server Error</code>: Ocorreu um erro interno no servidor</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+    <!-- Adicionar Prism.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-http.min.js"></script>
+    
+    <!-- Adicionar scripts da aplicação -->
+    <script src="static/js/translations.js"></script>
+    <script src="static/js/script.js"></script>
+</body>
+</html> 

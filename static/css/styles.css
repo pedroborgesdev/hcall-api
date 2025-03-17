@@ -1,0 +1,1208 @@
+/* Estilos gerais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: none !important;
+    animation: none !important;
+}
+
+:root {
+    /* Variáveis compartilhadas */
+    --sidebar-width: 380px;
+    /* Definir diretamente as variáveis do tema escuro */
+    --primary-color: #8cd2a7; /* Verde pastel */
+    --secondary-color: #6ab890; /* Verde pastel mais escuro */
+    --text-color: #e0e0e0; /* Cinza claro para texto */
+    --text-muted: #a0a0a0; /* Cinza médio para texto secundário */
+    --sidebar-bg: #222222; /* Cinza muito escuro para sidebar */
+    --content-bg: #222222; /* Cinza escuro para o fundo do conteúdo */
+    --border-color: #3a3a3a; /* Cinza médio para bordas */
+    --code-bg: #2a2a2a; /* Cinza escuro para blocos de código */
+    --method-get: #e6d28a; /* Amarelo pastel para GET */
+    --method-post: #8ab8e6; /* Azul pastel para POST */
+    --method-put: #a0d6b9; /* Verde pastel claro para PUT */
+    --method-delete: #d68a8a; /* Vermelho pastel para DELETE */
+    --section-bg: #2a2a2a; /* Cinza escuro para seções */
+    --hover-bg: #333333; /* Cinza médio para hover */
+}
+
+/* Tema escuro - cinza escuro com cinza claro e verde pastel */
+.dark-theme {
+    --primary-color: #8cd2a7; /* Verde pastel */
+    --secondary-color: #6ab890; /* Verde pastel mais escuro */
+    --text-color: #e0e0e0; /* Cinza claro para texto */
+    --text-muted: #a0a0a0; /* Cinza médio para texto secundário */
+    --sidebar-bg: #222222; /* Cinza muito escuro para sidebar */
+    --content-bg: #222222; /* Cinza escuro para o fundo do conteúdo */
+    --border-color: #3a3a3a; /* Cinza médio para bordas */
+    --code-bg: #2a2a2a; /* Cinza escuro para blocos de código */
+    --method-get: #e6d28a; /* Amarelo pastel para GET */
+    --method-post: #8ab8e6; /* Azul pastel para POST */
+    --method-put: #a0d6b9; /* Verde pastel claro para PUT */
+    --method-delete: #d68a8a; /* Vermelho pastel para DELETE */
+    --section-bg: #2a2a2a; /* Cinza escuro para seções */
+    --hover-bg: #333333; /* Cinza médio para hover */
+}
+
+body {
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--content-bg);
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Estilos da barra lateral */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    transition: none;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 0;
+    border-bottom: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.header-buttons {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mobile-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 5px;
+    border-radius: 5px;
+    transition: none;
+}
+
+.mobile-toggle:hover {
+    background-color: transparent;
+}
+
+.mobile-toggle {
+    display: none;
+}
+
+.nav-menu {
+    list-style: none;
+    padding-top: 10px;
+}
+
+.nav-section {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-header {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    transition: none;
+}
+
+.section-header:hover {
+    background-color: var(--hover-bg);
+}
+
+.section-header i {
+    transition: none;
+}
+
+.nav-section.active .section-header i {
+    transform: rotate(180deg);
+}
+
+.subsection {
+    list-style: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: none;
+    background-color: var(--section-bg);
+}
+
+.nav-section.active .subsection {
+    max-height: none;
+}
+
+.subsection li {
+    padding: 10px 20px 10px 40px;
+    border-top: 1px solid var(--border-color);
+}
+
+.subsection li a {
+    text-decoration: none;
+    color: var(--text-color);
+    display: block;
+    transition: none;
+}
+
+.subsection li a:hover {
+    color: var(--primary-color);
+}
+
+.subsection li a.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Estilos do conteúdo principal */
+.content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 40px 20px;
+    background-color: var(--content-bg);
+}
+
+.content-section {
+    margin-bottom: 20px;
+    padding: 0 0 10px 0;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--content-bg);
+}
+
+.content-section:last-child {
+    border-bottom: none;
+    margin-bottom: 40px;
+}
+
+.content-section h1 {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+}
+
+.content-section h3 {
+    margin: 25px 0 15px;
+    color: var(--text-color);
+    font-size: 1.3rem;
+}
+
+.content-section p {
+    margin-bottom: 15px;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.content-section strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.content-section ol, .content-section ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.content-section ul li {
+    margin-bottom: 8px;
+}
+
+/* Estilos para blocos de código */
+.code-block {
+    background-color: var(--code-bg);
+    border-radius: 5px;
+    padding: 0;
+    margin: 15px 0;
+    overflow: hidden;
+    border: none;
+    position: relative;
+    transition: none;
+}
+
+.code-block:hover {
+    border-color: transparent;
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.code-block code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    padding: 15px;
+    display: block;
+    overflow-x: auto;
+}
+
+/* Estilo para o URL base */
+#base-url .code-block {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+#base-url .code-block pre {
+    margin: 0;
+}
+
+#base-url .code-block code {
+    padding: 8px 12px;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Ajustes para Prism.js */
+pre[class*="language-"] {
+    margin: 0;
+    border-radius: 0;
+    background: transparent !important;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+code[class*="language-"] {
+    background: transparent !important;
+    padding: 15px;
+    font-size: 14px;
+    text-shadow: none !important;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+/* Remover sombras e fundos padrão do Prism */
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Cores para tokens no tema escuro */
+.token.property {
+    color: #ffb380;  /* Laranja pastel para propriedades */
+}
+
+.token.string {
+    color: #8cd2a7;  /* Verde pastel para strings */
+}
+
+.token.number,
+.token.boolean {
+    color: #d68a8a;  /* Vermelho pastel para números e booleanos */
+}
+
+.token.punctuation {
+    color: #a0a0a0;  /* Cinza médio para pontuação */
+}
+
+.token.operator {
+    color: #c2a0d6;  /* Roxo pastel para operadores */
+}
+
+.token.keyword {
+    color: #a0c2d6;  /* Azul pastel para palavras-chave */
+}
+
+.token.null,
+.token.undefined {
+    color: #d6a0c2;  /* Rosa pastel para null/undefined */
+}
+
+/* Adicionar um leve destaque para as chaves e colchetes */
+.token.punctuation.brace-open,
+.token.punctuation.brace-close,
+.token.punctuation.bracket-open,
+.token.punctuation.bracket-close {
+    font-weight: bold;
+}
+
+/* Adicionar um leve destaque para os dois pontos após as propriedades */
+.token.punctuation.colon {
+    margin-right: 4px;
+}
+
+/* Botão de copiar do Prism.js */
+div.code-toolbar > .toolbar {
+    display: none !important;
+}
+
+/* Estilos para código inline */
+code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    color: var(--primary-color);
+    background-color: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    transition: none;
+}
+
+/* Garantir que o código dentro dos blocos não seja afetado pelo estilo inline */
+.code-block code {
+    background-color: transparent;
+    border-radius: 0;
+    font-size: 14px;
+}
+
+/* Ajuste para o botão de copiar em blocos de código menores */
+.code-block.small-block code {
+    padding-top: 25px;
+    padding-bottom: 10px;
+}
+
+/* Estilos para endpoints */
+.endpoint {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    background-color: transparent;
+    border-radius: 0;
+    overflow: hidden;
+    border: none;
+    padding-left: 0;
+    transition: none;
+}
+
+.endpoint:hover {
+    border-color: transparent;
+}
+
+.method {
+    padding: 6px 10px;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    min-width: 70px;
+    text-align: center;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+.method.get {
+    background-color: var(--method-get);
+}
+
+.method.post {
+    background-color: var(--method-post);
+}
+
+.method.put {
+    background-color: var(--method-put);
+}
+
+.method.delete {
+    background-color: var(--method-delete);
+}
+
+.path {
+    padding: 6px 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 600;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--sidebar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Scrollbar personalizada para tema escuro */
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8cd2a7; /* Verde pastel */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    /* Redefinir o layout para dispositivos móveis */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+    
+    .container {
+        width: 100%;
+        position: relative;
+        overflow-x: hidden;
+        transform: none !important;
+    }
+    
+    /* Sidebar em tela cheia como overlay */
+    .sidebar {
+        position: fixed;
+        left: -100%; /* Inicialmente fora da tela */
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 1000;
+        background-color: var(--sidebar-bg);
+        overflow-y: auto;
+        padding-bottom: 80px;
+        transition: left 0.3s ease !important;
+        transform: none !important; /* Remover transformação */
+        box-shadow: none;
+    }
+    
+    .sidebar.active {
+        left: 0; /* Mover para dentro da tela */
+        transform: none !important;
+    }
+    
+    /* Conteúdo principal */
+    .content {
+        margin-left: 0;
+        width: 100%;
+        position: relative;
+        left: 0 !important;
+        transition: none !important;
+        transform: none !important;
+    }
+    
+    /* Botão de menu fixo */
+    .mobile-menu-fixed {
+        display: block;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        transition: none !important;
+        transform: none !important;
+    }
+    
+    /* Overlay para quando o menu estiver aberto */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+        transition: none !important;
+    }
+    
+    /* Garantir que o container não se mova */
+    .container {
+        position: relative;
+        overflow-x: hidden;
+        transition: none !important;
+        transform: none !important;
+    }
+    
+    /* Ajustes para o menu de navegação em tela cheia */
+    .nav-menu {
+        padding: 20px 0;
+    }
+    
+    .section-header {
+        padding: 20px;
+        font-size: 1.2rem;
+    }
+    
+    .subsection li {
+        padding: 15px 20px 15px 40px;
+    }
+    
+    .subsection li a {
+        font-size: 1.1rem;
+    }
+    
+    .mobile-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .mobile-toggle:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .sidebar.active + .sidebar-overlay {
+        display: block;
+    }
+    
+    /* Ajustes para o cabeçalho em mobile */
+    .sidebar-header {
+        padding: 20px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    /* Botão de fechar no mesmo lugar do hamburger */
+    .mobile-menu-fixed.active .mobile-toggle {
+        display: none;
+    }
+    
+    .mobile-menu-fixed.active .mobile-close {
+        display: flex;
+    }
+    
+    /* Estilo para o botão X */
+    .mobile-menu-fixed .mobile-close {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 1.8rem;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        border: none;
+        cursor: pointer;
+    }
+}
+
+/* Ajustes adicionais para o tema escuro */
+.sidebar-header {
+    border-bottom-color: #3a3a3a;
+}
+
+.content-section {
+    box-shadow: none;
+}
+
+.content-section h1 {
+    color: #8cd2a7; /* Verde pastel */
+    border-bottom-color: transparent;
+}
+
+.content-section h3 {
+    color: #e0e0e0;
+}
+
+.code-block {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.method {
+    box-shadow: none;
+}
+
+/* Melhorar contraste dos botões */
+.mobile-toggle {
+    color: #8cd2a7; /* Verde pastel */
+    background-color: transparent;
+}
+
+.mobile-toggle:hover {
+    background-color: transparent;
+}
+
+/* Estilos para o sistema de expansão de respostas */
+.response-section {
+    margin-top: 25px;
+    padding-left: 0;
+}
+
+.response-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-bottom: none;
+    user-select: none;
+    background-color: var(--code-bg);
+    border-radius: 5px;
+}
+
+.response-header h3 {
+    margin: 0;
+    flex-grow: 1;
+    font-size: 1.2rem;
+}
+
+.response-toggle {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    transition: none;
+}
+
+.response-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: none;
+    padding-left: 0;
+}
+
+.response-section.active .response-toggle {
+    transform: rotate(180deg);
+}
+
+.response-section.active .response-content {
+    max-height: none;
+    padding-top: 15px;
+}
+
+/* Ajuste para o espaçamento dentro do conteúdo de resposta */
+.response-content p {
+    margin-top: 15px;
+}
+
+.response-content .code-block:first-of-type {
+    margin-top: 15px;
+}
+
+/* Remover efeitos de hover */
+*:hover {
+    transition: none !important;
+}
+
+/* Ajustes para links */
+.subsection li a.active {
+    color: #8cd2a7; /* Verde pastel */
+}
+
+.subsection li a:hover {
+    color: #a0d6b9; /* Verde pastel claro */
+}
+
+/* Ajustes para a resposta toggle */
+.response-toggle {
+    color: #8cd2a7; /* Verde pastel */
+}
+
+/* Ajustes para código inline */
+code {
+    background-color: #2a2a2a;
+    color: #8cd2a7; /* Verde pastel */
+}
+
+/* Estilos para o seletor de idioma */
+.language-selector {
+    position: relative;
+    margin-right: 10px;
+}
+
+.language-selector select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 5px 25px 5px 10px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    outline: none;
+    height: 34px; /* Mesma altura do botão do GitHub */
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+.language-selector::after {
+    content: '\f0d7';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    pointer-events: none;
+}
+
+.language-selector select:focus {
+    border-color: var(--primary-color);
+}
+
+/* Estilos para a lista suspensa do seletor de idioma */
+.language-selector select option {
+    background-color: var(--content-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 10px;
+}
+
+.language-selector select {
+    background-color: #2a2a2a;
+    color: #8cd2a7;
+    border-color: #3a3a3a;
+}
+
+.language-selector::after {
+    color: #8cd2a7;
+}
+
+/* Ajustes para seções específicas */
+/* Removendo os estilos específicos para as barras coloridas de cada seção */
+/* #what-is-this:before {
+    background-color: #8cd2a7;
+}
+
+#base-url:before {
+    background-color: #8cd2a7;
+}
+
+[id^="auth-"]:before {
+    background-color: #a0c2d6;
+}
+
+[id^="user-"]:before {
+    background-color: #d6a0c2;
+}
+
+[id^="ticket-"]:before {
+    background-color: #c2a0d6;
+} */
+
+/* Melhorar a aparência dos endpoints */
+.endpoint {
+    margin: 25px 0;
+    box-shadow: none;
+}
+
+/* Melhorar a aparência dos blocos de código */
+.code-block {
+    margin: 20px 0;
+    box-shadow: none;
+}
+
+/* Adicionar um indicador visual para os parâmetros */
+.content-section ul li code:first-of-type {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Melhorar a aparência das respostas */
+.response-header {
+    padding: 12px 15px;
+    background-color: var(--section-bg);
+    border-radius: 5px;
+    margin-top: 25px;
+}
+
+.response-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .content {
+        padding: 30px 20px;
+    }
+    
+    .content-section {
+        padding: 0 0 30px 0;
+        margin-bottom: 50px;
+    }
+    
+    .content-section h1 {
+        font-size: 1.8rem;
+        margin-bottom: 25px;
+    }
+}
+
+.mobile-toggle {
+    background-color: var(--primary-color);
+    color: var(--sidebar-bg);
+}
+
+.mobile-toggle:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Estilos para o botão de fechar o menu */
+.mobile-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    padding: 5px;
+    border-radius: 5px;
+    display: none;
+    z-index: 1002; /* Garantir que esteja acima de outros elementos */
+}
+
+/* Estilos para o botão de menu fixo em dispositivos móveis */
+.mobile-menu-fixed {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    transition: none !important;
+}
+
+/* Botões de menu e fechar */
+.mobile-menu-fixed .mobile-toggle,
+.mobile-menu-fixed .mobile-close {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: none !important;
+    position: absolute; /* Posicionamento absoluto para evitar movimento */
+    bottom: 0;
+    right: 0;
+}
+
+.mobile-menu-fixed .mobile-close {
+    display: none;
+}
+
+.mobile-menu-fixed.active .mobile-toggle {
+    display: none;
+}
+
+.mobile-menu-fixed.active .mobile-close {
+    display: flex;
+}
+
+/* Ajustes para o overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+    transition: none !important;
+}
+
+/* Quando o body está fixo (menu aberto) */
+body.menu-open {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+}
+
+@media (max-width: 768px) {
+    /* Estilos para o botão de menu fixo */
+    .mobile-menu-fixed {
+        display: block; /* Visível em dispositivos móveis */
+    }
+    
+    /* Esconder o botão de menu na barra lateral em dispositivos móveis */
+    .sidebar .mobile-toggle {
+        display: none;
+    }
+    
+    /* Remover regra duplicada */
+    .sidebar.active .mobile-close {
+        display: none; /* Removido pois já temos o botão X no botão fixo */
+    }
+}
+
+.mobile-menu-fixed .mobile-toggle,
+.mobile-menu-fixed .mobile-close {
+    background-color: var(--primary-color);
+    color: var(--sidebar-bg);
+}
+
+/* Garantir que o conteúdo principal não se mova */
+.content {
+    position: relative;
+    left: 0 !important;
+    transition: none !important;
+    transform: none !important;
+}
+
+/* Garantir que o container não se mova */
+.container {
+    position: relative;
+    overflow-x: hidden;
+    transition: none !important;
+    transform: none !important;
+}
+
+/* Logo styles */
+.logo-container {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--sidebar-bg);
+}
+
+.sidebar-logo {
+    max-width: 260px;
+    height: auto;
+    margin: 0;
+    transition: transform 0.3s ease, max-width 0.3s ease;
+}
+
+.intro-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.main-logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 0;
+}
+
+.main-logo {
+    max-width: 500px;
+    height: auto;
+    transition: max-width 0.3s ease;
+}
+
+.intro-content {
+    width: 100%;
+    text-align: center;
+}
+
+.intro-content h1 {
+    margin-bottom: 1.5rem;
+}
+
+/* Estilos para a seção de explicação da API */
+.api-explanation {
+    margin-top: 20px;
+    padding: 25px;
+    background-color: var(--section-bg);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    text-align: left;
+}
+
+.api-explanation p {
+    margin-bottom: 15px;
+    line-height: 1.7;
+}
+
+.api-explanation ul {
+    margin: 20px 0 20px 20px;
+    list-style-type: none;
+}
+
+.api-explanation ul li {
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 22px;
+    line-height: 1.6;
+}
+
+.api-explanation ul li:before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 8px;
+}
+
+.api-explanation ul li strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Ajustes responsivos para a explicação da API */
+@media (max-width: 768px) {
+    .api-explanation {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .api-explanation ul {
+        margin-left: 10px;
+    }
+    
+    .api-explanation ul li {
+        padding-left: 18px;
+    }
+}
+
+/* Responsive adjustments for logos */
+@media (max-width: 768px) {
+    .logo-container {
+        padding: 1rem;
+    }
+    
+    .sidebar-logo {
+        max-width: 220px;
+    }
+    
+    .header-buttons {
+        padding: 0.8rem;
+    }
+}
+
+/* Ajustes específicos para telas médias */
+@media (max-width: 992px) and (min-width: 769px) {
+    .main-logo {
+        max-width: 450px; /* Tamanho intermediário para telas médias */
+    }
+    
+    .sidebar-logo {
+        max-width: 240px; /* Tamanho intermediário para telas médias */
+    }
+}
+
+/* Estilos para o seletor de idioma e botão do GitHub */
+.language-selector {
+    position: relative;
+    margin-right: 10px;
+}
+
+.language-selector select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 5px 25px 5px 10px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    outline: none;
+    height: 34px; /* Mesma altura do botão do GitHub */
+    box-sizing: border-box;
+    vertical-align: middle;
+}
+
+.language-selector::after {
+    content: '\f0d7';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    pointer-events: none;
+}
+
+.language-selector select:focus {
+    border-color: var(--primary-color);
+}
+
+/* Estilos para a lista suspensa do seletor de idioma */
+.language-selector select option {
+    background-color: var(--content-bg);
+    color: var(--text-color);
+    border: none;
+    padding: 8px 10px;
+}
+
+.github-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    background-color: transparent;
+}
+
+.github-button:hover {
+    color: var(--content-bg);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+    .header-buttons {
+        padding: 0.8rem;
+    }
+
+    .language-selector select {
+        padding: 4px 22px 4px 8px;
+        font-size: 0.85rem;
+    }
+
+    .github-button {
+        width: 32px;
+        height: 32px;
+        font-size: 1.1rem;
+    }
+}
+
+/* Ajustes para telas grandes */
+@media (min-width: 1200px) {
+    .main-logo {
+        max-width: 550px; /* Tamanho maior para telas grandes */
+    }
+    
+    .main-logo-container {
+        padding: 3rem 0; /* Mais espaço vertical em telas grandes */
+    }
+}
+
+/* Ajustes específicos para telas médias */
+@media (max-width: 992px) and (min-width: 769px) {
+    .main-logo {
+        max-width: 450px; /* Tamanho intermediário para telas médias */
+    }
+    
+    .sidebar-logo {
+        max-width: 240px; /* Tamanho intermediário para telas médias */
+    }
+}
