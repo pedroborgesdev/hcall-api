@@ -1199,7 +1199,7 @@ body.menu-open {
 /* Ajustes específicos para telas médias */
 @media (max-width: 992px) and (min-width: 769px) {
     .main-logo {
-        max-width: 450px; /* Tamanho intermediário para telas médias */
+        max-width: 320px; /* Tamanho intermediário para telas médias */
     }
     
     .sidebar-logo {
