@@ -1185,7 +1185,7 @@ body.menu-open {
     }
 
     .main-logo {
-        max-width: 320px; /* Tamanho intermediário para telas médias */
+        max-width: 240px; /* Tamanho intermediário para telas médias */
     }
 }
 
