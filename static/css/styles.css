@@ -1183,6 +1183,10 @@ body.menu-open {
         height: 32px;
         font-size: 1.1rem;
     }
+
+    .main-logo {
+        max-width: 320px; /* Tamanho intermediário para telas médias */
+    }
 }
 
 /* Ajustes para telas grandes */
