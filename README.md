@@ -14,7 +14,7 @@ A RESTful API for technical support ticket management, developed with Node.js an
 ## Documentation
 
 Complete API documentation is available at:
-- [Online Documentation](https://your-domain.com/docs)
+- [Online Documentation](https://pedroborgesdev.github.io/hcall-api)
 - [DOCUMENTATION.md](DOCUMENTATION.md)
 
 ## Main Endpoints
@@ -61,20 +61,6 @@ axios.post('domain/api/auth/enter', {
 - Data Validation
 - Protection Against Common Attacks
 
-## Contributing
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_twitter) - email@example.com
-
-Project Link: [https://github.com/your-username/api-tickets](https://github.com/your-username/api-tickets) 
