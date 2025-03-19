@@ -1,20 +1,24 @@
-# API de Gerenciamento de Tickets
+# API Documentation
 
-Esta API permite gerenciar tickets de suporte técnico, incluindo autenticação de usuários, criação, edição, consulta e remoção de tickets.
+## Resources
+
+- User Management
+- Ticket Creation
+- Status Updates
+- JWT Communication
 
 ## Base URL
+
 ```
 domain/api
 ```
 
-## Autenticação
+## Authentication
 
 ### Login
-**Endpoint:** `POST /auth/enter`
-
-**Descrição:** Autentica um usuário no sistema, verificando suas credenciais e permitindo acesso às funcionalidades protegidas da API.
-
-**Request Body:**
+- **Endpoint:** `POST /auth/enter`
+- **Description:** Authenticates a user in the system
+- **Request Body:**
 ```json
 {
     "username": "John Doe",
@@ -22,23 +26,23 @@ domain/api
     "password": "Password123"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "User has been loged in",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }
 ```
-- Email não registrado (400):
+  - Email Not Registered (400):
 ```json
 {
     "message": "Email aren't registered",
     "status": false
 }
 ```
-- Senha incorreta (400):
+  - Incorrect Password (400):
 ```json
 {
     "message": "Password is incorrect",
@@ -46,12 +50,10 @@ domain/api
 }
 ```
 
-### Registro
-**Endpoint:** `POST /auth/register`
-
-**Descrição:** Registra um novo usuário no sistema, permitindo que ele crie uma conta para acessar a plataforma.
-
-**Request Body:**
+### Register
+- **Endpoint:** `POST /auth/register`
+- **Description:** Registers a new user in the system
+- **Request Body:**
 ```json
 {
     "username": "John Doe",
@@ -59,23 +61,23 @@ domain/api
     "password": "Password123"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "User has been registered",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }
 ```
-- Email já existe (400):
+  - Email Already Exists (400):
 ```json
 {
     "message": "Email already exists",
     "status": false
 }
 ```
-- Senha inválida (400):
+  - Invalid Password (400):
 ```json
 {
     "message": "Password is invalid",
@@ -83,18 +85,18 @@ domain/api
 }
 ```
 
-## Usuários
+## Users
 
-### Obter Informações do Usuário
-**Endpoint:** `GET /user/fetch`
-
-**Descrição:** Recupera informações de um usuário específico ou lista todos os usuários do sistema.
-
-**Query Parameters:**
-- `email`: Email do usuário (opcional, exemplo: `email=johndoe@example.com`)
-
-**Respostas:**
-- Sucesso (200) - Usuário específico:
+### Get User Information
+- **Endpoint:** `GET /user/fetch`
+- **Description:** Retrieves information about a specific user or lists all users
+- **Query Parameters:**
+  - `email`: User's email (optional, example: `email=johndoe@example.com`)
+- **Examples:**
+  - List all users: `/user/fetch`
+  - Get specific user: `/user/fetch?email=johndoe@example.com`
+- **Responses:**
+  - Success (200) - Specific User:
 ```json
 {
     "username": "John Doe",
@@ -104,7 +106,7 @@ domain/api
     "status": true
 }
 ```
-- Sucesso (200) - Lista de usuários:
+  - Success (200) - User List:
 ```json
 {
     "users": [
@@ -120,7 +122,7 @@ domain/api
     "status": true
 }
 ```
-- Usuário não encontrado (404):
+  - User Not Found (404):
 ```json
 {
     "message": "Email aren't registered",
@@ -128,12 +130,10 @@ domain/api
 }
 ```
 
-### Criar Usuário
-**Endpoint:** `POST /user/create`
-
-**Descrição:** Cria um novo usuário no sistema.
-
-**Request Body:**
+### Create User
+- **Endpoint:** `POST /user/create`
+- **Description:** Creates a new user in the system
+- **Request Body:**
 ```json
 {
     "username": "John Doe",
@@ -141,23 +141,22 @@ domain/api
     "password": "Password123"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "User has been created",
     "status": true
 }
 ```
-- Email já existe (400):
+  - Email Already Exists (400):
 ```json
 {
     "message": "Email already exists",
     "status": false
 }
 ```
-- Dados inválidos (400):
+  - Invalid Data (400):
 ```json
 {
     "message": "Dados inválidos",
@@ -165,27 +164,24 @@ domain/api
 }
 ```
 
-### Remover Usuário
-**Endpoint:** `POST /user/delete`
-
-**Descrição:** Remove um usuário do sistema.
-
-**Request Body:**
+### Remove User
+- **Endpoint:** `POST /user/delete`
+- **Description:** Removes a user from the system
+- **Request Body:**
 ```json
 {
     "email": "johndoe@example.com"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "User has been deleted",
     "status": true
 }
 ```
-- Usuário não encontrado (404):
+  - User Not Found (404):
 ```json
 {
     "message": "Email aren't registered",
@@ -195,38 +191,35 @@ domain/api
 
 ## Tickets
 
-### Criar Ticket
-**Endpoint:** `POST /ticket/create`
-
-**Descrição:** Cria um novo ticket de suporte técnico.
-
-**Request Body:**
+### Create Ticket
+- **Endpoint:** `POST /ticket/create`
+- **Description:** Creates a new technical support ticket
+- **Request Body:**
 ```json
 {
     "author_email": "johndoe@example.com",
-    "ticket_name": "Problema com impressora",
+    "ticket_name": "Printer Problem",
     "ticket_label": "Hardware",
-    "ticket_equipment": "Impressora HP LaserJet",
-    "ticket_explain": "A impressora não está conectando à rede"
+    "ticket_equipment": "HP Printer",
+    "ticket_explain": "The printer is not connecting to the network"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "Ticket has been created",
     "status": true
 }
 ```
-- Dados inválidos (400):
+  - Invalid Data (400):
 ```json
 {
     "message": "Dados inválidos",
     "status": false
 }
 ```
-- Autor não encontrado (400):
+  - Author Not Found (400):
 ```json
 {
     "message": "Email aren't registered",
@@ -234,38 +227,33 @@ domain/api
 }
 ```
 
-### Atualizar Status do Ticket
-**Endpoint:** `POST /ticket/edit`
-
-**Descrição:** Atualiza o status de um ticket existente.
-
-**Request Body:**
+### Update Ticket Status
+- **Endpoint:** `POST /ticket/edit`
+- **Description:** Updates the status of an existing ticket
+- **Request Body:**
 ```json
 {
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
     "ticket_status": "doing"
 }
 ```
-
-**Observações:**
-- Os valores válidos para `ticket_status` são: `pending`, `doing`, `conclued`
-
-**Respostas:**
-- Sucesso (200):
+- **Valid Status Values:** `pending`, `doing`, `conclued`
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "Ticket has been edited",
     "status": true
 }
 ```
-- Ticket não encontrado (404):
+  - Ticket Not Found (404):
 ```json
 {
     "message": "Ticket hasn't found",
     "status": false
 }
 ```
-- Status inválido (400):
+  - Invalid Status (400):
 ```json
 {
     "message": "Dados inválidos",
@@ -273,80 +261,71 @@ domain/api
 }
 ```
 
-### Atualizar Histórico do Ticket
-**Endpoint:** `POST /ticket/update`
-
-**Descrição:** Adiciona uma nova entrada no histórico de um ticket existente.
-
-**Request Body:**
+### Update Ticket History
+- **Endpoint:** `POST /ticket/update`
+- **Description:** Adds a new entry to the ticket's history
+- **Request Body:**
 ```json
 {
     "ticket_id": "ticket_028492wsd88178",
-    "ticket_return": "Comprando roteadores"
+    "ticket_return": "Purchasing routers"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "Update has been setting up",
     "status": true
 }
 ```
-- Ticket não encontrado (404):
+  - Ticket Not Found (404):
 ```json
 {
     "message": "Ticket hasn't found",
     "status": false
 }
 ```
+- **Notes:**
+  - Updated history can be viewed through the `/ticket/info` endpoint
+  - Each update is recorded with date and time
+  - History is displayed in chronological order
 
-**Observações:**
-- O histórico atualizado pode ser consultado através do endpoint `/ticket/info`
-- Cada atualização é registrada com a data e hora em que foi realizada
-- O histórico é exibido em ordem cronológica
-
-### Listar Tickets
-**Endpoint:** `GET /ticket/fetch`
-
-**Descrição:** Lista tickets de um autor específico ou todos os tickets do sistema.
-
-**Query Parameters:**
-- `author`: Email do autor (opcional, exemplo: `author=johndoe@example.com`)
-- `status`: Status dos tickets (opcional, exemplo: `status=pending`)
-
-**Observações:**
-- Os valores válidos para `status` são: `pending`, `doing`, `conclued`
-- Se o parâmetro `status` não for fornecido, serão retornados tickets de todos os status
-- Se o parâmetro `author` não for fornecido, serão retornados tickets de todos os autores
-
-**Exemplos de Uso:**
-- Listar todos os tickets: `/ticket/fetch`
-- Listar tickets pendentes: `/ticket/fetch?status=pending`
-- Listar tickets de um autor: `/ticket/fetch?author=johndoe@example.com`
-- Listar tickets pendentes de um autor: `/ticket/fetch?author=johndoe@example.com&status=pending`
-
-**Respostas:**
-- Sucesso (200):
+### List Tickets
+- **Endpoint:** `GET /ticket/fetch`
+- **Description:** Lists tickets from a specific author or all system tickets
+- **Query Parameters:**
+  - `author`: Author's email (optional, example: `author=johndoe@example.com`)
+  - `status`: Ticket status (optional, example: `status=pending`)
+- **Valid Status Values:** `pending`, `doing`, `conclued`
+- **Notes:**
+  - If `status` parameter is not provided, tickets of all statuses will be returned
+  - If `author` parameter is not provided, tickets from all authors will be returned
+- **Examples:**
+  - List all tickets: `/ticket/fetch`
+  - List pending tickets: `/ticket/fetch?status=pending`
+  - List tickets by author: `/ticket/fetch?author=johndoe@example.com`
+  - List pending tickets by author: `/ticket/fetch?author=johndoe@example.com&status=pending`
+- **Responses:**
+  - Success (200):
 ```json
 {
     "tickets": [
         {
             "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
-            "ticket_name": "Problema com impressora",
+            "ticket_name": "Printer Problem",
             "ticket_status": "pending"
         },
         {
             "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174001",
-            "ticket_name": "Problema com monitor",
+            "ticket_name": "Monitor Problem",
             "ticket_status": "doing"
         }
     ],
     "status": true
 }
 ```
-- Nenhum ticket encontrado (404):
+  - No Tickets Found (404):
 ```json
 {
     "message": "Author don't have tickets",
@@ -354,22 +333,21 @@ domain/api
 }
 ```
 
-### Obter Informações do Ticket
-**Endpoint:** `GET /ticket/info`
-
-**Descrição:** Recupera informações detalhadas de um ticket específico, incluindo seu histórico completo.
-
-**Query Parameters:**
-- `ticket_id`: ID do ticket (obrigatório)
-
-**Respostas:**
-- Sucesso (200):
+### Get Ticket Information
+- **Endpoint:** `GET /ticket/info`
+- **Description:** Retrieves detailed information about a specific ticket, including its complete history
+- **Query Parameters:**
+  - `ticket_id`: Ticket ID (required, example: `ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000`)
+- **Examples:**
+  - Get ticket information: `/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000`
+- **Responses:**
+  - Success (200):
 ```json
 {
     "ticket_id": "ticket_028492wsd88178",
-    "ticket_name": "Problema com roteadores",
+    "ticket_name": "Router Problem",
     "ticket_status": "doing",
-    "ticket_explain": "Necessário comprar novos roteadores",
+    "ticket_explain": "Need to purchase new routers",
     "history": [
         {
             "ticket_return": "Purchasing routers",
@@ -387,14 +365,14 @@ domain/api
     "status": true
 }
 ```
-- Ticket não encontrado (404):
+  - Ticket Not Found (404):
 ```json
 {
     "message": "Ticket hasn't found",
     "status": false
 }
 ```
-- ID não fornecido (400):
+  - ID Not Provided (400):
 ```json
 {
     "message": "Dados inválidos",
@@ -402,90 +380,35 @@ domain/api
 }
 ```
 
-### Remover Ticket
-**Endpoint:** `POST /ticket/remove`
-
-**Descrição:** Remove um ticket do sistema. Apenas o autor do ticket pode removê-lo.
-
-**Request Body:**
+### Remove Ticket
+- **Endpoint:** `POST /ticket/remove`
+- **Description:** Removes a ticket from the system. Only the ticket author can remove it.
+- **Request Body:**
 ```json
 {
     "author_email": "johndoe@example.com",
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000"
 }
 ```
-
-**Respostas:**
-- Sucesso (200):
+- **Responses:**
+  - Success (200):
 ```json
 {
     "message": "Ticket has been removed",
     "status": true
 }
 ```
-- Ticket não encontrado ou autor incorreto (404):
+  - Ticket Not Found or Incorrect Author (404):
 ```json
 {
     "message": "Ticket hasn't found",
     "status": false
 }
 ```
-- Dados inválidos (400):
+  - Invalid Data (400):
 ```json
 {
     "message": "Dados inválidos",
     "status": false
 }
-```
-
-## Códigos de Status
-
-A API utiliza os seguintes códigos de status HTTP:
-
-- `200 OK`: A requisição foi bem-sucedida
-- `400 Bad Request`: A requisição contém dados inválidos ou está mal formatada
-- `404 Not Found`: O recurso solicitado não foi encontrado
-- `500 Internal Server Error`: Ocorreu um erro interno no servidor
-
-## Modelos de Dados
-
-### Usuário
-```json
-{
-    "id": 1,
-    "username": "John Doe",
-    "email": "johndoe@example.com",
-    "password": "********",
-    "created_at": "2023-01-01T12:00:00Z",
-    "updated_at": "2023-01-01T12:00:00Z"
-}
-```
-
-### Ticket
-```json
-{
-    "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
-    "author_id": 1,
-    "ticket_name": "Problema com impressora",
-    "ticket_label": "Hardware",
-    "ticket_equipment": "Impressora HP LaserJet",
-    "ticket_explain": "A impressora não está conectando à rede",
-    "ticket_status": "pending",
-    "created_at": "2023-01-01T12:00:00Z",
-    "updated_at": "2023-01-01T12:00:00Z",
-    "history": [
-        {
-            "id": "123e4567-e89b-12d3-a456-426614174000",
-            "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
-            "ticket_return": "Verificação inicial realizada",
-            "ticket_date": "2023-01-01T12:00:00Z"
-        }
-    ]
-}
-```
-
-### Status de Ticket
-Os tickets podem ter os seguintes status:
-- `pending`: Ticket pendente, aguardando atendimento
-- `doing`: Ticket em andamento, sendo atendido
-- `conclued`: Ticket concluído, atendimento finalizado 
+``` 

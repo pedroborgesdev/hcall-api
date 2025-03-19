@@ -1,152 +1,80 @@
-# API Ticket Management System | Sistema de Gerenciamento de Tickets
-
-<p align="center">
-  <img src="static/img/logo.png" alt="API Logo" width="250">
-</p>
-
-<div align="center">
-  <p>
-    <a href="#english">English</a> |
-    <a href="#portuguese">Português</a>
-  </p>
-</div>
-
----
-
-<a id="english"></a>
 # Ticket Management API
 
-<p align="center">
-  A complete solution for technical support ticket management
-</p>
+A RESTful API for technical support ticket management, developed with Node.js and Express. This API allows you to create, manage, and track support tickets, as well as manage system users.
 
-## About the Project
+## Features
 
-The Ticket Management API is a complete solution for companies and organizations that need to efficiently manage technical support requests. It offers a comprehensive set of endpoints that enable:
-
-- **User Management**: Create, query, and remove users with ease
-- **Ticket Creation and Tracking**: Register new tickets with detailed information
-- **Status Updates**: Track ticket progress (pending, in progress, completed)
-- **Complete History**: Maintain a detailed record of all updates
-- **Advanced Filtering**: Retrieve specific tickets by author or status
+- 🔐 Secure JWT Authentication
+- 👥 Complete User Management
+- 🎫 Ticket Creation and Tracking
+- 📊 Status and History Updates
+- 🔍 Advanced Search and Filters
+- 📱 RESTful and Responsive API
 
 ## Documentation
 
-For detailed information about all available endpoints, parameters, status codes, and usage examples, see our [complete documentation](DOCUMENTATION.md).
+Complete API documentation is available at:
+- [Online Documentation](https://your-domain.com/docs)
+- [DOCUMENTATION.md](DOCUMENTATION.md)
 
 ## Main Endpoints
 
-The API offers the following main endpoints:
+### Authentication
+- `POST /auth/enter` - User Login
+- `POST /auth/register` - New User Registration
 
-- **Authentication**: `/auth/enter`, `/auth/register`
-- **Users**: `/user/fetch`, `/user/create`, `/user/delete`
-- **Tickets**: 
-  - Creation: `/ticket/create`
-  - Updates: `/ticket/edit`, `/ticket/update`
-  - Queries: `/ticket/fetch`, `/ticket/info`
-  - Removal: `/ticket/remove`
+### Users
+- `GET /user/fetch` - List Users
+- `POST /user/create` - Create User
+- `POST /user/delete` - Remove User
 
-## Technologies Used
+### Tickets
+- `POST /ticket/create` - Create Ticket
+- `POST /ticket/edit` - Update Status
+- `POST /ticket/update` - Update History
+- `GET /ticket/fetch` - List Tickets
+- `GET /ticket/info` - Ticket Details
+- `POST /ticket/remove` - Remove Ticket
 
-- RESTful API
-- JSON for data format
-- Support for multiple languages (English and Portuguese)
-- Secure authentication
+## Usage Example
 
-## How to Use
-
-Base URL for all requests:
-
+```javascript
+// Login
+axios.post('domain/api/auth/enter', {
+  username: "John Doe",
+  email: "johndoe@example.com",
+  password: "Password123"
+})
+.then(response => {
+  const token = response.data.token;
+  console.log('Login successful:', response.data);
+})
+.catch(error => {
+  console.error('Login error:', error.response.data);
+});
 ```
-domain/api
-```
 
-Example request to create a ticket:
+## Security
 
-```bash
-curl -X POST domain/api/ticket/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "author_email": "user@example.com",
-    "ticket_name": "Printer problem",
-    "ticket_label": "Hardware",
-    "ticket_equipment": "HP Printer",
-    "ticket_explain": "The printer is not connecting to the network"
-  }'
-```
+- JWT Authentication
+- Encrypted Passwords
+- Data Validation
+- Protection Against Common Attacks
+
+## Contributing
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the terms of the [MIT License](LICENSE).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## Contact
 
-<a id="portuguese"></a>
-# API de Gerenciamento de Tickets
+Your Name - [@your_twitter](https://twitter.com/your_twitter) - email@example.com
 
-<p align="center">
-  <img src="static/img/logo.png" alt="API Logo" width="250">
-</p>
-
-<p align="center">
-  Uma solução completa para gerenciamento de tickets de suporte técnico
-</p>
-
-## Sobre o Projeto
-
-A API de Gerenciamento de Tickets é uma solução completa para empresas e organizações que precisam gerenciar solicitações de suporte técnico de forma eficiente. Ela oferece um conjunto abrangente de endpoints que possibilitam:
-
-- **Gerenciamento de Usuários**: Crie, consulte e remova usuários com facilidade
-- **Criação e Rastreamento de Tickets**: Registre novos tickets com informações detalhadas
-- **Atualizações de Status**: Acompanhe o progresso dos tickets (pendente, em andamento, concluído)
-- **Histórico Completo**: Mantenha um registro detalhado de todas as atualizações
-- **Filtragem Avançada**: Recupere tickets específicos por autor ou status
-
-## Documentação
-
-Para informações detalhadas sobre todos os endpoints disponíveis, parâmetros, códigos de status e exemplos de uso, consulte nossa [documentação completa](DOCUMENTATION.md).
-
-## Endpoints Principais
-
-A API oferece os seguintes endpoints principais:
-
-- **Autenticação**: `/auth/enter`, `/auth/register`
-- **Usuários**: `/user/fetch`, `/user/create`, `/user/delete`
-- **Tickets**: 
-  - Criação: `/ticket/create`
-  - Atualização: `/ticket/edit`, `/ticket/update`
-  - Consulta: `/ticket/fetch`, `/ticket/info`
-  - Remoção: `/ticket/remove`
-
-## Tecnologias Utilizadas
-
-- RESTful API
-- JSON para formato de dados
-- Suporte a múltiplos idiomas (Inglês e Português)
-- Autenticação segura
-
-## Como Usar
-
-Base URL para todas as requisições:
-
-```
-domain/api
-```
-
-Exemplo de requisição para criar um ticket:
-
-```bash
-curl -X POST domain/api/ticket/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "author_email": "usuario@exemplo.com",
-    "ticket_name": "Problema com impressora",
-    "ticket_label": "Hardware",
-    "ticket_equipment": "Impressora HP",
-    "ticket_explain": "A impressora não está conectando à rede"
-  }'
-```
-
-## Licença
-
-Este projeto está licenciado sob os termos da [Licença MIT](LICENSE). 
+Project Link: [https://github.com/your-username/api-tickets](https://github.com/your-username/api-tickets) 
