@@ -177,9 +177,10 @@ body {
 }
 
 .content-section {
-    margin-bottom: 20px;
-    padding: 0 0 10px 0;
+    padding: 1rem 0;
+    scroll-margin-top: 80px;
     position: relative;
+
     border-bottom: 1px solid var(--border-color);
     background-color: var(--content-bg);
 }
@@ -189,7 +190,12 @@ body {
     margin-bottom: 40px;
 }
 
+.content-section:first-child {
+    padding-top: 0;
+}
+
 .content-section h1 {
+    margin-top: 0;
     color: var(--primary-color);
     font-size: 2.2rem;
 }
@@ -225,17 +231,12 @@ body {
 /* Estilos para blocos de código */
 .code-block {
     background-color: var(--code-bg);
-    border-radius: 5px;
-    padding: 0;
-    margin: 15px 0;
-    overflow: hidden;
-    border: none;
-    position: relative;
-    transition: none;
-}
-
-.code-block:hover {
-    border-color: transparent;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    
+    transition: all 0.3s ease;
 }
 
 .code-block pre {
@@ -245,9 +246,12 @@ body {
 }
 
 .code-block code {
-    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-    padding: 15px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-color);
     display: block;
+    white-space: pre;
     overflow-x: auto;
 }
 
@@ -281,7 +285,7 @@ code[class*="language-"] {
     padding: 15px;
     font-size: 14px;
     text-shadow: none !important;
-    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-family: 'Fira Code', monospace;
 }
 
 /* Remover sombras e fundos padrão do Prism */
@@ -566,11 +570,11 @@ code {
     
     /* Ajustes para o cabeçalho em mobile */
     .sidebar-header {
-        padding: 20px;
+        padding-top: 20px;
         position: relative;
         display: flex;
         justify-content: space-between;
-        align-items: center;
+
     }
     
     /* Botão de fechar no mesmo lugar do hamburger */
@@ -725,7 +729,7 @@ code {
     -webkit-appearance: none;
     -moz-appearance: none;
     background-color: transparent;
-    border: 1px solid var(--border-color);
+    
     border-radius: 4px;
     padding: 5px 25px 5px 10px;
     font-size: 0.9rem;
@@ -1110,7 +1114,7 @@ body.menu-open {
     -webkit-appearance: none;
     -moz-appearance: none;
     background-color: transparent;
-    border: 1px solid var(--border-color);
+    
     border-radius: 4px;
     padding: 5px 25px 5px 10px;
     font-size: 0.9rem;
@@ -1156,7 +1160,7 @@ body.menu-open {
     color: var(--primary-color);
     font-size: 1.2rem;
     text-decoration: none;
-    border: 1px solid var(--border-color);
+    
     background-color: transparent;
 }
 
@@ -1185,7 +1189,7 @@ body.menu-open {
     }
 
     .main-logo {
-        max-width: 240px; /* Tamanho intermediário para telas médias */
+        max-width: 260px; /* Tamanho maior para telas grandes */
     }
 }
 
@@ -1209,4 +1213,128 @@ body.menu-open {
     .sidebar-logo {
         max-width: 240px; /* Tamanho intermediário para telas médias */
     }
+}
+
+/* Estilo específico para tokens JWT */
+.code-block pre code.language-http,
+.code-block pre code.language-json,
+.code-block pre code.language-bash {
+    white-space: pre-wrap; /* Permite quebra de linha */
+    word-break: break-all; /* Quebra palavras longas, especialmente útil para tokens */
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 768px) {
+    .code-block {
+        font-size: 14px;
+    }
+    
+    .code-block pre {
+        padding: 10px;
+    }
+}
+
+/* Estilos para seção de exemplos */
+#examples .code-block {
+    margin-bottom: 25px;
+}
+
+/* Example Sections */
+.endpoint-section {
+    background: var(--section-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    
+}
+
+.endpoint-section h3 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.endpoint-content {
+    padding: 1rem 0;
+}
+
+.endpoint-content h4 {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--primary-color);
+}
+
+.code-block {
+    background: var(--code-bg);
+    border-radius: 6px;
+    margin: 1rem 0;
+    overflow: hidden;
+    
+}
+
+.example {
+    background: var(--content-bg);
+}
+
+.code-block pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.code-block code {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    display: block;
+    white-space: pre;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .endpoint-section {
+        padding: 1rem;
+    }
+
+    .endpoint-section h3 {
+        font-size: 1.3rem;
+    }
+
+    .endpoint-content h4 {
+        font-size: 1.1rem;
+    }
+
+    .code-block {
+        margin: 0.5rem 0;
+    }
+
+    .code-block pre {
+        padding: 0.8rem;
+    }
+
+    .code-block code {
+        font-size: 0.8rem;
+    }
+}
+
+/* Ajuste para o header fixo */
+.mobile-menu-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: var(--bg-color);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste para o conteúdo principal */
+.content {
+    padding-top: 80px; /* Espaço para o header fixo */
 }

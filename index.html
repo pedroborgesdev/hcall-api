@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="api-title">HCall API</title>
+    <title data-lang-key="api-title">Documentação da API de Gerenciamento de Tickets</title>
     <link rel="stylesheet" href="static/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Adicionar Prism.js CSS -->
@@ -52,6 +52,7 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <ul class="subsection">
+                        <li><a href="#jwt-auth" data-lang-key="jwt-auth">Autenticação JWT</a></li>
                         <li><a href="#auth-login" data-lang-key="login">Login</a></li>
                         <li><a href="#auth-register" data-lang-key="register">Registro</a></li>
                     </ul>
@@ -81,6 +82,28 @@
                         <li><a href="#ticket-remove" data-lang-key="ticket-remove">Remover Ticket</a></li>
                     </ul>
                 </li>
+                <div class="nav-section">
+                    <div class="section-header">
+                        <span data-lang-key="usage-examples">Usage Examples</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <ul class="subsection">
+                        <li><a href="#axios-login" data-lang-key="axios-login">Login</a></li>
+                        <li><a href="#axios-register" data-lang-key="axios-register">Register</a></li>
+                        <li><a href="#axios-header-config" data-lang-key="axios-header-config">Header Configuration</a></li>
+                        <li><a href="#axios-list-all-users" data-lang-key="axios-list-all-users">List All Users</a></li>
+                        <li><a href="#axios-get-specific-user" data-lang-key="axios-get-specific-user">Get Specific User</a></li>
+                        <li><a href="#axios-create-user" data-lang-key="axios-create-user">Create User</a></li>
+                        <li><a href="#axios-delete-user" data-lang-key="axios-delete-user">Delete User</a></li>
+                        <li><a href="#axios-create-ticket" data-lang-key="axios-create-ticket">Create Ticket</a></li>
+                        <li><a href="#axios-update-status" data-lang-key="axios-update-status">Update Ticket Status</a></li>
+                        <li><a href="#axios-add-history" data-lang-key="axios-add-history">Add Ticket History</a></li>
+                        <li><a href="#axios-list-tickets" data-lang-key="axios-list-tickets">List All Tickets</a></li>
+                        <li><a href="#axios-list-pending" data-lang-key="axios-list-pending">List Pending Tickets</a></li>
+                        <li><a href="#axios-ticket-details" data-lang-key="axios-ticket-details">Get Ticket Details</a></li>
+                        <li><a href="#axios-delete-ticket" data-lang-key="axios-delete-ticket">Delete Ticket</a></li>
+                    </ul>
+                </div>
             </ul>
         </nav>
         <div class="sidebar-overlay"></div>
@@ -124,6 +147,45 @@
                 </div>
             </section>
 
+            <!-- Seção de Autenticação JWT -->
+            <section id="jwt-auth" class="content-section">
+                <h1 data-lang-key="jwt-auth">Autenticação JWT</h1>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="jwt-auth-desc">Esta API utiliza tokens JWT (JSON Web Token) para autenticação e autorização. <strong>Todas as requisições</strong> (exceto <code>/auth/enter</code> e <code>/auth/register</code>) devem incluir um token JWT válido no cabeçalho de autorização.</span></p>
+                
+                <h3 data-lang-key="jwt-how-it-works">Como Funciona:</h3>
+                <ol>
+                    <li><span data-lang-key="jwt-step1">Quando um usuário faz login com sucesso através do endpoint <code>/auth/enter</code>, o servidor gera um token JWT.</span></li>
+                    <li><span data-lang-key="jwt-step2">Este token contém informações criptografadas sobre o usuário, incluindo seu ID e permissões.</span></li>
+                    <li><span data-lang-key="jwt-step3">O cliente deve armazenar este token e enviá-lo em todas as requisições subsequentes no cabeçalho <code>Authorization</code>.</span></li>
+                    <li><span data-lang-key="jwt-step4">O servidor valida o token em cada requisição para garantir que o usuário tenha as permissões necessárias.</span></li>
+                    <li><span data-lang-key="jwt-step5"><strong>Importante:</strong> Qualquer requisição sem o token JWT ou com um token inválido receberá o erro <code>401 Unauthorized</code>.</span></li>
+                </ol>
+                
+                <h3 data-lang-key="jwt-format">Formato do Token:</h3>
+                <div class="code-block">
+                    <pre><code class="language-http">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbn...
+(token truncado para melhor visualização)</code></pre>
+                </div>
+                
+                <h3 data-lang-key="jwt-security">Segurança:</h3>
+                <ul>
+                    <li><span data-lang-key="jwt-security1">O token é assinado digitalmente, garantindo que não possa ser modificado.</span></li>
+                    <li><span data-lang-key="jwt-security2">Tokens expiram após um período determinado (geralmente 24 horas).</span></li>
+                    <li><span data-lang-key="jwt-security3">Nunca armazene informações sensíveis (como senhas) no token.</span></li>
+                </ul>
+                
+                <h3 data-lang-key="jwt-example-login-response">Exemplo de Resposta de Login com Token JWT:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "User has been loged in",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+(token truncado para melhor visualização)",
+    "status": true
+}</code></pre>
+                </div>
+            </section>
+
             <!-- Seção de Autenticação -->
             <section id="auth-login" class="content-section">
                 <h1 data-lang-key="login">Login</h1>
@@ -145,6 +207,7 @@
                 <div class="code-block">
                     <pre><code class="language-json">{
     "message": "User has been loged in",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbn...",
     "status": true
 }</code></pre>
                 </div>
@@ -184,6 +247,7 @@
                 <div class="code-block">
                     <pre><code class="language-json">{
     "message": "User has been registered",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbnMiOlsicmVhZCIsIndyaXRlIl0sImlhdCI6MTUxNjIzOTAyMn0.L8i6g3PfcHlioHCCPURC9pmXT7gdJpx3kOoyAfNUwCc",
     "status": true
 }</code></pre>
                 </div>
@@ -213,7 +277,18 @@
                 <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-fetch-desc">Recupera informações de um usuário específico ou lista todos os usuários do sistema.</span></p>
                 <h3 data-lang-key="query-params">Query Parameters:</h3>
                 <ul>
-                    <li><code>email</code>: Email do usuário (opcional, exemplo: <code>email=johndoe@example.com</code>)</li>
+                    <li><code>email</code>: <span data-lang-key="email-param-desc">Email do usuário (opcional, exemplo: <code>email=johndoe@example.com</code>)</span></li>
+                </ul>
+                <p><strong data-lang-key="observations">Observações:</strong></p>
+                <ul>
+                    <li><span data-lang-key="valid-status-values">Os valores válidos para <code>status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></span></li>
+                    <li><span data-lang-key="status-not-provided">Se o parâmetro <code>status</code> não for fornecido, serão retornados tickets de todos os status</span></li>
+                    <li><span data-lang-key="author-not-provided">Se o parâmetro <code>author</code> não for fornecido, serão retornados tickets de todos os autores</span></li>
+                </ul>
+                <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
+                <ul>
+                    <li><span data-lang-key="list-all-users-example">Listar todos os usuários:</span> <code>/user/fetch</code></li>
+                    <li><span data-lang-key="get-specific-user-example">Buscar usuário específico:</span> <code>/user/fetch?email=johndoe@example.com</code></li>
                 </ul>
                 <h3 data-lang-key="responses">Respostas:</h3>
                 <p><strong data-lang-key="success">Sucesso</strong> (200) - Usuário específico:</p>
@@ -239,62 +314,6 @@
             "email": "janesmith@example.com"
         }
     ],
-    "status": true
-}</code></pre>
-                </div>
-                <p><strong data-lang-key="user-not-found">Usuário não encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "message": "Email aren't registered",
-    "status": false
-}</code></pre>
-                </div>
-            </section>
-
-            <section id="user-fetchall" class="content-section">
-                <h1 data-lang-key="user-fetchall">List All Users</h1>
-                <div class="endpoint">
-                    <div class="method get">GET</div>
-                    <div class="path">/user/fetchall</div>
-                </div>
-                <p><strong data-lang-key="description">Description:</strong> <span data-lang-key="user-fetchall-desc">Retrieves a list of all users registered in the system, showing only basic information (name and email) for each one.</span></p>
-                <h3 data-lang-key="responses">Responses:</h3>
-                <p><strong data-lang-key="success">Success</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "users": [
-        {
-            "username": "John Doe",
-            "email": "johndoe@example.com"
-        },
-        {
-            "username": "Jane Smith",
-            "email": "janesmith@example.com"
-        }
-    ],
-    "status": true
-}</code></pre>
-                </div>
-            </section>
-
-            <section id="user-delete" class="content-section">
-                <h1 data-lang-key="user-delete">Remover Usuário</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/user/delete</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-delete-desc">Remove um usuário do sistema.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "email": "johndoe@example.com"
-}</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "message": "User has been deleted",
     "status": true
 }</code></pre>
                 </div>
@@ -345,6 +364,37 @@
 }</code></pre>
                 </div>
             </section>
+
+            <section id="user-delete" class="content-section">
+                <h1 data-lang-key="user-delete">Remover Usuário</h1>
+                <div class="endpoint">
+                    <div class="method post">POST</div>
+                    <div class="path">/user/delete</div>
+                </div>
+                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-delete-desc">Remove um usuário do sistema.</span></p>
+                <h3 data-lang-key="request-body">Request Body:</h3>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "email": "johndoe@example.com"
+}</code></pre>
+                </div>
+                <h3 data-lang-key="responses">Respostas:</h3>
+                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "User has been deleted",
+    "status": true
+}</code></pre>
+                </div>
+                <p><strong data-lang-key="user-not-found">Usuário não encontrado</strong> (404):</p>
+                <div class="code-block">
+                    <pre><code class="language-json">{
+    "message": "Email aren't registered",
+    "status": false
+}</code></pre>
+                </div>
+            </section>
+
 
             <!-- Seção de Tickets -->
             <section id="ticket-create" class="content-section">
@@ -481,16 +531,16 @@
                 </ul>
                 <p><strong data-lang-key="observations">Observações:</strong></p>
                 <ul>
-                    <li>Os valores válidos para <code>status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></li>
-                    <li>Se o parâmetro <code>status</code> não for fornecido, serão retornados tickets de todos os status</li>
-                    <li>Se o parâmetro <code>author</code> não for fornecido, serão retornados tickets de todos os autores</li>
+                    <li><span data-lang-key="valid-status-values">Os valores válidos para <code>status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></span></li>
+                    <li><span data-lang-key="status-not-provided">Se o parâmetro <code>status</code> não for fornecido, serão retornados tickets de todos os status</span></li>
+                    <li><span data-lang-key="author-not-provided">Se o parâmetro <code>author</code> não for fornecido, serão retornados tickets de todos os autores</span></li>
                 </ul>
                 <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
                 <ul>
-                    <li>Listar todos os tickets: <code>/ticket/fetch</code></li>
-                    <li>Listar tickets pendentes: <code>/ticket/fetch?status=pending</code></li>
-                    <li>Listar tickets de um autor: <code>/ticket/fetch?author=johndoe@example.com</code></li>
-                    <li>Listar tickets pendentes de um autor: <code>/ticket/fetch?author=johndoe@example.com&status=pending</code></li>
+                    <li><span data-lang-key="list-all-users-example">Listar todos os tickets:</span> <code>/ticket/fetch</code></li>
+                    <li><span data-lang-key="list-pending-tickets-example">Listar tickets pendentes:</span> <code>/ticket/fetch?status=pending</code></li>
+                    <li><span data-lang-key="list-tickets-by-author-example">Listar tickets de um autor:</span> <code>/ticket/fetch?author=johndoe@example.com</code></li>
+                    <li><span data-lang-key="list-pending-tickets-by-author-example">Listar tickets pendentes de um autor:</span> <code>/ticket/fetch?author=johndoe@example.com&status=pending</code></li>
                 </ul>
                 <h3 data-lang-key="responses">Respostas:</h3>
                 <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
@@ -529,7 +579,11 @@
                 <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-info-desc">Recupera informações detalhadas de um ticket específico, incluindo seu histórico completo.</span></p>
                 <h3 data-lang-key="query-params">Query Parameters:</h3>
                 <ul>
-                    <li><code>ticket_id</code>: ID do ticket (obrigatório)</li>
+                    <li><code>ticket_id</code>: ID do ticket (obrigatório, exemplo: <code>ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code>)</li>
+                </ul>
+                <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
+                <ul>
+                    <li>Buscar informações de um ticket: <code>/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code></li>
                 </ul>
                 <h3 data-lang-key="responses">Respostas:</h3>
                 <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
@@ -610,15 +664,206 @@
                 </div>
             </section>
 
-            <section class="content-section">
-                <h1 data-lang-key="status-codes">Códigos de Status</h1>
-                <p data-lang-key="status-codes-desc">A API utiliza os seguintes códigos de status HTTP:</p>
-                <ul>
-                    <li><code>200 OK</code>: A requisição foi bem-sucedida</li>
-                    <li><code>400 Bad Request</code>: A requisição contém dados inválidos ou está mal formatada</li>
-                    <li><code>404 Not Found</code>: O recurso solicitado não foi encontrado</li>
-                    <li><code>500 Internal Server Error</code>: Ocorreu um erro interno no servidor</li>
-                </ul>
+            <section id="usage-examples" class="content-section">
+                <h1 data-lang-key="usage-examples">Exemplos de Uso</h1>
+                <h2 data-lang-key="examples">Exemplos de Uso</h2>
+                <div class="endpoint-section">
+                    <h3 data-lang-key="auth-examples">Autenticação</h3>
+                    <div class="endpoint-content">
+                        <h4 id="axios-login" data-lang-key="axios-login">Login</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/auth/enter', {
+  username: "John Doe",
+  email: "johndoe@example.com",
+  password: "Password123"
+})
+.then(response => {
+  const token = response.data.token;
+  console.log('Login successful:', response.data);
+})
+.catch(error => {
+  console.error('Login error:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-register" data-lang-key="axios-register">Registro</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/auth/register', {
+  username: "John Doe",
+  email: "johndoe@example.com",
+  password: "Password123"
+})
+.then(response => {
+  const token = response.data.token;
+  console.log('Registration successful:', response.data);
+})
+.catch(error => {
+  console.error('Registration error:', error.response.data);
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint-section">
+                    <h3 data-lang-key="user-examples">Usuários</h3>
+                    <div class="endpoint-content">
+                        <h4 id="axios-header-config" data-lang-key="axios-header-config">Configuração de Cabeçalho</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">const config = {
+  headers: { 
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' 
+  }
+};</code></pre>
+                        </div>
+
+                        <h4 id="axios-list-all-users" data-lang-key="axios-list-all-users">Listar Todos os Usuários</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.get('domain/api/user/fetch', config)
+.then(response => {
+  console.log('Users:', response.data);
+})
+.catch(error => {
+  console.error('Error fetching users:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-get-specific-user" data-lang-key="axios-get-specific-user">Buscar Usuário Específico</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.get('domain/api/user/fetch?email=johndoe@example.com', config)
+.then(response => {
+  console.log('User:', response.data);
+})
+.catch(error => {
+  console.error('Error fetching user:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-create-user" data-lang-key="axios-create-user">Criar Usuário</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/user/create', {
+  username: "Jane Smith",
+  email: "janesmith@example.com",
+  password: "Password456"
+}, config)
+.then(response => {
+  console.log('User created:', response.data);
+})
+.catch(error => {
+  console.error('Error creating user:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-delete-user" data-lang-key="axios-delete-user">Remover Usuário</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/user/delete', {
+  email: "janesmith@example.com"
+}, config)
+.then(response => {
+  console.log('User deleted:', response.data);
+})
+.catch(error => {
+  console.error('Error deleting user:', error.response.data);
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="endpoint-section">
+                    <h3 data-lang-key="ticket-examples">Tickets</h3>
+                    <div class="endpoint-content">
+                        <h4 id="axios-create-ticket" data-lang-key="axios-create-ticket">Criar Ticket</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/ticket/create', {
+  author_email: "johndoe@example.com",
+  ticket_name: "Problema com impressora",
+  ticket_label: "Hardware",
+  ticket_equipment: "Impressora HP",
+  ticket_explain: "A impressora não está conectando à rede"
+}, config)
+.then(response => {
+  console.log('Ticket created:', response.data);
+})
+.catch(error => {
+  console.error('Error creating ticket:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-update-status" data-lang-key="axios-update-status">Atualizar Status do Ticket</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/ticket/edit', {
+  ticket_id: "ticket_123e4567-e89b-12d3-a456-426614174000",
+  ticket_status: "doing"
+}, config)
+.then(response => {
+  console.log('Status updated:', response.data);
+})
+.catch(error => {
+  console.error('Error updating status:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-add-history" data-lang-key="axios-add-history">Adicionar Histórico ao Ticket</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/ticket/update', {
+  ticket_id: "ticket_123e4567-e89b-12d3-a456-426614174000",
+  ticket_return: "Verificando conexão da impressora"
+}, config)
+.then(response => {
+  console.log('History updated:', response.data);
+})
+.catch(error => {
+  console.error('Error updating history:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-list-tickets" data-lang-key="axios-list-tickets">Listar Todos os Tickets</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.get('domain/api/ticket/fetch', config)
+.then(response => {
+  console.log('Tickets:', response.data);
+})
+.catch(error => {
+  console.error('Error fetching tickets:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-list-pending" data-lang-key="axios-list-pending">Listar Tickets Pendentes</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.get('domain/api/ticket/fetch?status=pending', config)
+.then(response => {
+  console.log('Pending tickets:', response.data);
+})
+.catch(error => {
+  console.error('Error fetching pending tickets:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-ticket-details" data-lang-key="axios-ticket-details">Detalhes do Ticket</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.get('domain/api/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000', config)
+.then(response => {
+  console.log('Ticket details:', response.data);
+})
+.catch(error => {
+  console.error('Error fetching ticket details:', error.response.data);
+});</code></pre>
+                        </div>
+
+                        <h4 id="axios-delete-ticket" data-lang-key="axios-delete-ticket">Remover Ticket</h4>
+                        <div class="code-block example">
+                            <pre><code class="language-javascript">axios.post('domain/api/ticket/remove', {
+  author_email: "johndoe@example.com",
+  ticket_id: "ticket_123e4567-e89b-12d3-a456-426614174000"
+}, config)
+.then(response => {
+  console.log('Ticket removed:', response.data);
+})
+.catch(error => {
+  console.error('Error removing ticket:', error.response.data);
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>

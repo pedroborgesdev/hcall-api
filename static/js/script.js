@@ -209,12 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const activeLink = document.querySelector(`.subsection a[href="#${sectionId}"]`);
                 if (activeLink) {
                     activeLink.classList.add('active');
-                    
-                    // Expandir a seção pai se necessário
-                    const parentSection = activeLink.closest('.nav-section');
-                    if (parentSection && !parentSection.classList.contains('active')) {
-                        parentSection.classList.add('active');
-                    }
                 }
             }
         });
@@ -232,8 +226,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetElement = document.getElementById(targetId);
             
             if (targetElement) {
-                // Rolagem instantânea sem comportamento suave
-                window.scrollTo(0, targetElement.offsetTop - 20);
+                // Calcular a posição correta considerando o header fixo
+                const headerOffset = 80; // Ajuste este valor conforme necessário
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                // Rolagem instantânea para a posição correta
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
                 
                 // Fechar o menu em dispositivos móveis após clicar
                 if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
