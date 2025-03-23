@@ -1,598 +1,1087 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-lang-key="api-title">Documentação da API de Gerenciamento de Tickets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#10b981">
+    <title>HCall API Docs</title>
     <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Adicionar Prism.js CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="static/js/script.js"></script>
 </head>
 <body>
-    <div class="container">
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo-container">
-                    <img src="static/img/logo.png" alt="API Logo" class="sidebar-logo">
-                </div>
-                <div class="header-buttons">
-                    <div class="language-selector">
-                        <select id="language-select" title="Select language">
-                            <option value="en-us">English</option>
-                            <option value="pt-br">Português</option>
-                        </select>
-                    </div>
-                    <a href="#" class="github-button" id="github-link" title="View on GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <button id="mobile-toggle" class="mobile-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <button id="mobile-close" class="mobile-close" style="display: none;">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <ul class="nav-menu">
-                <li class="nav-section">
-                    <div class="section-header">
-                        <span data-lang-key="introduction">Introdução</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <ul class="subsection">
-                        <li><a href="#what-is-this" data-lang-key="what-is-this">O que é esta API?</a></li>
-                        <li><a href="#base-url" data-lang-key="base-url">URL Base</a></li>
-                    </ul>
-                </li>
-                <li class="nav-section">
-                    <div class="section-header">
-                        <span data-lang-key="authentication">Autenticação</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <ul class="subsection">
-                        <li><a href="#jwt-auth" data-lang-key="jwt-auth">Autenticação JWT</a></li>
-                        <li><a href="#auth-login" data-lang-key="login">Login</a></li>
-                        <li><a href="#auth-register" data-lang-key="register">Registro</a></li>
-                    </ul>
-                </li>
-                <li class="nav-section">
-                    <div class="section-header">
-                        <span data-lang-key="users">Usuários</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <ul class="subsection">
-                        <li><a href="#user-fetch" data-lang-key="user-fetch">Obter Informações do Usuário</a></li>
-                        <li><a href="#user-create" data-lang-key="user-create">Criar Usuário</a></li>
-                        <li><a href="#user-delete" data-lang-key="user-delete">Remover Usuário</a></li>
-                    </ul>
-                </li>
-                <li class="nav-section">
-                    <div class="section-header">
-                        <span data-lang-key="tickets">Tickets</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <ul class="subsection">
-                        <li><a href="#ticket-create" data-lang-key="ticket-create">Criar Ticket</a></li>
-                        <li><a href="#ticket-edit" data-lang-key="ticket-edit">Atualizar Status do Ticket</a></li>
-                        <li><a href="#ticket-update" data-lang-key="ticket-update">Atualizar Histórico do Ticket</a></li>
-                        <li><a href="#ticket-fetch" data-lang-key="ticket-fetch">Listar Tickets</a></li>
-                        <li><a href="#ticket-info" data-lang-key="ticket-info">Obter Informações do Ticket</a></li>
-                        <li><a href="#ticket-remove" data-lang-key="ticket-remove">Remover Ticket</a></li>
-                    </ul>
-                </li>
-                <div class="nav-section">
-                    <div class="section-header">
-                        <span data-lang-key="usage-examples">Usage Examples</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <ul class="subsection">
-                        <li><a href="#axios-login" data-lang-key="axios-login">Login</a></li>
-                        <li><a href="#axios-register" data-lang-key="axios-register">Register</a></li>
-                        <li><a href="#axios-header-config" data-lang-key="axios-header-config">Header Configuration</a></li>
-                        <li><a href="#axios-list-all-users" data-lang-key="axios-list-all-users">List All Users</a></li>
-                        <li><a href="#axios-get-specific-user" data-lang-key="axios-get-specific-user">Get Specific User</a></li>
-                        <li><a href="#axios-create-user" data-lang-key="axios-create-user">Create User</a></li>
-                        <li><a href="#axios-delete-user" data-lang-key="axios-delete-user">Delete User</a></li>
-                        <li><a href="#axios-create-ticket" data-lang-key="axios-create-ticket">Create Ticket</a></li>
-                        <li><a href="#axios-update-status" data-lang-key="axios-update-status">Update Ticket Status</a></li>
-                        <li><a href="#axios-add-history" data-lang-key="axios-add-history">Add Ticket History</a></li>
-                        <li><a href="#axios-list-tickets" data-lang-key="axios-list-tickets">List All Tickets</a></li>
-                        <li><a href="#axios-list-pending" data-lang-key="axios-list-pending">List Pending Tickets</a></li>
-                        <li><a href="#axios-ticket-details" data-lang-key="axios-ticket-details">Get Ticket Details</a></li>
-                        <li><a href="#axios-delete-ticket" data-lang-key="axios-delete-ticket">Delete Ticket</a></li>
-                    </ul>
-                </div>
-            </ul>
-        </nav>
-        <div class="sidebar-overlay"></div>
+    <div class="documentation">
+        <div id="sidebar-container"></div>
+        
+        <button id="sidebar-toggle" class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
         <main class="content">
-            <!-- Botão de menu hamburger fixo para dispositivos móveis -->
-            <div class="mobile-menu-fixed">
-                <button id="mobile-toggle-fixed" class="mobile-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <button id="mobile-close-fixed" class="mobile-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <section id="what-is-this" class="content-section">
-                <div class="intro-header">
-                    <div class="main-logo-container">
-                        <img src="static/img/logo.png" alt="API Logo" class="main-logo">
+            <section id="api-overview" class="section">
+                <h2><i class="fas fa-book"></i> API Overview</h2>
+                <p>The HCall API provides resources for user management, ticket creation, and status updates. Communication is done via JWT token.</p>
+                
+                <h3 id="resources"><i class="fas fa-cubes"></i> Resources</h3>
+                <ul>
+                    <li>User Management</li>
+                    <li>Ticket Creation</li>
+                    <li>Status Updates</li>
+                    <li>JWT Communication</li>
+                </ul>
+                
+                <h3 id="base-url"><i class="fas fa-globe"></i> Base URL</h3>
+                <pre><code class="language-text">https://api.hcall.com/v1</code></pre>
+                
+                <div class="section-spacer"></div>
+                
+                <h3 id="authentication-requirements"><i class="fas fa-lock"></i> Authentication Requirements</h3>
+                <p>All endpoints, except <code>/user/create</code> and <code>/auth/login</code>, require a valid JWT token. The token is passed via the Authorization header.</p>
+                
+                <h4><i class="fas fa-key"></i> Authorization Header</h4>
+                <pre><code class="language-text">Authorization: Bearer &lt;your_token&gt;</code></pre>
+                
+                <h4><i class="fas fa-exclamation-triangle"></i> Unauthorized Access</h4>
+                <p>If a token is invalid or expired, the API will return a <code>401 Unauthorized</code> status with the following response:</p>
+                <pre><code class="language-json">{
+    "message": "Unauthorized",
+    "status": false
+}</code></pre>
+                
+                <h3 id="user-roles"><i class="fas fa-users-cog"></i> User Roles and Permissions</h3>
+                <p>The API supports three user roles, each with different permission levels:</p>
+                <ul>
+                    <li><strong>User:</strong> Can create tickets, update their own tickets, and view their ticket history</li>
+                    <li><strong>Admin:</strong> Can do everything a User can, plus manage other users' tickets and view all tickets</li>
+                    <li><strong>Master:</strong> Can do everything an Admin can, plus create and remove users, including other masters</li>
+                </ul>
+            </section>
+            
+            <section id="master-creation" class="section">
+                <h2><i class="fas fa-crown"></i> Master Creation</h2>
+                
+                <div id="create-master-user" class="endpoint">
+                    <h3><i class="fas fa-user-cog"></i> Create Master User</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/master/create</code>
                     </div>
-                    <div class="intro-content">
-                        <h1 data-lang-key="what-is-this">O que é esta API?</h1>
-                        <p data-lang-key="api-description">Esta API permite gerenciar tickets de suporte técnico, incluindo autenticação de usuários, criação, edição, consulta e remoção de tickets.</p>
-                        <div class="api-explanation">
-                            <p data-lang-key="api-explanation-intro">A API de Gerenciamento de Tickets é uma solução completa para empresas e organizações que precisam gerenciar solicitações de suporte técnico de forma eficiente. Ela oferece um conjunto abrangente de endpoints que permitem:</p>
-                            <ul>
-                                <li><strong data-lang-key="api-feature-user-management">Gerenciamento de Usuários:</strong> <span data-lang-key="api-feature-user-management-desc">Crie, consulte e remova usuários com facilidade, permitindo controle total sobre quem pode acessar o sistema.</span></li>
-                                <li><strong data-lang-key="api-feature-ticket-tracking">Criação e Rastreamento de Tickets:</strong> <span data-lang-key="api-feature-ticket-tracking-desc">Registre novos tickets técnicos com informações detalhadas como categoria, equipamento e descrição do problema.</span></li>
-                                <li><strong data-lang-key="api-feature-status-updates">Atualizações de Status:</strong> <span data-lang-key="api-feature-status-updates-desc">Acompanhe o progresso dos tickets alterando seu status (pendente, em andamento, concluído).</span></li>
-                                <li><strong data-lang-key="api-feature-history">Histórico Completo:</strong> <span data-lang-key="api-feature-history-desc">Mantenha um registro detalhado e cronológico de todas as atualizações feitas em cada ticket.</span></li>
-                                <li><strong data-lang-key="api-feature-filtering">Filtragem Avançada:</strong> <span data-lang-key="api-feature-filtering-desc">Recupere tickets específicos usando filtros por autor e status, facilitando a organização e priorização.</span></li>
-                            </ul>
-                            <p data-lang-key="api-explanation-conclusion">Com uma arquitetura RESTful simples, esta API pode ser facilmente integrada a qualquer sistema frontend, proporcionando flexibilidade para diferentes implementações de interface do usuário.</p>
+                    <p>Creates a user with master privileges</p>
+                    <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                    <ul>
+                        <li>This endpoint only works when there is no master user registered in the system yet.</li>
+                        <li>Once a master user exists, the endpoint will be disabled.</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
+                    <pre><code class="language-json">{
+    "email": "master@example.com",
+    "password": "StrongPassword123"
+}</code></pre>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Master user has been created",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "status": true
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Master Already Exists</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Master user already exists",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="delete-master-user" class="endpoint">
+                    <h3><i class="fas fa-user-slash"></i> Delete Master User</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/master/delete</code>
+                    </div>
+                    <p>Removes a user with master privileges</p>
+                    <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                    <ul>
+                        <li>This endpoint requires valid master credentials for the account to be deleted.</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
+                    <pre><code class="language-json">{
+    "email": "master@example.com",
+    "password": "StrongPassword123"
+}</code></pre>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Master user has been deleted",
+    "status": true
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Invalid Credentials</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Invalid master credentials",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>Master Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Master user not found",
+    "status": false
+}</code></pre>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
-
-            <section id="base-url" class="content-section">
-                <h1 data-lang-key="base-url">URL Base</h1>
-                <div class="code-block">
-                    <pre><code class="language-http">domain/api</code></pre>
-                </div>
-            </section>
-
-            <!-- Seção de Autenticação JWT -->
-            <section id="jwt-auth" class="content-section">
-                <h1 data-lang-key="jwt-auth">Autenticação JWT</h1>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="jwt-auth-desc">Esta API utiliza tokens JWT (JSON Web Token) para autenticação e autorização. <strong>Todas as requisições</strong> (exceto <code>/auth/enter</code> e <code>/auth/register</code>) devem incluir um token JWT válido no cabeçalho de autorização.</span></p>
+            
+            <section id="authentication" class="section">
+                <h2><i class="fas fa-shield-alt"></i> Authentication</h2>
                 
-                <h3 data-lang-key="jwt-how-it-works">Como Funciona:</h3>
-                <ol>
-                    <li><span data-lang-key="jwt-step1">Quando um usuário faz login com sucesso através do endpoint <code>/auth/enter</code>, o servidor gera um token JWT.</span></li>
-                    <li><span data-lang-key="jwt-step2">Este token contém informações criptografadas sobre o usuário, incluindo seu ID e permissões.</span></li>
-                    <li><span data-lang-key="jwt-step3">O cliente deve armazenar este token e enviá-lo em todas as requisições subsequentes no cabeçalho <code>Authorization</code>.</span></li>
-                    <li><span data-lang-key="jwt-step4">O servidor valida o token em cada requisição para garantir que o usuário tenha as permissões necessárias.</span></li>
-                    <li><span data-lang-key="jwt-step5"><strong>Importante:</strong> Qualquer requisição sem o token JWT ou com um token inválido receberá o erro <code>401 Unauthorized</code>.</span></li>
-                </ol>
-                
-                <h3 data-lang-key="jwt-format">Formato do Token:</h3>
-                <div class="code-block">
-                    <pre><code class="language-http">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
-eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbn...
-(token truncado para melhor visualização)</code></pre>
-                </div>
-                
-                <h3 data-lang-key="jwt-security">Segurança:</h3>
-                <ul>
-                    <li><span data-lang-key="jwt-security1">O token é assinado digitalmente, garantindo que não possa ser modificado.</span></li>
-                    <li><span data-lang-key="jwt-security2">Tokens expiram após um período determinado (geralmente 24 horas).</span></li>
-                    <li><span data-lang-key="jwt-security3">Nunca armazene informações sensíveis (como senhas) no token.</span></li>
-                </ul>
-                
-                <h3 data-lang-key="jwt-example-login-response">Exemplo de Resposta de Login com Token JWT:</h3>
-                <div class="code-block">
+                <div id="login" class="endpoint">
+                    <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/auth/enter</code>
+                    </div>
+                    <p>Authenticates a user in the system</p>
+                    <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
-    "message": "User has been loged in",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-(token truncado para melhor visualização)",
-    "status": true
-}</code></pre>
-                </div>
-            </section>
-
-            <!-- Seção de Autenticação -->
-            <section id="auth-login" class="content-section">
-                <h1 data-lang-key="login">Login</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/auth/enter</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="login-desc">Autentica um usuário no sistema, verificando suas credenciais e permitindo acesso às funcionalidades protegidas da API.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "username": "John Doe",
     "email": "johndoe@example.com",
     "password": "Password123"
 }</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "User has been loged in",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbn...",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="email-not-registered">Email não registrado</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Email Not Registered</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Email aren't registered",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="incorrect-password">Senha incorreta</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Incorrect Password</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Password is incorrect",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-
-            <section id="auth-register" class="content-section">
-                <h1 data-lang-key="register">Registro</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/auth/register</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="register-desc">Registra um novo usuário no sistema, permitindo que ele crie uma conta para acessar a plataforma.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
+                
+                <div id="register" class="endpoint">
+                    <h3><i class="fas fa-user-plus"></i> Register</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/auth/register</code>
+                    </div>
+                    <p>Registers a new user in the system</p>
+                    <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "username": "John Doe",
     "email": "johndoe@example.com",
     "password": "Password123"
 }</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "User has been registered",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbnMiOlsicmVhZCIsIndyaXRlIl0sImlhdCI6MTUxNjIzOTAyMn0.L8i6g3PfcHlioHCCPURC9pmXT7gdJpx3kOoyAfNUwCc",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="email-exists">Email já existe</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Email Already Exists</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Email already exists",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="invalid-password">Senha inválida</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Invalid Password</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Password is invalid",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
-
-            <!-- Seção de Usuários -->
-            <section id="user-fetch" class="content-section">
-                <h1 data-lang-key="user-fetch">Obter Informações do Usuário</h1>
-                <div class="endpoint">
-                    <div class="method get">GET</div>
-                    <div class="path">/user/fetch</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-fetch-desc">Recupera informações de um usuário específico ou lista todos os usuários do sistema.</span></p>
-                <h3 data-lang-key="query-params">Query Parameters:</h3>
-                <ul>
-                    <li><code>email</code>: <span data-lang-key="email-param-desc">Email do usuário (opcional, exemplo: <code>email=johndoe@example.com</code>)</span></li>
-                </ul>
-                <p><strong data-lang-key="observations">Observações:</strong></p>
-                <ul>
-                    <li><span data-lang-key="valid-status-values">Os valores válidos para <code>status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></span></li>
-                    <li><span data-lang-key="status-not-provided">Se o parâmetro <code>status</code> não for fornecido, serão retornados tickets de todos os status</span></li>
-                    <li><span data-lang-key="author-not-provided">Se o parâmetro <code>author</code> não for fornecido, serão retornados tickets de todos os autores</span></li>
-                </ul>
-                <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
-                <ul>
-                    <li><span data-lang-key="list-all-users-example">Listar todos os usuários:</span> <code>/user/fetch</code></li>
-                    <li><span data-lang-key="get-specific-user-example">Buscar usuário específico:</span> <code>/user/fetch?email=johndoe@example.com</code></li>
-                </ul>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200) - Usuário específico:</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "username": "John Doe",
-    "email": "johndoe@example.com",
-    "password": "********",
-    "created_at": "2023-01-01T12:00:00Z",
-    "status": true
-}</code></pre>
-                </div>
-                <p><strong data-lang-key="success">Sucesso</strong> (200) - Lista de usuários:</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+            
+            <section id="users">
+                <h2><i class="fas fa-users"></i> Users</h2>
+                
+                <div id="get-user-information" class="endpoint">
+                    <h3><i class="fas fa-info-circle"></i> Get User Information</h3>
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code>/user/fetch</code>
+                    </div>
+                    <p>Retrieves information about a specific user or lists all users</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-search"></i> Query Parameters</h4>
+                    <ul class="parameters">
+                        <li><code>email</code>: User's email (optional, example: <code>email=johndoe@example.com</code>)</li>
+                        <li><code>role</code>: User's role (optional, example: <code>role=admin</code>)</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-check-circle"></i> Valid Role Values</h4>
+                    <p><code>user</code>, <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-code"></i> Examples</h4>
+                    <ul>
+                        <li>List all users: <code>/user/fetch</code></li>
+                        <li>Get specific user: <code>/user/fetch?email=johndoe@example.com</code></li>
+                        <li>List users with specific role: <code>/user/fetch?role=admin</code></li>
+                        <li>List specific user with role: <code>/user/fetch?email=johndoe@example.com&role=admin</code></li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                    <ul>
+                        <li>If <code>role</code> parameter is provided, only users with that role will be returned</li>
+                        <li>If both <code>email</code> and <code>role</code> parameters are provided, the user must match both criteria</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "users": [
         {
-            "username": "John Doe",
-            "email": "johndoe@example.com"
+    "username": "John Doe",
+    "email": "johndoe@example.com",
+            "role": "user"
         },
         {
             "username": "Jane Smith",
-            "email": "janesmith@example.com"
+            "email": "janesmith@example.com",
+            "role": "admin"
         }
     ],
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="user-not-found">Usuário não encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>User Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Email aren't registered",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>No Users Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "No users found with specified role",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-
-            <section id="user-create" class="content-section">
-                <h1 data-lang-key="user-create">Criar Usuário</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/user/create</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-create-desc">Cria um novo usuário no sistema.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
+                
+                <div id="create-user" class="endpoint">
+                    <h3><i class="fas fa-user-plus"></i> Create User</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/user/create</code>
+                    </div>
+                    <p>Creates a new user in the system</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                    <ul>
+                        <li>Admin users can only create users with the "user" role</li>
+                        <li>Master users can create users with any role (user or admin)</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "username": "John Doe",
     "email": "johndoe@example.com",
-    "password": "Password123"
+    "password": "StrongPassword123",
+    "role": "user"
 }</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "User has been created",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="email-exists">Email já existe</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Email Already Exists</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Email already exists",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="invalid-data">Dados inválidos</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Invalid Data</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Dados inválidos",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-
-            <section id="user-delete" class="content-section">
-                <h1 data-lang-key="user-delete">Remover Usuário</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/user/delete</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="user-delete-desc">Remove um usuário do sistema.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
+                
+                <div id="remove-user" class="endpoint">
+                    <h3><i class="fas fa-user-minus"></i> Remove User</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/user/delete</code>
+                    </div>
+                    <p>Removes a user from the system</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "email": "johndoe@example.com"
 }</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "User has been deleted",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="user-not-found">Usuário não encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>User Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Email aren't registered",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
-
-
-            <!-- Seção de Tickets -->
-            <section id="ticket-create" class="content-section">
-                <h1 data-lang-key="ticket-create">Criar Ticket</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/ticket/create</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-create-desc">Cria um novo ticket de suporte técnico.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
+            
+            <section id="tickets">
+                <h2><i class="fas fa-ticket-alt"></i> Tickets</h2>
+                
+                <div id="create-ticket" class="endpoint">
+                    <h3><i class="fas fa-plus-circle"></i> Create Ticket</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/ticket/create</code>
+                    </div>
+                    <p>Creates a new ticket in the system</p>
+                    <p><strong>Authorized Roles:</strong> <code>user</code>, <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
-    "author_email": "johndoe@example.com",
-    "ticket_name": "Problema com impressora",
-    "ticket_label": "Hardware",
-    "ticket_equipment": "Impressora HP LaserJet",
-    "ticket_explain": "A impressora não está conectando à rede"
+    "ticket_name": "Router Problem",
+    "ticket_explain": "Need to configure the router in room 302",
+    "images": [
+        {
+            "name": "router_front.jpg",
+            "content": "base64_encoded_image_data...",
+            "type": "image/jpeg"
+        },
+        {
+            "name": "router_back.jpg",
+            "content": "base64_encoded_image_data...",
+            "type": "image/jpeg"
+        }
+    ]
 }</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                    <ul>
+                        <li>The <code>images</code> field is optional and can contain multiple images</li>
+                        <li>Each image must include <code>name</code>, <code>content</code> (base64 encoded), and <code>type</code> fields</li>
+                        <li>Supported image types: <code>image/jpeg</code>, <code>image/png</code>, <code>image/gif</code></li>
+                        <li>Maximum file size per image: 5MB</li>
+                        <li>Maximum number of images per ticket: 10</li>
+                    </ul>
+                    
+                    <h4>Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Ticket has been created",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="invalid-data">Dados inválidos</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "message": "Dados inválidos",
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Admin role not authorized to create tickets",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="author-not-found">Autor não encontrado</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Invalid Data</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Invalid data",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Author Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Email aren't registered",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-
-            <section id="ticket-edit" class="content-section">
-                <h1 data-lang-key="ticket-edit">Atualizar Status do Ticket</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/ticket/edit</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-edit-desc">Atualiza o status de um ticket existente.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
+                
+                <div id="update-ticket-status" class="endpoint">
+                    <h3><i class="fas fa-edit"></i> Update Ticket Status</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/ticket/edit</code>
+                    </div>
+                    <p>Updates the status of an existing ticket</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
-    "ticket_status": "doing"
+    "status": "doing"
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="observations">Observações:</strong></p>
-                <ul>
-                    <li>Os valores válidos para <code>ticket_status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></li>
-                </ul>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "message": "Ticket has been edited",
+                    
+                    <h4><i class="fas fa-check-circle"></i> Valid Status Values</h4>
+                    <p><code>pending</code>, <code>doing</code>, <code>conclued</code></p>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Ticket status has been updated",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>Ticket Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Ticket hasn't found",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="invalid-status">Status inválido</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Invalid Data</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Dados inválidos",
     "status": false
 }</code></pre>
-                </div>
-            </section>
-
-            <section id="ticket-update" class="content-section">
-                <h1 data-lang-key="ticket-update">Atualizar Histórico do Ticket</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/ticket/update</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-update-desc">Adiciona uma nova entrada no histórico de um ticket existente.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
-                    <pre><code class="language-json">{
-    "ticket_id": "ticket_028492wsd88178",
-    "ticket_return": "Comprando roteadores"
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
+                
+                <div id="update-ticket-history" class="endpoint">
+                    <h3><i class="fas fa-history"></i> Update Ticket History</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/ticket/history</code>
+                    </div>
+                    <p>Adds a new entry to the ticket history</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
-    "message": "Update has been setting up",
+    "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
+    "history": "Requested additional information from the user"
+}</code></pre>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Ticket history has been updated",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>Ticket Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Ticket hasn't found",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Invalid Data</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "Dados inválidos",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                        <ul>
+                            <li>Updated history can be viewed through the <code>/ticket/info</code> endpoint</li>
+                            <li>Each update is recorded with date and time</li>
+                            <li>History is displayed in chronological order</li>
+                        </ul>
                 </div>
-                <p><strong data-lang-key="observations">Observações:</strong></p>
-                <ul>
-                    <li>O histórico atualizado pode ser consultado através do endpoint <code>/ticket/info</code></li>
-                    <li>Cada atualização é registrada com a data e hora em que foi realizada</li>
-                    <li>O histórico é exibido em ordem cronológica</li>
-                </ul>
-            </section>
-
-            <section id="ticket-fetch" class="content-section">
-                <h1 data-lang-key="ticket-fetch">Listar Tickets</h1>
-                <div class="endpoint">
-                    <div class="method get">GET</div>
-                    <div class="path">/ticket/fetch</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-fetch-desc">Lista tickets de um autor específico ou todos os tickets do sistema.</span></p>
-                <h3 data-lang-key="query-params">Query Parameters:</h3>
-                <ul>
-                    <li><code>author</code>: Email do autor (opcional, exemplo: <code>author=johndoe@example.com</code>)</li>
-                    <li><code>status</code>: Status dos tickets (opcional, exemplo: <code>status=pending</code>)</li>
-                </ul>
-                <p><strong data-lang-key="observations">Observações:</strong></p>
-                <ul>
-                    <li><span data-lang-key="valid-status-values">Os valores válidos para <code>status</code> são: <code>pending</code>, <code>doing</code>, <code>conclued</code></span></li>
-                    <li><span data-lang-key="status-not-provided">Se o parâmetro <code>status</code> não for fornecido, serão retornados tickets de todos os status</span></li>
-                    <li><span data-lang-key="author-not-provided">Se o parâmetro <code>author</code> não for fornecido, serão retornados tickets de todos os autores</span></li>
-                </ul>
-                <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
-                <ul>
-                    <li><span data-lang-key="list-all-users-example">Listar todos os tickets:</span> <code>/ticket/fetch</code></li>
-                    <li><span data-lang-key="list-pending-tickets-example">Listar tickets pendentes:</span> <code>/ticket/fetch?status=pending</code></li>
-                    <li><span data-lang-key="list-tickets-by-author-example">Listar tickets de um autor:</span> <code>/ticket/fetch?author=johndoe@example.com</code></li>
-                    <li><span data-lang-key="list-pending-tickets-by-author-example">Listar tickets pendentes de um autor:</span> <code>/ticket/fetch?author=johndoe@example.com&status=pending</code></li>
-                </ul>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                
+                <div id="list-tickets" class="endpoint">
+                    <h3><i class="fas fa-list"></i> List Tickets</h3>
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code>/ticket/fetch</code>
+                    </div>
+                    <p>Lists tickets from a specific author or all system tickets</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-search"></i> Query Parameters</h4>
+                    <ul class="parameters">
+                        <li><code>author</code>: Author's email (optional, example: <code>author=johndoe@example.com</code>)</li>
+                        <li><code>status</code>: Ticket status (optional, example: <code>status=pending</code>)</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-check-circle"></i> Valid Status Values</h4>
+                    <p><code>pending</code>, <code>doing</code>, <code>conclued</code></p>
+                    
+                    <h4><i class="fas fa-sticky-note"></i> Notes</h4>
+                    <ul>
+                        <li>If <code>status</code> parameter is not provided, tickets of all statuses will be returned</li>
+                        <li>If <code>author</code> parameter is not provided, tickets from all authors will be returned</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "tickets": [
         {
             "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
-            "ticket_name": "Problema com impressora",
+            "ticket_name": "Printer Problem",
             "ticket_status": "pending"
         },
         {
             "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174001",
-            "ticket_name": "Problema com monitor",
+            "ticket_name": "Monitor Problem",
             "ticket_status": "doing"
         }
     ],
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="no-tickets-found">Nenhum ticket encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>No Tickets Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Author don't have tickets",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-
-            <section id="ticket-info" class="content-section">
-                <h1 data-lang-key="ticket-info">Obter Informações do Ticket</h1>
-                <div class="endpoint">
-                    <div class="method get">GET</div>
-                    <div class="path">/ticket/info</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-info-desc">Recupera informações detalhadas de um ticket específico, incluindo seu histórico completo.</span></p>
-                <h3 data-lang-key="query-params">Query Parameters:</h3>
-                <ul>
-                    <li><code>ticket_id</code>: ID do ticket (obrigatório, exemplo: <code>ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code>)</li>
-                </ul>
-                <p><strong data-lang-key="examples">Exemplos de uso:</strong></p>
-                <ul>
-                    <li>Buscar informações de um ticket: <code>/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code></li>
-                </ul>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                
+                <div id="get-ticket-information" class="endpoint">
+                    <h3><i class="fas fa-info-circle"></i> Get Ticket Information</h3>
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code>/ticket/info</code>
+                    </div>
+                    <p>Retrieves detailed information about a specific ticket, including its complete history</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-search"></i> Query Parameters</h4>
+                    <ul class="parameters">
+                        <li><code>ticket_id</code>: Ticket ID (required, example: <code>ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code>)</li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-code"></i> Examples</h4>
+                    <ul>
+                        <li>Get ticket information: <code>/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code></li>
+                    </ul>
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "ticket_id": "ticket_028492wsd88178",
-    "ticket_name": "Problema com roteadores",
+    "ticket_name": "Router Problem",
     "ticket_status": "doing",
-    "ticket_explain": "Necessário comprar novos roteadores",
+    "ticket_explain": "Need to purchase new routers",
+    "images": [
+        {
+            "image_id": "img_12345678",
+            "name": "router_front.jpg",
+            "url": "https://api.hcall.com/v1/images/img_12345678",
+            "type": "image/jpeg",
+            "uploaded_at": "2023-07-15T13:30:22Z"
+        },
+        {
+            "image_id": "img_87654321",
+            "name": "router_back.jpg",
+            "url": "https://api.hcall.com/v1/images/img_87654321",
+            "type": "image/jpeg",
+            "uploaded_at": "2023-07-15T13:30:23Z"
+        }
+    ],
     "history": [
         {
             "ticket_return": "Purchasing routers",
@@ -609,273 +1098,554 @@ eyJ1c2VyX2lkIjoiMTIzIiwiZW1haWwiOiJqb2huZG9lQGV4YW1wbGUuY29tIiwicGVybWlzc2lvbn..
     ],
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>Ticket Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Ticket hasn't found",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="invalid-id">ID não fornecido</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>ID Not Provided</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Dados inválidos",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-
-            <section id="ticket-remove" class="content-section">
-                <h1 data-lang-key="ticket-remove">Remover Ticket</h1>
-                <div class="endpoint">
-                    <div class="method post">POST</div>
-                    <div class="path">/ticket/remove</div>
-                </div>
-                <p><strong data-lang-key="description">Descrição:</strong> <span data-lang-key="ticket-remove-desc">Remove um ticket do sistema. Apenas o autor do ticket pode removê-lo.</span></p>
-                <h3 data-lang-key="request-body">Request Body:</h3>
-                <div class="code-block">
+                
+                <div id="remove-ticket" class="endpoint">
+                    <h3><i class="fas fa-trash-alt"></i> Remove Ticket</h3>
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code>/ticket/remove</code>
+                    </div>
+                    <p>Removes a ticket from the system</p>
+                    <p><strong>Authorized Roles:</strong> <code>user</code> (ticket author only), <code>admin</code>, <code>master</code></p>
+                    
+                    <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
-    "author_email": "johndoe@example.com",
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000"
 }</code></pre>
-                </div>
-                <h3 data-lang-key="responses">Respostas:</h3>
-                <p><strong data-lang-key="success">Sucesso</strong> (200):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                    
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Ticket has been removed",
     "status": true
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="ticket-not-found">Ticket não encontrado ou autor incorreto</strong> (404):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">404</span>
+                                <span>Ticket Not Found</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Ticket hasn't found",
     "status": false
 }</code></pre>
-                </div>
-                <p><strong data-lang-key="invalid-data">Dados inválidos</strong> (400):</p>
-                <div class="code-block">
-                    <pre><code class="language-json">{
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">400</span>
+                                <span>Invalid Data</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
     "message": "Dados inválidos",
     "status": false
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Not Ticket Author</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User can only remove their own tickets",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
+            
+            <section id="axios-examples" class="section">
+                <h2><i class="fas fa-code"></i> Axios Examples</h2>
+                <p>These examples demonstrate how to use the HCall API with the Axios HTTP client library for JavaScript/Node.js.</p>
+                
+                <div id="authentication-flow-axios" class="endpoint">
+                    <h3><i class="fas fa-exchange-alt"></i> Authentication Flow Example</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
 
-            <section id="usage-examples" class="content-section">
-                <h1 data-lang-key="usage-examples">Exemplos de Uso</h1>
-                <h2 data-lang-key="examples">Exemplos de Uso</h2>
-                <div class="endpoint-section">
-                    <h3 data-lang-key="auth-examples">Autenticação</h3>
-                    <div class="endpoint-content">
-                        <h4 id="axios-login" data-lang-key="axios-login">Login</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/auth/enter', {
-  username: "John Doe",
-  email: "johndoe@example.com",
-  password: "Password123"
-})
-.then(response => {
-  const token = response.data.token;
-  console.log('Login successful:', response.data);
-})
-.catch(error => {
-  console.error('Login error:', error.response.data);
-});</code></pre>
-                        </div>
+// Function to obtain a JWT token
+async function getToken() {
+    try {
+        const response = await axios.post('domain/api/auth/register', {
+            "username": "John Doe",
+            "email": "johndoe@example.com",
+            "password": "Password123"
+        });
 
-                        <h4 id="axios-register" data-lang-key="axios-register">Registro</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/auth/register', {
-  username: "John Doe",
-  email: "johndoe@example.com",
-  password: "Password123"
-})
-.then(response => {
-  const token = response.data.token;
-  console.log('Registration successful:', response.data);
-})
-.catch(error => {
-  console.error('Registration error:', error.response.data);
-});</code></pre>
-                        </div>
-                    </div>
+        // Extract token from response
+        const token = response.data.token;
+        console.log('Token received:', token);
+
+        // Return token for later use
+        return token;
+    } catch (error) {
+        console.error('Error obtaining token:', error);
+        throw error;
+    }
+}
+
+// Function to make authenticated requests using JWT token
+async function makeAuthenticatedRequest(token) {
+    try {
+        const response = await axios.get('domain/api/user/fetch', {
+            headers: {
+                'Authorization': `Bearer ${token}` // Pass token in Authorization header
+            }
+        });
+
+        console.log('Response from authenticated request:', response.data);
+    } catch (error) {
+        console.error('Error in authenticated request:', error);
+    }
+}
+
+// Execute complete flow
+async function completeFlow() {
+    try {
+        // 1. Get token
+        const token = await getToken();
+
+        // 2. Make authenticated request with token
+        await makeAuthenticatedRequest(token);
+    } catch (error) {
+        console.error('Error in complete flow:', error);
+    }
+}
+
+// Start flow
+completeFlow();</code></pre>
+    </div>
+    
+                <div id="login-axios" class="endpoint">
+                    <h3><i class="fas fa-sign-in-alt"></i> Login with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function login() {
+    try {
+        const response = await axios.post('domain/api/auth/enter', {
+            "email": "johndoe@example.com",
+            "password": "Password123"
+        });
+        
+        console.log('Login successful:', response.data);
+        return response.data.token;
+    } catch (error) {
+        console.error('Login error:', error.response?.data || error.message);
+    }
+}
+
+login();</code></pre>
                 </div>
+                
+                <div id="create-master-user-axios" class="endpoint">
+                    <h3><i class="fas fa-user-shield"></i> Create Master User with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
 
-                <div class="endpoint-section">
-                    <h3 data-lang-key="user-examples">Usuários</h3>
-                    <div class="endpoint-content">
-                        <h4 id="axios-header-config" data-lang-key="axios-header-config">Configuração de Cabeçalho</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">const config = {
-  headers: { 
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' 
-  }
-};</code></pre>
-                        </div>
+async function createMasterUser() {
+    try {
+        const response = await axios.post('domain/api/master/create', {
+            "email": "admin@example.com",
+            "password": "StrongPassword123"
+        });
+        
+        console.log('Master user created:', response.data);
+        return response.data.token;
+    } catch (error) {
+        console.error('Error creating master user:', error.response?.data || error.message);
+    }
+}
 
-                        <h4 id="axios-list-all-users" data-lang-key="axios-list-all-users">Listar Todos os Usuários</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.get('domain/api/user/fetch', config)
-.then(response => {
-  console.log('Users:', response.data);
-})
-.catch(error => {
-  console.error('Error fetching users:', error.response.data);
-});</code></pre>
-                        </div>
-
-                        <h4 id="axios-get-specific-user" data-lang-key="axios-get-specific-user">Buscar Usuário Específico</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.get('domain/api/user/fetch?email=johndoe@example.com', config)
-.then(response => {
-  console.log('User:', response.data);
-})
-.catch(error => {
-  console.error('Error fetching user:', error.response.data);
-});</code></pre>
-                        </div>
-
-                        <h4 id="axios-create-user" data-lang-key="axios-create-user">Criar Usuário</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/user/create', {
-  username: "Jane Smith",
-  email: "janesmith@example.com",
-  password: "Password456"
-}, config)
-.then(response => {
-  console.log('User created:', response.data);
-})
-.catch(error => {
-  console.error('Error creating user:', error.response.data);
-});</code></pre>
-                        </div>
-
-                        <h4 id="axios-delete-user" data-lang-key="axios-delete-user">Remover Usuário</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/user/delete', {
-  email: "janesmith@example.com"
-}, config)
-.then(response => {
-  console.log('User deleted:', response.data);
-})
-.catch(error => {
-  console.error('Error deleting user:', error.response.data);
-});</code></pre>
-                        </div>
-                    </div>
+createMasterUser();</code></pre>
                 </div>
+                
+                <div id="delete-master-user-axios" class="endpoint">
+                    <h3><i class="fas fa-user-minus"></i> Delete Master User with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
 
-                <div class="endpoint-section">
-                    <h3 data-lang-key="ticket-examples">Tickets</h3>
-                    <div class="endpoint-content">
-                        <h4 id="axios-create-ticket" data-lang-key="axios-create-ticket">Criar Ticket</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/ticket/create', {
-  author_email: "johndoe@example.com",
-  ticket_name: "Problema com impressora",
-  ticket_label: "Hardware",
-  ticket_equipment: "Impressora HP",
-  ticket_explain: "A impressora não está conectando à rede"
-}, config)
-.then(response => {
-  console.log('Ticket created:', response.data);
-})
-.catch(error => {
-  console.error('Error creating ticket:', error.response.data);
-});</code></pre>
-                        </div>
+async function deleteMasterUser() {
+    try {
+        const response = await axios.post('domain/api/master/delete', {
+            "email": "admin@example.com",
+            "password": "StrongPassword123"
+        });
+        
+        console.log('Master user deleted:', response.data);
+        return response.data.status;
+    } catch (error) {
+        console.error('Error deleting master user:', error.response?.data || error.message);
+    }
+}
 
-                        <h4 id="axios-update-status" data-lang-key="axios-update-status">Atualizar Status do Ticket</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/ticket/edit', {
-  ticket_id: "ticket_123e4567-e89b-12d3-a456-426614174000",
-  ticket_status: "doing"
-}, config)
-.then(response => {
-  console.log('Status updated:', response.data);
-})
-.catch(error => {
-  console.error('Error updating status:', error.response.data);
-});</code></pre>
-                        </div>
+deleteMasterUser();</code></pre>
+                </div>
+                
+                <div id="create-user-axios" class="endpoint">
+                    <h3><i class="fas fa-user-plus"></i> Create User with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
 
-                        <h4 id="axios-add-history" data-lang-key="axios-add-history">Adicionar Histórico ao Ticket</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/ticket/update', {
-  ticket_id: "ticket_123e4567-e89b-12d3-a456-426614174000",
-  ticket_return: "Verificando conexão da impressora"
-}, config)
-.then(response => {
-  console.log('History updated:', response.data);
-})
-.catch(error => {
-  console.error('Error updating history:', error.response.data);
-});</code></pre>
-                        </div>
+async function createUser(token) {
+    try {
+        const response = await axios.post('domain/api/user/create', 
+            {
+                "username": "John Doe",
+                "email": "johndoe@example.com",
+                "password": "Password123",
+                "role": "user"
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        console.log('User created:', response.data);
+    } catch (error) {
+        console.error('Error creating user:', error.response?.data || error.message);
+    }
+}
 
-                        <h4 id="axios-list-tickets" data-lang-key="axios-list-tickets">Listar Todos os Tickets</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.get('domain/api/ticket/fetch', config)
-.then(response => {
-  console.log('Tickets:', response.data);
-})
-.catch(error => {
-  console.error('Error fetching tickets:', error.response.data);
-});</code></pre>
-                        </div>
+// Example usage
+// createUser(jwtToken);</code></pre>
+                </div>
+                
+                <div id="get-user-info-axios" class="endpoint">
+                    <h3><i class="fas fa-user-check"></i> Get User Information with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
 
-                        <h4 id="axios-list-pending" data-lang-key="axios-list-pending">Listar Tickets Pendentes</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.get('domain/api/ticket/fetch?status=pending', config)
-.then(response => {
-  console.log('Pending tickets:', response.data);
-})
-.catch(error => {
-  console.error('Error fetching pending tickets:', error.response.data);
-});</code></pre>
-                        </div>
+async function getUserInfo(token, email = null, role = null) {
+    try {
+        // Build query parameters
+        let url = 'domain/api/user/fetch';
+        const params = {};
+        
+        if (email) params.email = email;
+        if (role) params.role = role;
+        
+        const response = await axios.get(url, {
+            params: params,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        console.log('User information:', response.data);
+    } catch (error) {
+        console.error('Error fetching user info:', error.response?.data || error.message);
+    }
+}
 
-                        <h4 id="axios-ticket-details" data-lang-key="axios-ticket-details">Detalhes do Ticket</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.get('domain/api/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000', config)
-.then(response => {
-  console.log('Ticket details:', response.data);
-})
-.catch(error => {
-  console.error('Error fetching ticket details:', error.response.data);
-});</code></pre>
-                        </div>
+// Example usage
+// getUserInfo(jwtToken); // Get all users
+// getUserInfo(jwtToken, 'johndoe@example.com'); // Get specific user
+// getUserInfo(jwtToken, null, 'admin'); // Get users with admin role</code></pre>
+                </div>
+                
+                <div id="remove-user-axios" class="endpoint">
+                    <h3><i class="fas fa-user-minus"></i> Remove User with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
 
-                        <h4 id="axios-delete-ticket" data-lang-key="axios-delete-ticket">Remover Ticket</h4>
-                        <div class="code-block example">
-                            <pre><code class="language-javascript">axios.post('domain/api/ticket/remove', {
-  author_email: "johndoe@example.com",
-  ticket_id: "ticket_123e4567-e89b-12d3-a456-426614174000"
-}, config)
-.then(response => {
-  console.log('Ticket removed:', response.data);
-})
-.catch(error => {
-  console.error('Error removing ticket:', error.response.data);
-});</code></pre>
-                        </div>
-                    </div>
+async function removeUser(token, email) {
+    try {
+        const response = await axios.post('domain/api/user/delete', 
+            {
+                "email": email
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        console.log('User removed:', response.data);
+    } catch (error) {
+        console.error('Error removing user:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// removeUser(jwtToken, 'johndoe@example.com');</code></pre>
+                </div>
+                
+                <div id="create-ticket-axios" class="endpoint">
+                    <h3><i class="fas fa-ticket-alt"></i> Create Ticket with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function createTicket(token, ticketData) {
+    try {
+        const response = await axios.post('domain/api/ticket/create', 
+            ticketData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        console.log('Ticket created:', response.data);
+    } catch (error) {
+        console.error('Error creating ticket:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// const ticketData = {
+//     "ticket_name": "Router Problem",
+//     "ticket_explain": "Need to configure the router in room 302",
+//     "images": [
+//         {
+//             "name": "router_front.jpg",
+//             "content": "[base64 encoded image data]",
+//             "type": "image/jpeg"
+//         },
+//         {
+//             "name": "router_back.jpg", 
+//             "content": "[base64 encoded image data]",
+//             "type": "image/jpeg"
+//         }
+//     ]
+// };
+// createTicket(jwtToken, ticketData);</code></pre>
+                </div>
+                
+                <div id="update-ticket-status-axios" class="endpoint">
+                    <h3><i class="fas fa-tasks"></i> Update Ticket Status with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function updateTicketStatus(token, ticketId, status) {
+    try {
+        const response = await axios.post('domain/api/ticket/edit', 
+            {
+                "ticket_id": ticketId,
+                "ticket_status": status
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        console.log('Ticket status updated:', response.data);
+    } catch (error) {
+        console.error('Error updating ticket status:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// updateTicketStatus(jwtToken, 'ticket_123e4567-e89b-12d3-a456-426614174000', 'doing');</code></pre>
+                </div>
+                
+                <div id="update-ticket-history-axios" class="endpoint">
+                    <h3><i class="fas fa-history"></i> Update Ticket History with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function updateTicketHistory(token, ticketId, update) {
+    try {
+        const response = await axios.post('domain/api/ticket/update', 
+            {
+                "ticket_id": ticketId,
+                "ticket_return": update
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        console.log('Ticket history updated:', response.data);
+    } catch (error) {
+        console.error('Error updating ticket history:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// updateTicketHistory(jwtToken, 'ticket_028492wsd88178', 'Purchasing routers');</code></pre>
+                </div>
+                
+                <div id="list-tickets-axios" class="endpoint">
+                    <h3><i class="fas fa-list-alt"></i> List Tickets with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function listTickets(token, author = null, status = null) {
+    try {
+        // Build query parameters
+        let url = 'domain/api/ticket/fetch';
+        const params = {};
+        
+        if (author) params.author = author;
+        if (status) params.status = status;
+        
+        const response = await axios.get(url, {
+            params: params,
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        console.log('Tickets:', response.data);
+    } catch (error) {
+        console.error('Error fetching tickets:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// listTickets(jwtToken); // Get all tickets
+// listTickets(jwtToken, 'johndoe@example.com'); // Get tickets by author
+// listTickets(jwtToken, null, 'pending'); // Get pending tickets</code></pre>
+                </div>
+                
+                <div id="get-ticket-info-axios" class="endpoint">
+                    <h3><i class="fas fa-info-circle"></i> Get Ticket Information with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function getTicketInfo(token, ticketId) {
+    try {
+        const response = await axios.get('domain/api/ticket/info', {
+            params: {
+                ticket_id: ticketId
+            },
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        console.log('Ticket information:', response.data);
+    } catch (error) {
+        console.error('Error fetching ticket info:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// getTicketInfo(jwtToken, 'ticket_028492wsd88178');</code></pre>
+                </div>
+                
+                <div id="remove-ticket-axios" class="endpoint">
+                    <h3><i class="fas fa-trash-alt"></i> Remove Ticket with Axios</h3>
+                    <pre><code class="language-javascript">const axios = require('axios');
+
+async function removeTicket(token, ticketId) {
+    try {
+        const response = await axios.post('domain/api/ticket/remove', 
+            {
+                "ticket_id": ticketId
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+        
+        console.log('Ticket removed:', response.data);
+    } catch (error) {
+        console.error('Error removing ticket:', error.response?.data || error.message);
+    }
+}
+
+// Example usage
+// removeTicket(jwtToken, 'ticket_123e4567-e89b-12d3-a456-426614174000');</code></pre>
                 </div>
             </section>
         </main>
-    </div>
-    <!-- Adicionar Prism.js JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-http.min.js"></script>
     
-    <!-- Adicionar scripts da aplicação -->
-    <script src="static/js/translations.js"></script>
-    <script src="static/js/script.js"></script>
+        <div id="footer-container"></div>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+    <button id="sidebar-toggle" class="sidebar-toggle"><i class="fas fa-bars"></i></button>
 </body>
-</html> 
+</html>
