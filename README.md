@@ -1,66 +1,113 @@
-# Ticket Management API
+# HCall API
 
-A RESTful API for technical support ticket management, developed with Node.js and Express. This API allows you to create, manage, and track support tickets, as well as manage system users.
+A robust and secure API for managing support tickets and user authentication. Built with Go and Gin framework.
 
 ## Features
 
-- 🔐 Secure JWT Authentication
-- 👥 Complete User Management
-- 🎫 Ticket Creation and Tracking
-- 📊 Status and History Updates
-- 🔍 Advanced Search and Filters
-- 📱 RESTful and Responsive API
+- 🔐 JWT-based authentication
+- 👥 Role-based access control (User, Admin, Master)
+- 🎫 Ticket management system
+- 📸 Image upload support (base64 encoded)
+- 📝 Ticket history tracking
+- 🔄 Status updates and notifications
 
-## Documentation
-
+## Api Documentation
 Complete API documentation is available at:
 - [Online Documentation](https://pedroborgesdev.github.io/hcall-api)
-- [DOCUMENTATION.md](DOCUMENTATION.md)
+- [documentation.md](documentation.md)
 
-## Main Endpoints
+## Tech Stack
+
+- **Language:** Go
+- **Framework:** Gin
+- **Database:** PostgreSQL
+- **Authentication:** JWT
+
+## Prerequisites
+
+- Go 1.16 or higher
+- PostgreSQL
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/pedroborgesdev/hcall-api.git
+cd hcall
+```
+
+2. Install dependencies:
+```bash
+go mod download
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+4. Run the application:
+```bash
+go run .
+```
+
+## Endpoints
 
 ### Authentication
-- `POST /auth/enter` - User Login
-- `POST /auth/register` - New User Registration
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/enter` - Login user
+- `POST /api/master/create` - Create master user
+- `POST /api/master/delete` - Delete master user
 
 ### Users
-- `GET /user/fetch` - List Users
-- `POST /user/create` - Create User
-- `POST /user/delete` - Remove User
+- `GET /api/user/fetch` - Get user information
+- `POST /api/user/create` - Create new user
+- `POST /api/user/delete` - Remove user
 
 ### Tickets
-- `POST /ticket/create` - Create Ticket
-- `POST /ticket/edit` - Update Status
-- `POST /ticket/update` - Update History
-- `GET /ticket/fetch` - List Tickets
-- `GET /ticket/info` - Ticket Details
-- `POST /ticket/remove` - Remove Ticket
+- `POST /api/ticket/create` - Create new ticket
+- `GET /api/ticket/fetch` - List tickets
+- `GET /api/ticket/info` - Get ticket details
+- `POST /api/ticket/edit` - Update ticket status
+- `POST /api/ticket/update` - Update ticket history
+- `POST /api/ticket/remove` - Remove ticket
 
-## Usage Example
+## User Roles and Permissions
 
-```javascript
-// Login
-axios.post('domain/api/auth/enter', {
-  username: "John Doe",
-  email: "johndoe@example.com",
-  password: "Password123"
-})
-.then(response => {
-  const token = response.data.token;
-  console.log('Login successful:', response.data);
-})
-.catch(error => {
-  console.error('Login error:', error.response.data);
-});
-```
+### User
+- Create and remove their own tickets
+- Access authentication endpoints
+
+### Admin
+- All user permissions
+- Manage other users
+- View and update all tickets
+- Cannot create tickets
+
+### Master
+- Full system access
+- Manage all users and tickets
+- Create users with any role
 
 ## Security
 
-- JWT Authentication
-- Encrypted Passwords
-- Data Validation
-- Protection Against Common Attacks
+- All endpoints (except authentication) require JWT token
+- Passwords are hashed using bcrypt
+- Role-based access control
+- Input validation and sanitization
+- Rate limiting support
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, please open an issue in the GitHub repository or contact the maintainers.
+
+## Acknowledgments
+
+- [Gin Framework](https://gin-gonic.com/)
+- [JWT-Go](https://github.com/golang-jwt/jwt)
+- [GORM](https://gorm.io/) 
