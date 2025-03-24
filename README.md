@@ -14,7 +14,7 @@ A robust and secure API for managing support tickets and user authentication. Bu
 ## Api Documentation
 Complete API documentation is available at:
 - [Online Documentation](https://pedroborgesdev.github.io/hcall-api)
-- [documentation.md](documentation.md)
+- [Documentation File](DOCUMENTATION.md)
 
 ## Tech Stack
 
