@@ -61,9 +61,20 @@ type TicketHistory struct {
 // Define response structures for tickets
 
 type BasicTicketResponse struct {
-	ID     string       `json:"ticket_id"`
-	Name   string       `json:"ticket_name"`
-	Status TicketStatus `json:"ticket_status"`
+	ID         string       `json:"ticket_id"`
+	Name       string       `json:"ticket_name"`
+	Status     TicketStatus `json:"ticket_status"`
+	AuthorName string       `json:"author_name"`
+}
+
+// Update the ToBasicResponse method
+func (t *Ticket) ToBasicResponse(username string) BasicTicketResponse {
+	return BasicTicketResponse{
+		ID:         t.ID,
+		Name:       t.Name,
+		Status:     t.Status,
+		AuthorName: username,
+	}
 }
 
 type DetailedTicketResponse struct {
@@ -75,15 +86,6 @@ type DetailedTicketResponse struct {
 	Images      []Image         `json:"images,omitempty"`
 	History     []TicketHistory `json:"history,omitempty"`
 	CreatedAt   time.Time       `json:"created_at,omitempty"`
-}
-
-// ToBasicResponse converts a Ticket to a BasicTicketResponse
-func (t *Ticket) ToBasicResponse() BasicTicketResponse {
-	return BasicTicketResponse{
-		ID:     t.ID,
-		Name:   t.Name,
-		Status: t.Status,
-	}
 }
 
 // ToDetailedResponse converts a Ticket to a DetailedTicketResponse

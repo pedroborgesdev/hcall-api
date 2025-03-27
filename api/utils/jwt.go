@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"hcall/api/config"
@@ -20,15 +21,14 @@ type JWTClaims struct {
 
 // GenerateToken generates a JWT token for a user
 func GenerateToken(user *models.User) (string, error) {
-	expirationTime := time.Now().Add(config.AppConfig.JWTExpirationHrs)
+	log.Printf("Generating token for user %s (ID: %d)", user.Email, user.ID)
 
 	claims := &JWTClaims{
 		ID:    user.ID,
 		Email: user.Email,
 		Role:  user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			IssuedAt: jwt.NewNumericDate(time.Now()),
 		},
 	}
 
@@ -36,9 +36,11 @@ func GenerateToken(user *models.User) (string, error) {
 	tokenString, err := token.SignedString([]byte(config.AppConfig.JWTSecret))
 
 	if err != nil {
+		log.Printf("Error generating token: %v", err)
 		return "", err
 	}
 
+	log.Printf("Token generated successfully for user %s", user.Email)
 	return tokenString, nil
 }
 
@@ -51,12 +53,15 @@ func ValidateToken(tokenString string) (*JWTClaims, error) {
 	})
 
 	if err != nil {
+		log.Printf("Token validation error: %v", err)
 		return nil, err
 	}
 
 	if !token.Valid {
+		log.Printf("Token is invalid")
 		return nil, errors.New("invalid token")
 	}
 
+	log.Printf("Token validated successfully for user %s (ID: %d) with role %s", claims.Email, claims.ID, claims.Role)
 	return claims, nil
 }

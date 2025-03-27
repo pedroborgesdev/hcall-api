@@ -3,8 +3,6 @@ package config
 import (
 	"log"
 	"os"
-	"strconv"
-	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -19,8 +17,7 @@ type Config struct {
 
 	Port string
 
-	JWTSecret        string
-	JWTExpirationHrs time.Duration
+	JWTSecret string
 }
 
 var AppConfig Config
@@ -41,21 +38,12 @@ func LoadConfig() {
 
 		Port: getEnv("PORT", "8080"),
 
-		JWTSecret:        getEnv("JWT_SECRET", "default_jwt_secret_change_this_in_production"),
-		JWTExpirationHrs: time.Duration(getEnvAsInt("JWT_EXPIRATION_HOURS", 24)) * time.Hour,
+		JWTSecret: getEnv("JWT_SECRET", "default_jwt_secret_change_this_in_production"),
 	}
 }
 
 func getEnv(key, defaultValue string) string {
 	if value, exists := os.LookupEnv(key); exists {
-		return value
-	}
-	return defaultValue
-}
-
-func getEnvAsInt(key string, defaultValue int) int {
-	valueStr := getEnv(key, "")
-	if value, err := strconv.Atoi(valueStr); err == nil {
 		return value
 	}
 	return defaultValue

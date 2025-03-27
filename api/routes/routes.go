@@ -15,6 +15,9 @@ func SetupRoutes(router *gin.Engine) {
 	userController := controllers.NewUserController()
 	ticketController := controllers.NewTicketController()
 
+	// Apply CORS middleware to all routes
+	router.Use(middlewares.CORSMiddleware())
+
 	// Grupo de rotas com prefixo '/api'
 	api := router.Group("/api")
 	{

@@ -23,13 +23,14 @@ func NewTicketController() *TicketController {
 }
 
 // CreateTicket handles ticket creation
-// @Summary Create a ticket
-// @Description Creates a new ticket in the system
+// @Summary Create a new ticket
+// @Description Creates a new ticket with the provided information
 // @Accept json
 // @Produce json
-// @Param body body utils.CreateTicketRequest true "Ticket creation details"
+// @Param body body utils.CreateTicketRequest true "Ticket details"
 // @Success 200 {object} utils.MessageResponse
 // @Failure 400 {object} utils.MessageResponse
+// @Failure 403 {object} utils.MessageResponse
 // @Security Bearer
 // @Router /ticket/create [post]
 func (c *TicketController) CreateTicket(ctx *gin.Context) {
@@ -39,16 +40,6 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
-			Status:  false,
-		})
-		return
-	}
-
-	// Check permissions - only users can create tickets
-	userRole, _ := ctx.Get("userRole")
-	if userRole == models.AdminRole {
-		ctx.JSON(http.StatusForbidden, utils.MessageResponse{
-			Message: dictionaries.UserNotAuthorized,
 			Status:  false,
 		})
 		return
@@ -111,7 +102,13 @@ func (c *TicketController) GetTickets(ctx *gin.Context) {
 	// Convert to response format
 	responseTickets := make([]models.BasicTicketResponse, len(tickets))
 	for i, ticket := range tickets {
-		responseTickets[i] = ticket.ToBasicResponse()
+		// Get user information using AuthorID from ticket
+		username, err := c.ticketService.GetUserUsername(ticket.AuthorID)
+		if err != nil {
+			responseTickets[i] = ticket.ToBasicResponse("Unknown User")
+			continue
+		}
+		responseTickets[i] = ticket.ToBasicResponse(username)
 	}
 
 	ctx.JSON(http.StatusOK, utils.TicketsListResponse{

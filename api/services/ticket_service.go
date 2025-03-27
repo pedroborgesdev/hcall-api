@@ -135,3 +135,11 @@ func (s *TicketService) DeleteTicket(ticketID string, userID uint, userRole mode
 	// Delete the ticket
 	return s.ticketRepo.DeleteTicket(ticketID)
 }
+
+func (s *TicketService) GetUserUsername(userID uint) (string, error) {
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		return "", err
+	}
+	return user.Username, nil
+}
