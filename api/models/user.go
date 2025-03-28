@@ -16,13 +16,13 @@ const (
 )
 
 type User struct {
-	ID        uint       `json:"id" gorm:"primaryKey"`
-	Username  string     `json:"username" gorm:"size:255;not null"`
-	Email     string     `json:"email" gorm:"size:255;unique;not null"`
-	Password  string     `json:"password,omitempty" gorm:"size:255;not null"`
-	Role      Role       `json:"role" gorm:"type:varchar(10);default:user;not null"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
+	ID        uint       `json:"user_id" gorm:"primaryKey"`
+	Username  string     `json:"user_name" gorm:"size:255;not null"`
+	Email     string     `json:"user_email" gorm:"size:255;unique;not null"`
+	Password  string     `json:"user_password,omitempty" gorm:"size:255;not null"`
+	Role      Role       `json:"user_role" gorm:"type:varchar(10);default:user;not null"`
+	CreatedAt time.Time  `json:"user_created_at"`
+	UpdatedAt time.Time  `json:"user_updated_at"`
 	DeletedAt *time.Time `json:"-" gorm:"index"`
 	Tickets   []Ticket   `json:"-" gorm:"foreignKey:AuthorID"`
 }
@@ -47,10 +47,10 @@ func (u *User) ComparePassword(password string) error {
 
 // ResponseUser is the data structure for user responses to avoid returning sensitive data
 type ResponseUser struct {
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	Role      Role      `json:"role"`
-	CreatedAt time.Time `json:"created_at,omitempty"`
+	Username  string    `json:"user_name"`
+	Email     string    `json:"user_email"`
+	Role      Role      `json:"user_role"`
+	CreatedAt time.Time `json:"user_created_at,omitempty"`
 }
 
 // ToResponse converts a User to a ResponseUser

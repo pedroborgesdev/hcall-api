@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"hcall/api/config"
 	"hcall/api/database"
 	"hcall/api/routes"
 
@@ -10,6 +11,9 @@ import (
 )
 
 func main() {
+	// Initialize config
+	config.LoadConfig()
+
 	// Initialize database
 	database.InitDB()
 

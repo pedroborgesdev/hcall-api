@@ -109,6 +109,21 @@ func (r *TicketRepository) GetTicketsByStatus(status models.TicketStatus) ([]mod
 	return tickets, nil
 }
 
+func (r *TicketRepository) GetTicketsByDate(date string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+
+	// Query tickets created on or after the specified date
+	if err := r.DB.Where("DATE(created_at) >= ?", date).Find(&tickets).Error; err != nil {
+		return nil, err
+	}
+
+	if len(tickets) == 0 {
+		return nil, errors.New("no tickets found after the specified date")
+	}
+
+	return tickets, nil
+}
+
 // GetTicketsByAuthorAndStatus gets tickets by author and status
 func (r *TicketRepository) GetTicketsByAuthorAndStatus(authorEmail string, status models.TicketStatus) ([]models.Ticket, error) {
 	var tickets []models.Ticket
@@ -118,6 +133,53 @@ func (r *TicketRepository) GetTicketsByAuthorAndStatus(authorEmail string, statu
 
 	if len(tickets) == 0 {
 		return nil, errors.New("no tickets found with specified author and status")
+	}
+
+	return tickets, nil
+}
+
+func (r *TicketRepository) GetTicketsByAuthorAndDate(author string, date string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+
+	// Query tickets created on or after the specified date and author
+	if err := r.DB.Where("author_email =? AND DATE(created_at) >=?", author, date).Find(&tickets).Error; err != nil {
+		return nil, err
+	}
+
+	if len(tickets) == 0 {
+		return nil, errors.New("no tickets found after the specified date and author")
+	}
+
+	return tickets, nil
+}
+
+// GetTicketsByAuthorAndStatusAndDate gets tickets by date and status
+func (r *TicketRepository) GetTicketsByStatusAndDate(status models.TicketStatus, date string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+
+	// Query tickets created on or after the specified date and status
+	if err := r.DB.Where("status =? AND DATE(created_at) >=?", status, date).Find(&tickets).Error; err != nil {
+		return nil, err
+	}
+
+	if len(tickets) == 0 {
+		return nil, errors.New("no tickets found after the specified date and status")
+	}
+
+	return tickets, nil
+}
+
+// GetTicketsByAuthorAndStatusAndDate gets tickets by author, status and date
+func (r *TicketRepository) GetTicketsByAuthorAndStatusAndDate(authorEmail string, status models.TicketStatus, date string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+
+	// Query tickets created on or after the specified date, author and status
+	if err := r.DB.Where("author_email =? AND status =? AND DATE(created_at) >=?", authorEmail, status, date).Find(&tickets).Error; err != nil {
+		return nil, err
+	}
+
+	if len(tickets) == 0 {
+		return nil, errors.New("no tickets found after the specified date, author and status")
 	}
 
 	return tickets, nil

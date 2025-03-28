@@ -5,47 +5,47 @@ import "hcall/api/models"
 // Request DTOs
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"user_email" binding:"required,email"`
+	Password string `json:"user_password" binding:"required"`
 }
 
 type RegisterRequest struct {
-	Username string `json:"username" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"user_name" binding:"required"`
+	Email    string `json:"user_email" binding:"required,email"`
+	Password string `json:"user_password" binding:"required"`
 }
 
 type CreateUserRequest struct {
-	Username string      `json:"username" binding:"required"`
-	Email    string      `json:"email" binding:"required,email"`
-	Password string      `json:"password" binding:"required"`
-	Role     models.Role `json:"role" binding:"required,oneof=user admin"`
+	Username string      `json:"user_name" binding:"required"`
+	Email    string      `json:"user_email" binding:"required,email"`
+	Password string      `json:"user_password" binding:"required"`
+	Role     models.Role `json:"user_role" binding:"required,oneof=user admin"`
 }
 
 type CreateMasterRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"master_email" binding:"required,email"`
+	Password string `json:"master_password" binding:"required"`
 }
 
 type DeleteMasterRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"master_email" binding:"required,email"`
+	Password string `json:"master_password" binding:"required"`
 }
 
 type DeleteUserRequest struct {
-	Email string `json:"email" binding:"required,email"`
+	Email string `json:"user_email" binding:"required,email"`
 }
 
 type CreateTicketRequest struct {
 	Name        string     `json:"ticket_name" binding:"required"`
 	Explanation string     `json:"ticket_explain" binding:"required"`
-	Images      []ImageDTO `json:"images" binding:"omitempty,dive"`
+	Images      []ImageDTO `json:"ticket_images" binding:"omitempty,dive"`
 }
 
 type ImageDTO struct {
-	Name    string `json:"name" binding:"required"`
-	Content string `json:"content" binding:"required"` // Base64 encoded image data (will be stored directly in database)
-	Type    string `json:"type" binding:"required,oneof=image/jpeg image/png image/gif"`
+	Name    string `json:"image_name" binding:"required"`
+	Content string `json:"image_content" binding:"required"` // Base64 encoded image data (will be stored directly in database)
+	Type    string `json:"image_type" binding:"required,oneof=image/jpeg image/png image/gif"`
 }
 
 type UpdateTicketStatusRequest struct {
@@ -66,7 +66,7 @@ type RemoveTicketRequest struct {
 
 type AuthResponse struct {
 	Message string `json:"message"`
-	Token   string `json:"token,omitempty"`
+	Token   string `json:"jwt_token,omitempty"`
 	Status  bool   `json:"status"`
 }
 
@@ -76,11 +76,11 @@ type MessageResponse struct {
 }
 
 type UserResponse struct {
-	Username  string      `json:"username"`
-	Email     string      `json:"email"`
-	Password  string      `json:"password,omitempty"`
-	CreatedAt string      `json:"created_at,omitempty"`
-	Role      models.Role `json:"role"`
+	Username  string      `json:"user_name"`
+	Email     string      `json:"user_email"`
+	Password  string      `json:"user_password,omitempty"`
+	CreatedAt string      `json:"user_created_at,omitempty"`
+	Role      models.Role `json:"user_role"`
 	Status    bool        `json:"status"`
 }
 

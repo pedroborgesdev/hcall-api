@@ -54,6 +54,7 @@ const (
 	InvalidTicketStatus      = "Invalid ticket status"
 	InvalidTicketData        = "Invalid ticket data"
 	NoPermissionToDelete     = "You don't have permission to delete this ticket"
+	InvalidDateFormat        = "Invalid date format"
 )
 
 // Image messages

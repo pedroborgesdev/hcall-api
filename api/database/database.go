@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"hcall/api/config"
 	"hcall/api/models"
 
 	"gorm.io/driver/postgres"
@@ -14,15 +15,13 @@ var DB *gorm.DB
 
 // InitDB initializes the database connection and runs migrations
 func InitDB() {
-	// PostgreSQL connection configuration
-	const (
-		host     = "localhost"
-		port     = "5432"
-		user     = "postgres"
-		password = "s1ea021274"
-		dbname   = "hcall"
-		sslmode  = "disable"
-	)
+	// Get database configuration from environment variables
+	host := config.AppConfig.DBHost
+	port := config.AppConfig.DBPort
+	user := config.AppConfig.DBUser
+	password := config.AppConfig.DBPassword
+	dbname := config.AppConfig.DBName
+	sslmode := config.AppConfig.DBSSLMode
 
 	// Create connection string
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",

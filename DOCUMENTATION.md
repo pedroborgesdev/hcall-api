@@ -122,8 +122,8 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "email": "johndoe@example.com",
-    "password": "Password123"
+    "user_email": "johndoe@example.com",
+    "user_password": "Password123"
 }
 ```
 - **Responses:**
@@ -131,7 +131,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "User has been loged in",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }
 ```
@@ -157,9 +157,9 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "username": "John Doe",
-    "email": "johndoe@example.com",
-    "password": "Password123"
+    "user_name": "John Doe",
+    "user_email": "johndoe@example.com",
+    "user_password": "Password123"
 }
 ```
 - **Responses:**
@@ -167,7 +167,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "User has been registered",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }
 ```
@@ -208,11 +208,11 @@ The API supports three user roles with different access levels:
   - Success (200) - Specific User:
 ```json
 {
-    "username": "John Doe",
-    "email": "johndoe@example.com",
-    "password": "********",
-    "created_at": "2023-01-01T12:00:00Z",
-    "role": "user",
+    "user_name": "John Doe",
+    "user_email": "johndoe@example.com",
+    "user_password": "********",
+    "user_created_at": "2023-01-01T12:00:00Z",
+    "user_role": "user",
     "status": true
 }
 ```
@@ -221,14 +221,14 @@ The API supports three user roles with different access levels:
 {
     "users": [
         {
-            "username": "John Doe",
-            "email": "johndoe@example.com",
-            "role": "user"
+            "user_name": "John Doe",
+            "user_email": "johndoe@example.com",
+            "user_role": "user"
         },
         {
-            "username": "Jane Smith",
-            "email": "janesmith@example.com",
-            "role": "admin"
+            "user_name": "Jane Smith",
+            "user_email": "janesmith@example.com",
+            "user_role": "admin"
         }
     ],
     "status": true
@@ -266,10 +266,10 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "username": "John Doe",
-    "email": "johndoe@example.com",
-    "password": "Password123",
-    "role": "user"
+    "user_name": "John Doe",
+    "user_email": "johndoe@example.com",
+    "user_password": "Password123",
+    "user_role": "user"
 }
 ```
 - **Valid Role Values:** `user`, `admin` (Master users only)
@@ -291,7 +291,7 @@ The API supports three user roles with different access levels:
   - Invalid Data (400):
 ```json
 {
-    "message": "Dados inválidos",
+    "message": "Invalid data",
     "status": false
 }
 ```
@@ -310,7 +310,7 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "email": "johndoe@example.com"
+    "user_email": "johndoe@example.com"
 }
 ```
 - **Responses:**
@@ -347,24 +347,24 @@ The API supports three user roles with different access levels:
 {
     "ticket_name": "Router Problem",
     "ticket_explain": "Need to configure the router in room 302",
-    "images": [
+    "tickes_images": [
         {
-            "name": "router_front.jpg",
-            "content": "base64_encoded_image_data...",
-            "type": "image/jpeg"
+            "image_name": "router_front.jpg",
+            "image_content": "base64_encoded_image_data...",
+            "image_type": "image/jpeg"
         },
         {
-            "name": "router_back.jpg",
-            "content": "base64_encoded_image_data...",
-            "type": "image/jpeg"
+            "image_name": "router_back.jpg",
+            "image_content": "base64_encoded_image_data...",
+            "image_ype": "image/jpeg"
         }
     ]
 }
 ```
 - **Notes:**
-  - The `images` field is optional and can contain multiple images
-  - Each image must include `name`, `content` (base64 encoded), and `type` fields
-  - Supported image types: `image/jpeg`, `image/png`, `image/gif`
+  - The `ticket_images` field is optional and can contain multiple images
+  - Each image must include `image_name`, `image_content` (base64 encoded), and `image_type` fields
+  - Supported image types: `image/jpeg`, `image/png`
   - Maximum file size per image: 5MB
   - Maximum number of images per ticket: 10
 - **Responses:**
@@ -378,7 +378,7 @@ The API supports three user roles with different access levels:
   - Invalid Data (400):
 ```json
 {
-    "message": "Dados inválidos",
+    "message": "Invalid data",
     "status": false
 }
 ```
@@ -420,7 +420,7 @@ The API supports three user roles with different access levels:
   - Invalid Status (400):
 ```json
 {
-    "message": "Dados inválidos",
+    "message": "Invalid data",
     "status": false
 }
 ```
@@ -477,6 +477,7 @@ The API supports three user roles with different access levels:
 - **Query Parameters:**
   - `author`: Author's email (optional, example: `author=johndoe@example.com`)
   - `status`: Ticket status (optional, example: `status=pending`)
+  - `date`: Tickets that were created after the date (optional, example: `date=2025-03-27`)
 - **Valid Status Values:** `pending`, `doing`, `conclued`
 - **Notes:**
   - If `status` parameter is not provided, tickets of all statuses will be returned
@@ -486,6 +487,7 @@ The API supports three user roles with different access levels:
   - List pending tickets: `/ticket/fetch?status=pending`
   - List tickets by author: `/ticket/fetch?author=johndoe@example.com`
   - List pending tickets by author: `/ticket/fetch?author=johndoe@example.com&status=pending`
+  - List tickets by author were created after the date: `/ticket/fetch?author=johndoe@example.com&date=2025-01-20`
 - **Responses:**
   - Success (200):
 ```json
@@ -512,6 +514,13 @@ The API supports three user roles with different access levels:
     "status": false
 }
 ```
+  - Invalid Date Format (404):
+```json
+{
+    "message": "Invalid date format",
+    "status": false
+}
+```
   - Unauthorized Role (403):
 ```json
 {
@@ -534,23 +543,23 @@ The API supports three user roles with different access levels:
     "ticket_name": "Router Problem",
     "ticket_status": "doing",
     "ticket_explain": "Need to purchase new routers",
-    "images": [
+    "ticket_images": [
         {
             "image_id": "img_12345678",
-            "name": "router_front.jpg",
-            "url": "https://api.hcall.com/v1/images/img_12345678",
-            "type": "image/jpeg",
-            "uploaded_at": "2023-07-15T13:30:22Z"
+            "image_name": "router_front.jpg",
+            "image_url": "base64_encoded_image_data...",
+            "image_type": "image/jpeg",
+            "image_uploaded_at": "2023-07-15T13:30:22Z"
         },
         {
-            "image_id": "img_87654321",
-            "name": "router_back.jpg",
-            "url": "https://api.hcall.com/v1/images/img_87654321",
-            "type": "image/jpeg",
-            "uploaded_at": "2023-07-15T13:30:23Z"
+            "image_id": "img_872394737",
+            "image_name": "router_back.png",
+            "image_url": "base64_encoded_image_data...",
+            "image_type": "image/png",
+            "image_uploaded_at": "2023-07-15T13:30:22Z"
         }
     ],
-    "history": [
+    "ticket_history": [
         {
             "ticket_return": "Purchasing routers",
             "ticket_date": "2023-07-15T14:30:45Z"
@@ -564,6 +573,7 @@ The API supports three user roles with different access levels:
             "ticket_date": "2023-07-17T11:45:30Z"
         }
     ],
+    "ticket_date": "2025-03-27T22:37:14.722128-03:00",
     "status": true
 }
 ```
@@ -577,7 +587,7 @@ The API supports three user roles with different access levels:
   - ID Not Provided (400):
 ```json
 {
-    "message": "Dados inválidos",
+    "message": "Invalid data",
     "status": false
 }
 ```
@@ -617,7 +627,7 @@ The API supports three user roles with different access levels:
   - Invalid Data (400):
 ```json
 {
-    "message": "Dados inválidos",
+    "message": "Invalid data",
     "status": false
 }
 ```
@@ -642,13 +652,13 @@ const axios = require('axios');
 async function getToken() {
     try {
         const response = await axios.post('domain/api/auth/register', {
-            "username": "John Doe",
-            "email": "johndoe@example.com",
-            "password": "Password123"
+            "user_name": "John Doe",
+            "user_email": "johndoe@example.com",
+            "user_password": "Password123"
         });
 
         // Extract token from response
-        const token = response.data.token;
+        const token = response.data.jwt_token;
         console.log('Token received:', token);
 
         // Return token for later use
@@ -701,8 +711,8 @@ const axios = require('axios');
 async function login() {
     try {
         const response = await axios.post('domain/api/auth/enter', {
-            "email": "johndoe@example.com",
-            "password": "Password123"
+            "user_email": "johndoe@example.com",
+            "user_password": "Password123"
         });
         
         console.log('Login successful:', response.data);
@@ -723,12 +733,12 @@ const axios = require('axios');
 async function createMasterUser() {
     try {
         const response = await axios.post('domain/api/master/create', {
-            "email": "admin@example.com",
-            "password": "StrongPassword123"
+            "master_email": "admin@example.com",
+            "master_password": "StrongPassword123"
         });
         
         console.log('Master user created:', response.data);
-        return response.data.token;
+        return response.data.jwt_token;
     } catch (error) {
         console.error('Error creating master user:', error.response?.data || error.message);
     }
@@ -745,8 +755,8 @@ const axios = require('axios');
 async function deleteMasterUser() {
     try {
         const response = await axios.post('domain/api/master/delete', {
-            "email": "admin@example.com",
-            "password": "StrongPassword123"
+            "master_email": "admin@example.com",
+            "master_password": "StrongPassword123"
         });
         
         console.log('Master user deleted:', response.data);
@@ -768,10 +778,10 @@ async function createUser(token) {
     try {
         const response = await axios.post('domain/api/user/create', 
             {
-                "username": "John Doe",
-                "email": "johndoe@example.com",
-                "password": "Password123",
-                "role": "user"
+                "user_name": "John Doe",
+                "user_email": "johndoe@example.com",
+                "user_password": "Password123",
+                "user_role": "user"
             },
             {
                 headers: {
@@ -832,7 +842,7 @@ async function removeUser(token, email) {
     try {
         const response = await axios.post('domain/api/user/delete', 
             {
-                "email": email
+                "user_email": email
             },
             {
                 headers: {
@@ -877,16 +887,16 @@ async function createTicket(token, ticketData) {
 // const ticketData = {
 //     "ticket_name": "Router Problem",
 //     "ticket_explain": "Need to configure the router in room 302",
-//     "images": [
+//     "ticket_images": [
 //         {
-//             "name": "router_front.jpg",
-//             "content": "[base64 encoded image data]",
-//             "type": "image/jpeg"
+//             "image_name": "router_front.jpg",
+//             "image_content": "[base64 encoded image data]",
+//             "image_type": "image/jpeg"
 //         },
 //         {
-//             "name": "router_back.jpg", 
-//             "content": "[base64 encoded image data]",
-//             "type": "image/jpeg"
+//             "image_name": "router_back.jpg", 
+//             "image_content": "[base64 encoded image data]",
+//             "image_type": "image/jpeg"
 //         }
 //     ]
 // };

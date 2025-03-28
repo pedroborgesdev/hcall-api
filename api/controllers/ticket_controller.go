@@ -88,10 +88,20 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 func (c *TicketController) GetTickets(ctx *gin.Context) {
 	author := ctx.Query("author")
 	status := ctx.Query("status")
+	date := ctx.Query("date")
 
 	// Call the service
-	tickets, err := c.ticketService.GetTickets(author, status)
+	tickets, err := c.ticketService.GetTickets(author, status, date)
+
 	if err != nil {
+		if err.Error() == "invalid date format" {
+			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
+				Message: dictionaries.InvalidDateFormat,
+				Status:  false,
+			})
+			return
+		}
+
 		ctx.JSON(http.StatusNotFound, utils.MessageResponse{
 			Message: dictionaries.NoTicketsFound,
 			Status:  false,

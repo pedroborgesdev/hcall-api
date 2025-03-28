@@ -30,6 +30,7 @@ func (s *TicketService) CreateTicket(authorID uint, authorEmail, name, explanati
 		Status:      models.PendingStatus,
 		AuthorID:    authorID,
 		AuthorEmail: authorEmail,
+		Images:      []models.Image{},
 		CreatedAt:   time.Now(),
 	}
 
@@ -60,27 +61,65 @@ func (s *TicketService) CreateTicket(authorID uint, authorEmail, name, explanati
 	return nil
 }
 
+func checkDate(date string) bool {
+	// check if date is in format YYYY-MM-DD and using "-" to separate year, month and day
+	if len(date) != 10 {
+		return false
+	}
+	return true
+}
+
 // GetTickets gets all tickets or tickets by author or status
-func (s *TicketService) GetTickets(authorEmail string, status string) ([]models.Ticket, error) {
+func (s *TicketService) GetTickets(authorEmail string, status string, date string) ([]models.Ticket, error) {
+
+	if date != "" {
+		if !checkDate(date) {
+			return nil, errors.New("invalid date format")
+		}
+	}
+
+	date = date[:10]
+
 	// Get all tickets
-	if authorEmail == "" && status == "" {
+	if authorEmail == "" && status == "" && date == "" {
 		return s.ticketRepo.GetTickets()
 	}
 
 	// Get tickets by author
-	if authorEmail != "" && status == "" {
+	if authorEmail != "" && status == "" && date == "" {
 		return s.ticketRepo.GetTicketsByAuthor(authorEmail)
 	}
 
 	// Get tickets by status
-	if authorEmail == "" && status != "" {
+	if authorEmail == "" && status != "" && date == "" {
 		statusEnum := models.TicketStatus(status)
 		return s.ticketRepo.GetTicketsByStatus(statusEnum)
 	}
 
-	// Get tickets by author and status
-	statusEnum := models.TicketStatus(status)
-	return s.ticketRepo.GetTicketsByAuthorAndStatus(authorEmail, statusEnum)
+	if authorEmail == "" && status == "" && date != "" {
+		return s.ticketRepo.GetTicketsByDate(date)
+	}
+
+	if authorEmail != "" && status != "" && date == "" {
+		statusEnum := models.TicketStatus(status)
+		return s.ticketRepo.GetTicketsByAuthorAndStatus(authorEmail, statusEnum)
+	}
+
+	if authorEmail != "" && status == "" && date != "" {
+		return s.ticketRepo.GetTicketsByAuthorAndDate(authorEmail, date)
+	}
+
+	if authorEmail == "" && status != "" && date != "" {
+		statusEnum := models.TicketStatus(status)
+		return s.ticketRepo.GetTicketsByStatusAndDate(statusEnum, date)
+	}
+
+	if authorEmail != "" && status != "" && date != "" {
+		statusEnum := models.TicketStatus(status)
+		return s.ticketRepo.GetTicketsByAuthorAndStatusAndDate(authorEmail, statusEnum, date)
+	}
+
+	return nil, errors.New("invalid query parameters")
 }
 
 // GetTicketDetails gets the details of a ticket
