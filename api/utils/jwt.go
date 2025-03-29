@@ -23,12 +23,16 @@ type JWTClaims struct {
 func GenerateToken(user *models.User) (string, error) {
 	log.Printf("Generating token for user %s (ID: %d)", user.Email, user.ID)
 
+	// Calculate expiration time
+	expirationTime := time.Now().Add(time.Hour * time.Duration(config.AppConfig.JWTExpirationHours))
+
 	claims := &JWTClaims{
 		ID:    user.ID,
 		Email: user.Email,
 		Role:  user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			IssuedAt: jwt.NewNumericDate(time.Now()),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 	}
 

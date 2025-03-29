@@ -44,7 +44,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Validate the token
 		claims, err := utils.ValidateToken(tokenString)
 		if err != nil {
-			log.Printf("Token validation error: %v", err)
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"message": "Unauthorized",
 				"status":  false,

@@ -5,6 +5,7 @@ import (
 
 	"hcall/api/models"
 	"hcall/api/repository"
+	"hcall/api/utils"
 )
 
 type UserService struct {
@@ -23,6 +24,12 @@ func (s *UserService) CreateUser(username, email, password string, role models.R
 	existingUser, err := s.userRepo.FindByEmail(email)
 	if err == nil && existingUser != nil {
 		return errors.New("email already exists")
+	}
+
+	// Validate credentials
+	err = utils.ValidateCredentials(email, password, username)
+	if err != nil {
+		return err
 	}
 
 	// Create the new user

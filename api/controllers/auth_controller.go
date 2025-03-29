@@ -36,7 +36,7 @@ func (c *AuthController) Register(ctx *gin.Context) {
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
+			Message: err.Error(),
 			Status:  false,
 		})
 		return
@@ -45,9 +45,8 @@ func (c *AuthController) Register(ctx *gin.Context) {
 	_, token, err := c.authService.Register(request.Username, request.Email, request.Password)
 
 	if err != nil {
-		log.Printf("Error in registration: %v", err)
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.UserAlreadyExists,
+			Message: err.Error(),
 			Status:  false,
 		})
 		return

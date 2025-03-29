@@ -27,6 +27,11 @@ func (s *AuthService) Register(username, email, password string) (*models.User, 
 		return nil, "", errors.New("email already exists")
 	}
 
+	err = utils.ValidateCredentials(email, password, username)
+	if err != nil {
+		return nil, "", err
+	}
+
 	// Create the new user
 	user := &models.User{
 		Username: username,
