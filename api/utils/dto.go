@@ -72,6 +72,7 @@ type AuthResponse struct {
 
 type MessageResponse struct {
 	Message string `json:"message"`
+	Reason  string `json:"reason,omitempty"`
 	Status  bool   `json:"status"`
 }
 
@@ -97,4 +98,12 @@ type TicketsListResponse struct {
 type TicketResponse struct {
 	models.DetailedTicketResponse
 	Status bool `json:"status"`
+}
+
+type GetCountersResponse struct {
+	Total    int  `json:"tickets_total"`
+	Pending  int  `json:"tickets_pending"`
+	Doing    int  `json:"tickets_doing"`
+	Conclued int  `json:"tickets_conclued"`
+	Status   bool `json:"status"`
 }

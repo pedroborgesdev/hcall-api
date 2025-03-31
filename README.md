@@ -1,113 +1,168 @@
 # HCall API
 
-A robust and secure API for managing support tickets and user authentication. Built with Go and Gin framework.
+A high-performance, secure API for comprehensive support ticket management with robust authentication. Built with Go and the Gin framework, designed for scalability and enterprise-grade security.
 
 ## Features
 
-- 🔐 JWT-based authentication
-- 👥 Role-based access control (User, Admin, Master)
-- 🎫 Ticket management system
-- 📸 Image upload support (base64 encoded)
-- 📝 Ticket history tracking
-- 🔄 Status updates and notifications
+- 🔐 **JWT-based authentication** with secure token handling
+- 👥 **Granular role-based access control** (User, Admin, Master)
+- 🎫 **Full ticket lifecycle management** from creation to resolution
+- 📸 **Secure image handling** with base64 encoding support
+- 📝 **Comprehensive audit trails** with ticket history tracking
+- 🔄 **Real-time status updates** and notification system
+- ⚡ **High performance** with Go's concurrency model
 
-## Api Documentation
-Complete API documentation is available at:
-- [Online Documentation](https://pedroborgesdev.github.io/hcall-api)
-- [Documentation File](DOCUMENTATION.md)
+## API Documentation
+
+Access our comprehensive API documentation:
+
+- [Interactive Online Documentation](https://pedroborgesdev.github.io/hcall-api)
+- [Local Documentation](DOCUMENTATION.md)
 
 ## Tech Stack
 
-- **Language:** Go
-- **Framework:** Gin
-- **Database:** PostgreSQL
-- **Authentication:** JWT
+| Component       | Technology                          |
+|-----------------|-------------------------------------|
+| Language        | Go 1.16+                           |
+| Framework       | Gin                                 |
+| Database        | PostgreSQL                          |
+| Authentication  | JWT (JSON Web Tokens)               |
+| ORM             | GORM                                |
+
+## NEWS
+
+### [Unreleased]
+- Workers are added (for remove tickets after dates)
+- Added a new endpoint (ticket/count) to count tickets
+- Updated database schema
+
+*Check back regularly for updates on new features and improvements.*
 
 ## Prerequisites
 
-- Go 1.16 or higher
-- PostgreSQL
+Before installation, ensure you have:
 
-## Installation
+- Go 1.16 or later
+- PostgreSQL 12+ server
+- Basic understanding of REST APIs
+- Environment configuration access
 
-1. Clone the repository:
+## Installation & Setup
+
+### 1. Clone the repository
 ```bash
 git clone https://github.com/pedroborgesdev/hcall-api.git
-cd hcall
+cd hcall-api
+cd api
 ```
 
-2. Install dependencies:
+### 2. Install dependencies
 ```bash
 go mod download
 ```
 
-3. Set up environment variables:
+### 3. Configure environment
 ```bash
 cp .env.example .env
-# Edit .env with your configuration
+# Configure your environment variables in .env
 ```
 
-4. Run the application:
+### 4. Start the application
 ```bash
 go run .
 ```
+## Configuration
 
-## Endpoints
+The application requires the following environment variables in your `.env` file:
+
+```ini
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=hcall
+DB_SSLMODE=disable
+
+# Password Policy
+USERNAME_MIN_CHAR=6
+PASSWORD_MIN_CHAR=8
+PASSWORD_SPECIAL=True
+PASSWORD_DIGITS=True
+PASSWORD_UPPERCASE=True
+PASSWORD_LOWERCASE=True
+
+# Ticket Worker Settings
+WORKER_TICKET_LOOPTIME=20
+WORKER_TICKET_REMOVE_AFTER=10
+WORKER_TICKET_REMOVE_STATUS=conclued
+
+# Application Settings
+PORT=8080
+JWT_SECRET=mysecretkeyonhere
+JWT_EXPIRATION_HOURS=24
+```
+
+**Security Note:** Always keep your `.env` file secure and never commit it to version control. The JWT_SECRET should be a strong, randomly generated string in production environments.
+
+## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/enter` - Login user
-- `POST /api/master/create` - Create master user
-- `POST /api/master/delete` - Delete master user
+| Method | Endpoint                | Description                     |
+|--------|-------------------------|---------------------------------|
+| POST   | /api/auth/register      | Register new user               |
+| POST   | /api/auth/enter         | User login                      |
+| POST   | /api/master/create      | Create master user (privileged) |
+| POST   | /api/master/delete      | Delete master user              |
 
-### Users
-- `GET /api/user/fetch` - Get user information
-- `POST /api/user/create` - Create new user
-- `POST /api/user/delete` - Remove user
+### User Management
+| Method | Endpoint                | Description                     |
+|--------|-------------------------|---------------------------------|
+| GET    | /api/user/fetch         | Retrieve user information       |
+| POST   | /api/user/create        | Create new user                 |
+| POST   | /api/user/delete        | Remove user                     |
 
-### Tickets
-- `POST /api/ticket/create` - Create new ticket
-- `GET /api/ticket/fetch` - List tickets
-- `GET /api/ticket/info` - Get ticket details
-- `POST /api/ticket/edit` - Update ticket status
-- `POST /api/ticket/update` - Update ticket history
-- `POST /api/ticket/remove` - Remove ticket
+### Ticket Operations
+| Method | Endpoint                | Description                     |
+|--------|-------------------------|---------------------------------|
+| POST   | /api/ticket/create      | Create new support ticket       |
+| GET    | /api/ticket/fetch       | List tickets                    |
+| GET    | /api/ticket/count       | Count of tickets                |
+| GET    | /api/ticket/info        | Get ticket details              |
+| POST   | /api/ticket/edit        | Update ticket status            |
+| POST   | /api/ticket/update      | Update ticket history           |
+| POST   | /api/ticket/remove      | Delete ticket                   |
 
-## User Roles and Permissions
+## Authorization Matrix
 
-### User
-- Create and remove their own tickets
-- Access authentication endpoints
+| Role  | User Management | Ticket Access | Ticket Creation | Admin Functions | Master Functions |
+|-------|-----------------|---------------|------------------|-----------------|------------------|
+| User  | Self-only       | Own tickets   | ✓                | ✗               | ✗                |
+| Admin | Full            | All tickets   | ✗                | ✓               | ✗                |
+| Master| Full            | All tickets   | ✓                | ✓               | ✓                |
 
-### Admin
-- All user permissions
-- Manage other users
-- View and update all tickets
-- Cannot create tickets
+## Security Features
 
-### Master
-- Full system access
-- Manage all users and tickets
-- Create users with any role
-
-## Security
-
-- All endpoints (except authentication) require JWT token
-- Passwords are hashed using bcrypt
-- Role-based access control
-- Input validation and sanitization
-- Rate limiting support
+- **End-to-end encryption**: JWT tokens with strong signing
+- **Password security**: bcrypt hashing
+- **RBAC implementation**: Strict role validation
+- **CORS policies**: Strict origin validation
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for full details.
 
-## Support
+## Support & Contribution
 
-For support, please open an issue in the GitHub repository or contact the maintainers.
+For support requests:
+- Open an issue in our [GitHub repository](https://github.com/pedroborgesdev/hcall-api/issues)
+- Contact the maintainers directly
+
+We welcome contributions! Please follow our contribution guidelines.
 
 ## Acknowledgments
 
-- [Gin Framework](https://gin-gonic.com/)
-- [JWT-Go](https://github.com/golang-jwt/jwt)
-- [GORM](https://gorm.io/) 
+- [Gin Framework](https://gin-gonic.com/) for high-performance routing
+- [JWT-Go](https://github.com/golang-jwt/jwt) for secure authentication
+- [GORM](https://gorm.io/) for database operations
+- PostgreSQL for reliable data storage

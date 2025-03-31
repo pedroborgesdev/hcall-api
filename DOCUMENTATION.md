@@ -57,8 +57,8 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "email": "master@example.com",
-    "password": "StrongPassword123"
+    "master_email": "master@example.com",
+    "master_password": "StrongPassword123"
 }
 ```
 - **Responses:**
@@ -66,7 +66,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Master user has been created",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }
 ```
@@ -86,8 +86,8 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "email": "master@example.com",
-    "password": "StrongPassword123"
+    "user_email": "master@example.com",
+    "user_password": "StrongPassword123"
 }
 ```
 - **Responses:**
@@ -529,6 +529,29 @@ The API supports three user roles with different access levels:
 }
 ```
 
+### Get Tickets Count
+- **Endpoint:** `GET /ticket/count`
+- **Description:** Lists tickets count
+- **Authorized Roles:** `admin`, `master`
+- **Responses:**
+  - Success (200):
+```json
+{
+    "tickets_total": 5,
+    "tickets_pending": 2,
+    "tickets_doing": 3,
+    "tickets_conclued": 0,
+    "status": true
+}
+```
+  - Unauthorized Role (403):
+```json
+{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}
+```
+
 ### Get Ticket Information
 - **Endpoint:** `GET /ticket/info`
 - **Description:** Retrieves detailed information about a specific ticket, including its complete history
@@ -639,411 +662,3 @@ The API supports three user roles with different access levels:
 }
 ```
 
-## Axios Examples
-
-The following examples demonstrate how to use our API with Axios, a popular HTTP client for JavaScript. Each example includes code for making requests and handling responses.
-
-### Authentication Flow Example
-
-```javascript
-const axios = require('axios');
-
-// Function to obtain a JWT token
-async function getToken() {
-    try {
-        const response = await axios.post('domain/api/auth/register', {
-            "user_name": "John Doe",
-            "user_email": "johndoe@example.com",
-            "user_password": "Password123"
-        });
-
-        // Extract token from response
-        const token = response.data.jwt_token;
-        console.log('Token received:', token);
-
-        // Return token for later use
-        return token;
-    } catch (error) {
-        console.error('Error obtaining token:', error);
-        throw error;
-    }
-}
-
-// Function to make authenticated requests using JWT token
-async function makeAuthenticatedRequest(token) {
-    try {
-        const response = await axios.get('domain/api/user/fetch', {
-            headers: {
-                'Authorization': `Bearer ${token}` // Pass token in Authorization header
-            }
-        });
-
-        console.log('Response from authenticated request:', response.data);
-    } catch (error) {
-        console.error('Error in authenticated request:', error);
-    }
-}
-
-// Execute complete flow
-async function completeFlow() {
-    try {
-        // 1. Get token
-        const token = await getToken();
-
-        // 2. Make authenticated request with token
-        await makeAuthenticatedRequest(token);
-    } catch (error) {
-        console.error('Error in complete flow:', error);
-    }
-}
-
-// Start flow
-completeFlow();
-```
-
-### Endpoint Examples
-
-#### Login
-
-```javascript
-const axios = require('axios');
-
-async function login() {
-    try {
-        const response = await axios.post('domain/api/auth/enter', {
-            "user_email": "johndoe@example.com",
-            "user_password": "Password123"
-        });
-        
-        console.log('Login successful:', response.data);
-        return response.data.token;
-    } catch (error) {
-        console.error('Login error:', error.response?.data || error.message);
-    }
-}
-
-login();
-```
-
-#### Create Master User
-
-```javascript
-const axios = require('axios');
-
-async function createMasterUser() {
-    try {
-        const response = await axios.post('domain/api/master/create', {
-            "master_email": "admin@example.com",
-            "master_password": "StrongPassword123"
-        });
-        
-        console.log('Master user created:', response.data);
-        return response.data.jwt_token;
-    } catch (error) {
-        console.error('Error creating master user:', error.response?.data || error.message);
-    }
-}
-
-createMasterUser();
-```
-
-#### Delete Master User
-
-```javascript
-const axios = require('axios');
-
-async function deleteMasterUser() {
-    try {
-        const response = await axios.post('domain/api/master/delete', {
-            "master_email": "admin@example.com",
-            "master_password": "StrongPassword123"
-        });
-        
-        console.log('Master user deleted:', response.data);
-        return response.data.status;
-    } catch (error) {
-        console.error('Error deleting master user:', error.response?.data || error.message);
-    }
-}
-
-deleteMasterUser();
-```
-
-#### Create User
-
-```javascript
-const axios = require('axios');
-
-async function createUser(token) {
-    try {
-        const response = await axios.post('domain/api/user/create', 
-            {
-                "user_name": "John Doe",
-                "user_email": "johndoe@example.com",
-                "user_password": "Password123",
-                "user_role": "user"
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('User created:', response.data);
-    } catch (error) {
-        console.error('Error creating user:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// createUser(jwtToken);
-```
-
-#### Get User Information
-
-```javascript
-const axios = require('axios');
-
-async function getUserInfo(token, email = null, role = null) {
-    try {
-        // Build query parameters
-        let url = 'domain/api/user/fetch';
-        const params = {};
-        
-        if (email) params.email = email;
-        if (role) params.role = role;
-        
-        const response = await axios.get(url, {
-            params: params,
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        console.log('User information:', response.data);
-    } catch (error) {
-        console.error('Error fetching user info:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// getUserInfo(jwtToken); // Get all users
-// getUserInfo(jwtToken, 'johndoe@example.com'); // Get specific user
-// getUserInfo(jwtToken, null, 'admin'); // Get users with admin role
-```
-
-#### Remove User
-
-```javascript
-const axios = require('axios');
-
-async function removeUser(token, email) {
-    try {
-        const response = await axios.post('domain/api/user/delete', 
-            {
-                "user_email": email
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('User removed:', response.data);
-    } catch (error) {
-        console.error('Error removing user:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// removeUser(jwtToken, 'johndoe@example.com');
-```
-
-#### Create Ticket
-
-```javascript
-const axios = require('axios');
-
-async function createTicket(token, ticketData) {
-    try {
-        const response = await axios.post('domain/api/ticket/create', 
-            ticketData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket created:', response.data);
-    } catch (error) {
-        console.error('Error creating ticket:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// const ticketData = {
-//     "ticket_name": "Router Problem",
-//     "ticket_explain": "Need to configure the router in room 302",
-//     "ticket_images": [
-//         {
-//             "image_name": "router_front.jpg",
-//             "image_content": "[base64 encoded image data]",
-//             "image_type": "image/jpeg"
-//         },
-//         {
-//             "image_name": "router_back.jpg", 
-//             "image_content": "[base64 encoded image data]",
-//             "image_type": "image/jpeg"
-//         }
-//     ]
-// };
-// createTicket(jwtToken, ticketData);
-```
-
-#### Update Ticket Status
-
-```javascript
-const axios = require('axios');
-
-async function updateTicketStatus(token, ticketId, status) {
-    try {
-        const response = await axios.post('domain/api/ticket/edit', 
-            {
-                "ticket_id": ticketId,
-                "ticket_status": status
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket status updated:', response.data);
-    } catch (error) {
-        console.error('Error updating ticket status:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// updateTicketStatus(jwtToken, 'ticket_123e4567-e89b-12d3-a456-426614174000', 'doing');
-```
-
-#### Update Ticket History
-
-```javascript
-const axios = require('axios');
-
-async function updateTicketHistory(token, ticketId, update) {
-    try {
-        const response = await axios.post('domain/api/ticket/update', 
-            {
-                "ticket_id": ticketId,
-                "ticket_return": update
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket history updated:', response.data);
-    } catch (error) {
-        console.error('Error updating ticket history:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// updateTicketHistory(jwtToken, 'ticket_028492wsd88178', 'Purchasing routers');
-```
-
-#### List Tickets
-
-```javascript
-const axios = require('axios');
-
-async function listTickets(token, author = null, status = null) {
-    try {
-        // Build query parameters
-        let url = 'domain/api/ticket/fetch';
-        const params = {};
-        
-        if (author) params.author = author;
-        if (status) params.status = status;
-        
-        const response = await axios.get(url, {
-            params: params,
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        console.log('Tickets:', response.data);
-    } catch (error) {
-        console.error('Error fetching tickets:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// listTickets(jwtToken); // Get all tickets
-// listTickets(jwtToken, 'johndoe@example.com'); // Get tickets by author
-// listTickets(jwtToken, null, 'pending'); // Get pending tickets
-```
-
-#### Get Ticket Information
-
-```javascript
-const axios = require('axios');
-
-async function getTicketInfo(token, ticketId) {
-    try {
-        const response = await axios.get('domain/api/ticket/info', {
-            params: {
-                ticket_id: ticketId
-            },
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        console.log('Ticket information:', response.data);
-    } catch (error) {
-        console.error('Error fetching ticket info:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// getTicketInfo(jwtToken, 'ticket_028492wsd88178');
-```
-
-#### Remove Ticket
-
-```javascript
-const axios = require('axios');
-
-async function removeTicket(token, ticketId) {
-    try {
-        const response = await axios.post('domain/api/ticket/remove', 
-            {
-                "ticket_id": ticketId
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket removed:', response.data);
-    } catch (error) {
-        console.error('Error removing ticket:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// removeTicket(jwtToken, 'ticket_123e4567-e89b-12d3-a456-426614174000');
-``` 

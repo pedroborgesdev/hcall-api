@@ -62,6 +62,7 @@ func runMigrations(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&models.User{},
 		&models.Ticket{},
+		&models.Counters{},
 		&models.Image{},
 		&models.TicketHistory{},
 	)

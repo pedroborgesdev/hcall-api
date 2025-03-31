@@ -54,6 +54,7 @@ func SetupRoutes(router *gin.Engine) {
 			// Rotas acessíveis a usuários, admins e masters
 			ticket.POST("/create", ticketController.CreateTicket)
 			ticket.POST("/remove", ticketController.DeleteTicket)
+			ticket.GET("/count", ticketController.CountTicket)
 
 			// Rotas acessíveis apenas a admins e masters
 			authTicket := ticket.Group("/")
@@ -66,4 +67,7 @@ func SetupRoutes(router *gin.Engine) {
 			}
 		}
 	}
+
+	// Start the ticket worker
+
 }

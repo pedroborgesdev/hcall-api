@@ -64,7 +64,7 @@ type BasicTicketResponse struct {
 	ID         string       `json:"ticket_id"`
 	Name       string       `json:"ticket_name"`
 	Status     TicketStatus `json:"ticket_status"`
-	AuthorName string       `json:"ticekt_author"`
+	AuthorName string       `json:"ticket_author"`
 	CreatedAt  time.Time    `json:"ticket_date"`
 }
 
@@ -119,4 +119,12 @@ func (t *Ticket) ToDetailedResponse(includeAuthor bool) DetailedTicketResponse {
 	}
 
 	return response
+}
+
+type Counters struct {
+	ID       uint `json:"user_id" gorm:"primaryKey"`
+	Total    int  `json:"total" gorm:"default:0"`
+	Pending  int  `json:"pending" gorm:"default:0"`
+	Doing    int  `json:"doing" gorm:"default:0"`
+	Conclued int  `json:"conclued" gorm:"default:0"`
 }

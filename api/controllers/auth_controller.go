@@ -37,6 +37,7 @@ func (c *AuthController) Register(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: err.Error(),
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -47,6 +48,7 @@ func (c *AuthController) Register(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: err.Error(),
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -76,6 +78,7 @@ func (c *AuthController) Login(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -87,6 +90,7 @@ func (c *AuthController) Login(ctx *gin.Context) {
 		log.Printf("Error in login: %v", err)
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidCredentials,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -116,6 +120,7 @@ func (c *AuthController) CreateMaster(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -127,6 +132,7 @@ func (c *AuthController) CreateMaster(ctx *gin.Context) {
 		log.Printf("Error creating master: %v", err)
 		ctx.JSON(http.StatusForbidden, utils.MessageResponse{
 			Message: dictionaries.MasterAlreadyExists,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -157,6 +163,7 @@ func (c *AuthController) DeleteMaster(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -175,6 +182,7 @@ func (c *AuthController) DeleteMaster(ctx *gin.Context) {
 		}
 		ctx.JSON(statusCode, utils.MessageResponse{
 			Message: message,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return

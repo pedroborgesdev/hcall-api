@@ -46,6 +46,7 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 			if err != nil {
 				ctx.JSON(http.StatusNotFound, utils.MessageResponse{
 					Message: "Email aren't registered",
+					Reason:  err.Error(),
 					Status:  false,
 				})
 				return
@@ -68,6 +69,7 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 		if err != nil {
 			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
 				Message: "Email aren't registered",
+				Reason:  err.Error(),
 				Status:  false,
 			})
 			return
@@ -92,6 +94,7 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 		if err != nil {
 			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
 				Message: "No users found with specified role",
+				Reason:  err.Error(),
 				Status:  false,
 			})
 			return
@@ -115,6 +118,7 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, utils.MessageResponse{
 			Message: dictionaries.InternalServerError,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -147,6 +151,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -156,6 +161,7 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.UserCreationFailed,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -189,6 +195,7 @@ func (c *UserController) DeleteUser(ctx *gin.Context) {
 		}
 		ctx.JSON(statusCode, utils.MessageResponse{
 			Message: message,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return

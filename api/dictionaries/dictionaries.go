@@ -83,3 +83,14 @@ const (
 	InvalidFieldValue    = "Invalid field value"
 	RouteNotFound        = "Route not found"
 )
+
+// Validation messages
+const (
+	InvalidEmailFormat = "Invalid email format"
+	PasswordTooShort   = "Password must be at least %d characters long"
+	UsernameTooShort   = "Username must be at least %d characters long"
+	PasswordDigits     = "Password must contain at least digits"
+	PasswordUppercase  = "Password must contain at least uppercase letters"
+	PasswordLowercase  = "Password must contain at least lowercase letters"
+	PasswordSpecial    = "Password must contain at least special characters"
+)

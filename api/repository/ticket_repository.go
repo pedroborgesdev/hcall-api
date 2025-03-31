@@ -2,6 +2,8 @@ package repository
 
 import (
 	"errors"
+	"log"
+	"time"
 
 	"hcall/api/database"
 	"hcall/api/models"
@@ -19,9 +21,112 @@ func NewTicketRepository() *TicketRepository {
 	}
 }
 
+// create a function that remove tickets with specified status
+func (r *TicketRepository) RemoveTicketsWithStatus(status models.TicketStatus, remove_after int) error {
+	// Get atual date and refator now to YYYY/MM/DD format
+	now := time.Now().Format("2006/01/02")
+
+	// subtract remove_after (days) from now
+	now = time.Now().AddDate(0, 0, -remove_after).Format("2006/01/02")
+	log.Println(now) // debugg
+
+	// remove tickets with specified status and created_at before now
+	result := r.DB.Where("status =? AND created_at <?", status, now).Delete(&models.Ticket{})
+	return result.Error
+}
+
+// CreateTicket creates a new ticket
 // CreateTicket creates a new ticket
 func (r *TicketRepository) CreateTicket(ticket *models.Ticket) error {
+	// First, verify if the user exists
+	var user models.User
+	if err := r.DB.Where("email = ?", ticket.AuthorEmail).First(&user).Error; err != nil {
+		return errors.New("author not found")
+	}
+
+	// Set the correct author_id from the found user
+	ticket.AuthorID = user.ID
+
+	// Now create the ticket
 	return r.DB.Create(ticket).Error
+}
+
+func (r *TicketRepository) CountTicket(status string) error {
+	// Start transaction
+	tx := r.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	var counters models.Counters
+	counters.ID = 1
+
+	// Get the current counter or create if not exists - within transaction
+	if err := tx.First(&counters).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			counters = models.Counters{Pending: 0, Doing: 0, Conclued: 0}
+			if err := tx.Create(&counters).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+		} else {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	if status == "pending" {
+		log.Println("pending")
+		if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+			Update("pending", gorm.Expr("pending +?", 1)).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	if status == "doing" {
+		log.Println("doing")
+		if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+			Update("doing", gorm.Expr("doing +?", 1)).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	if status == "conclued" {
+		log.Println("conclued")
+		if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+			Update("conclued", gorm.Expr("conclued +?", 1)).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+		Update("total", gorm.Expr("total +?", 1)).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// Commit the transaction
+	return tx.Commit().Error
+}
+
+func (r *TicketRepository) GetCounters() (*models.Counters, error) {
+	var counters models.Counters
+	result := r.DB.First(&counters)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, errors.New("counters not found")
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &counters, nil
 }
 
 // GetTicket gets a ticket by ID
@@ -187,6 +292,19 @@ func (r *TicketRepository) GetTicketsByAuthorAndStatusAndDate(authorEmail string
 
 // UpdateTicketStatus updates a ticket's status
 func (r *TicketRepository) UpdateTicketStatus(id string, status models.TicketStatus) error {
+	//get status of ticket id
+	var ticket models.Ticket
+	if err := r.DB.Where("id =?", id).First(&ticket).Error; err != nil {
+		return err
+	}
+
+	// get current status of ticket
+	currentStatus := ticket.Status
+
+	if currentStatus == status {
+		return errors.New("New status is the same as the current status")
+	}
+
 	result := r.DB.Model(&models.Ticket{}).Where("id = ?", id).Update("status", status)
 
 	if result.RowsAffected == 0 {
@@ -241,4 +359,29 @@ func (r *TicketRepository) DeleteTicket(id string) error {
 // CreateImage creates a new image
 func (r *TicketRepository) CreateImage(image *models.Image) error {
 	return r.DB.Create(image).Error
+}
+
+// Add these new methods
+func (r *TicketRepository) GetTicketsByName(name string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+	result := r.DB.Where("name ILIKE ?", "%"+name+"%").Find(&tickets)
+	return tickets, result.Error
+}
+
+func (r *TicketRepository) GetTicketsByAuthorAndName(authorEmail, name string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+	result := r.DB.Where("author_email = ? AND name ILIKE ?", authorEmail, "%"+name+"%").Find(&tickets)
+	return tickets, result.Error
+}
+
+func (r *TicketRepository) GetTicketsByStatusAndName(status models.TicketStatus, name string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+	result := r.DB.Where("status = ? AND name ILIKE ?", status, "%"+name+"%").Find(&tickets)
+	return tickets, result.Error
+}
+
+func (r *TicketRepository) GetTicketsByDateAndName(date, name string) ([]models.Ticket, error) {
+	var tickets []models.Ticket
+	result := r.DB.Where("DATE(created_at) = ? AND name ILIKE ?", date, "%"+name+"%").Find(&tickets)
+	return tickets, result.Error
 }

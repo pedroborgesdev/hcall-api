@@ -23,6 +23,10 @@ type Config struct {
 	PasswordUppercase string
 	PasswordLowercase string
 
+	WorkerTicketLooptime    int
+	WorkerTicketRemoveAfter int
+	WorkerTicketStatus      string
+
 	Port string
 
 	JWTSecret          string
@@ -51,6 +55,10 @@ func LoadConfig() {
 		PasswordSpecial:   getEnv("PASSWORD_SPECIAL", "True"),
 		PasswordUppercase: getEnv("PASSWORD_UPPERCASE", "True"),
 		PasswordLowercase: getEnv("PASSWORD_LOWERCASE", "True"),
+
+		WorkerTicketLooptime:    getEnvInt("WORKER_TICKET_LOOPTIME", 30),
+		WorkerTicketRemoveAfter: getEnvInt("WORKER_TICKET_REMOVE_AFTER", 10),
+		WorkerTicketStatus:      getEnv("WORKER_TICKET_REMOVE_STATUS", "connnclued"),
 
 		Port: getEnv("PORT", "8080"),
 

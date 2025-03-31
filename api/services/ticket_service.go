@@ -39,6 +39,11 @@ func (s *TicketService) CreateTicket(authorID uint, authorEmail, name, explanati
 		return err
 	}
 
+	ticketStatus := string(ticket.Status)
+	if err := s.ticketRepo.CountTicket(ticketStatus); err != nil {
+		return err
+	}
+
 	// Process images if there are any
 	if len(images) > 0 {
 		// Save each image directly to the database with base64 content
@@ -70,28 +75,31 @@ func checkDate(date string) bool {
 }
 
 // GetTickets gets all tickets or tickets by author or status
-func (s *TicketService) GetTickets(authorEmail string, status string, date string) ([]models.Ticket, error) {
-
+func (s *TicketService) GetTickets(authorEmail string, status string, date string, name string) ([]models.Ticket, error) {
 	if date != "" {
 		if !checkDate(date) {
 			return nil, errors.New("invalid date format")
 		}
+		date = date[:10]
 	}
 
-	date = date[:10]
-
 	// Get all tickets
-	if authorEmail == "" && status == "" && date == "" {
+	if authorEmail == "" && status == "" && date == "" && name == "" {
 		return s.ticketRepo.GetTickets()
 	}
 
+	// Get tickets by name only
+	if authorEmail == "" && status == "" && date == "" && name != "" {
+		return s.ticketRepo.GetTicketsByName(name)
+	}
+
 	// Get tickets by author
-	if authorEmail != "" && status == "" && date == "" {
+	if authorEmail != "" && status == "" && date == "" && name == "" {
 		return s.ticketRepo.GetTicketsByAuthor(authorEmail)
 	}
 
 	// Get tickets by status
-	if authorEmail == "" && status != "" && date == "" {
+	if authorEmail == "" && status != "" && date == "" && name == "" {
 		statusEnum := models.TicketStatus(status)
 		return s.ticketRepo.GetTicketsByStatus(statusEnum)
 	}
@@ -119,6 +127,20 @@ func (s *TicketService) GetTickets(authorEmail string, status string, date strin
 		return s.ticketRepo.GetTicketsByAuthorAndStatusAndDate(authorEmail, statusEnum, date)
 	}
 
+	// Add new combinations with name
+	if name != "" {
+		if authorEmail != "" {
+			return s.ticketRepo.GetTicketsByAuthorAndName(authorEmail, name)
+		}
+		if status != "" {
+			statusEnum := models.TicketStatus(status)
+			return s.ticketRepo.GetTicketsByStatusAndName(statusEnum, name)
+		}
+		if date != "" {
+			return s.ticketRepo.GetTicketsByDateAndName(date, name)
+		}
+	}
+
 	return nil, errors.New("invalid query parameters")
 }
 
@@ -144,7 +166,15 @@ func (s *TicketService) GetTicketDetails(ticketID string) (*models.Ticket, error
 
 // UpdateTicketStatus updates the status of a ticket
 func (s *TicketService) UpdateTicketStatus(ticketID string, status models.TicketStatus) error {
-	return s.ticketRepo.UpdateTicketStatus(ticketID, status)
+	if err := s.ticketRepo.UpdateTicketStatus(ticketID, status); err != nil {
+		return err
+	}
+
+	if err := s.ticketRepo.CountTicket(string(status)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // AddTicketHistory adds a history entry to a ticket
@@ -181,4 +211,12 @@ func (s *TicketService) GetUserUsername(userID uint) (string, error) {
 		return "", err
 	}
 	return user.Username, nil
+}
+
+func (s *TicketService) GetCounters() (*models.Counters, error) {
+	counters, err := s.ticketRepo.GetCounters()
+	if err != nil {
+		return nil, err
+	}
+	return counters, nil
 }

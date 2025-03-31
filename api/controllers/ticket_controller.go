@@ -40,6 +40,7 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -62,6 +63,7 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 		log.Printf("Error creating ticket: %v", err)
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.TicketCreationFailed,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -89,14 +91,16 @@ func (c *TicketController) GetTickets(ctx *gin.Context) {
 	author := ctx.Query("author")
 	status := ctx.Query("status")
 	date := ctx.Query("date")
+	name := ctx.Query("name")
 
 	// Call the service
-	tickets, err := c.ticketService.GetTickets(author, status, date)
+	tickets, err := c.ticketService.GetTickets(author, status, date, name)
 
 	if err != nil {
-		if err.Error() == "invalid date format" {
+		if err.Error() == "Invalid date format" {
 			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
 				Message: dictionaries.InvalidDateFormat,
+				Reason:  err.Error(),
 				Status:  false,
 			})
 			return
@@ -142,6 +146,7 @@ func (c *TicketController) GetTicketDetails(ctx *gin.Context) {
 	if ticketID == "" {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  "Ticket ID is required",
 			Status:  false,
 		})
 		return
@@ -152,6 +157,7 @@ func (c *TicketController) GetTicketDetails(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, utils.MessageResponse{
 			Message: dictionaries.TicketNotFound,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -195,6 +201,7 @@ func (c *TicketController) UpdateTicketStatus(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -205,6 +212,7 @@ func (c *TicketController) UpdateTicketStatus(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.TicketStatusUpdateFailed,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -233,6 +241,7 @@ func (c *TicketController) UpdateTicketHistory(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -243,6 +252,7 @@ func (c *TicketController) UpdateTicketHistory(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.TicketHistoryAddFailed,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -271,6 +281,7 @@ func (c *TicketController) DeleteTicket(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.InvalidData,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -285,6 +296,7 @@ func (c *TicketController) DeleteTicket(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
 			Message: dictionaries.NoPermissionToDelete,
+			Reason:  err.Error(),
 			Status:  false,
 		})
 		return
@@ -293,5 +305,25 @@ func (c *TicketController) DeleteTicket(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, utils.MessageResponse{
 		Message: dictionaries.TicketDeletedSuccess,
 		Status:  true,
+	})
+}
+
+func (c *TicketController) CountTicket(ctx *gin.Context) {
+	count, err := c.ticketService.GetCounters()
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, utils.MessageResponse{
+			Message: dictionaries.TicketNotFound,
+			Reason:  err.Error(),
+			Status:  false,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, utils.GetCountersResponse{
+		Total:    count.Total,
+		Pending:  count.Pending,
+		Doing:    count.Doing,
+		Conclued: count.Conclued,
+		Status:   true,
 	})
 }

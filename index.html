@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -14,21 +15,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script src="static/js/script.js"></script>
 </head>
+
 <body>
     <div class="documentation">
         <div id="sidebar-container"></div>
-        
+
         <div id="overlay" class="overlay"></div>
-        
+
         <button id="sidebar-toggle" class="sidebar-toggle">
             <i class="fas fa-bars"></i>
         </button>
-        
+
         <main class="content">
             <section id="api-overview" class="section">
                 <h2><i class="fas fa-book"></i> API Overview</h2>
-                <p>The HCall API provides resources for user management, ticket creation, and status updates. Communication is done via JWT token.</p>
-                
+                <p>The HCall API provides resources for user management, ticket creation, and status updates.
+                    Communication is done via JWT token.</p>
+
                 <h3 id="resources"><i class="fas fa-cubes"></i> Resources</h3>
                 <ul>
                     <li>User Management</li>
@@ -36,37 +39,42 @@
                     <li>Status Updates</li>
                     <li>JWT Communication</li>
                 </ul>
-                
+
                 <h3 id="base-url"><i class="fas fa-globe"></i> Base URL</h3>
                 <pre><code class="language-text">https://api.hcall.com/v1</code></pre>
-                
+
                 <div class="section-spacer"></div>
-                
+
                 <h3 id="authentication-requirements"><i class="fas fa-lock"></i> Authentication Requirements</h3>
-                <p>All endpoints, except <code>/user/create</code> and <code>/auth/login</code>, require a valid JWT token. The token is passed via the Authorization header.</p>
-                
+                <p>All endpoints, except <code>/user/create</code> and <code>/auth/login</code>, require a valid JWT
+                    token. The token is passed via the Authorization header.</p>
+
                 <h4><i class="fas fa-key"></i> Authorization Header</h4>
                 <pre><code class="language-text">Authorization: Bearer &lt;your_token&gt;</code></pre>
-                
+
                 <h4><i class="fas fa-exclamation-triangle"></i> Unauthorized Access</h4>
-                <p>If a token is invalid or expired, the API will return a <code>401 Unauthorized</code> status with the following response:</p>
+                <p>If a token is invalid or expired, the API will return a <code>401 Unauthorized</code> status with the
+                    following response:</p>
                 <pre><code class="language-json">{
     "message": "Unauthorized",
     "status": false
 }</code></pre>
-                
+
                 <h3 id="user-roles"><i class="fas fa-users-cog"></i> User Roles and Permissions</h3>
                 <p>The API supports three user roles, each with different permission levels:</p>
                 <ul>
-                    <li><strong>User:</strong> Can create tickets, update their own tickets, and view their ticket history</li>
-                    <li><strong>Admin:</strong> Can do everything a User can, plus manage other users' tickets and view all tickets</li>
-                    <li><strong>Master:</strong> Can do everything an Admin can, plus create and remove users, including other masters</li>
+                    <li><strong>User:</strong> Can create tickets, update their own tickets, and view their ticket
+                        history</li>
+                    <li><strong>Admin:</strong> Can do everything a User can, plus manage other users' tickets and view
+                        all tickets</li>
+                    <li><strong>Master:</strong> Can do everything an Admin can, plus create and remove users, including
+                        other masters</li>
                 </ul>
             </section>
-            
+
             <section id="master-creation" class="section">
                 <h2><i class="fas fa-crown"></i> Master Creation</h2>
-                
+
                 <div id="create-master-user" class="endpoint">
                     <h3><i class="fas fa-user-cog"></i> Create Master User</h3>
                     <div class="endpoint-header">
@@ -75,19 +83,19 @@
                     </div>
                     <p>Creates a user with master privileges</p>
                     <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
                     <ul>
                         <li>This endpoint only works when there is no master user registered in the system yet.</li>
                         <li>Once a master user exists, the endpoint will be disabled.</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
-    "user_email": "master@example.com",
-    "user_password": "StrongPassword123"
+    "master_email": "master@example.com",
+    "master_password": "StrongPassword123"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -107,7 +115,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -135,18 +143,18 @@
                     </div>
                     <p>Removes a user with master privileges</p>
                     <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
                     <ul>
                         <li>This endpoint requires valid master credentials for the account to be deleted.</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "user_email": "master@example.com",
     "user_password": "StrongPassword123"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -165,7 +173,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -203,10 +211,10 @@
                     </div>
                 </div>
             </section>
-            
+
             <section id="authentication" class="section">
                 <h2><i class="fas fa-shield-alt"></i> Authentication</h2>
-                
+
                 <div id="login" class="endpoint">
                     <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
                     <div class="endpoint-header">
@@ -215,13 +223,13 @@
                     </div>
                     <p>Authenticates a user in the system</p>
                     <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "user_email": "johndoe@example.com",
     "user_password": "Password123"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -241,7 +249,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -259,7 +267,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -278,7 +286,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="register" class="endpoint">
                     <h3><i class="fas fa-user-plus"></i> Register</h3>
                     <div class="endpoint-header">
@@ -287,14 +295,14 @@
                     </div>
                     <p>Registers a new user in the system</p>
                     <p><strong>Authorized Roles:</strong> None (public endpoint)</p>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "user_name": "John Doe",
     "user_email": "johndoe@example.com",
     "user_password": "Password123"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -314,7 +322,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -332,7 +340,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -352,10 +360,10 @@
                     </div>
                 </div>
             </section>
-            
+
             <section id="users">
                 <h2><i class="fas fa-users"></i> Users</h2>
-                
+
                 <div id="get-user-information" class="endpoint">
                     <h3><i class="fas fa-info-circle"></i> Get User Information</h3>
                     <div class="endpoint-header">
@@ -364,30 +372,33 @@
                     </div>
                     <p>Retrieves information about a specific user or lists all users</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-search"></i> Query Parameters</h4>
                     <ul class="parameters">
-                        <li><code>email</code>: User's email (optional, example: <code>email=johndoe@example.com</code>)</li>
+                        <li><code>email</code>: User's email (optional, example: <code>email=johndoe@example.com</code>)
+                        </li>
                         <li><code>role</code>: User's role (optional, example: <code>role=admin</code>)</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-check-circle"></i> Valid Role Values</h4>
                     <p><code>user</code>, <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-code"></i> Examples</h4>
                     <ul>
                         <li>List all users: <code>/user/fetch</code></li>
                         <li>Get specific user: <code>/user/fetch?email=johndoe@example.com</code></li>
                         <li>List users with specific role: <code>/user/fetch?role=admin</code></li>
-                        <li>List specific user with role: <code>/user/fetch?email=johndoe@example.com&role=admin</code></li>
+                        <li>List specific user with role: <code>/user/fetch?email=johndoe@example.com&role=admin</code>
+                        </li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
                     <ul>
                         <li>If <code>role</code> parameter is provided, only users with that role will be returned</li>
-                        <li>If both <code>email</code> and <code>role</code> parameters are provided, the user must match both criteria</li>
+                        <li>If both <code>email</code> and <code>role</code> parameters are provided, the user must
+                            match both criteria</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -417,7 +428,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -435,7 +446,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -453,7 +464,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -472,7 +483,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="create-user" class="endpoint">
                     <h3><i class="fas fa-user-plus"></i> Create User</h3>
                     <div class="endpoint-header">
@@ -481,13 +492,13 @@
                     </div>
                     <p>Creates a new user in the system</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
                     <ul>
                         <li>Admin users can only create users with the "user" role</li>
                         <li>Master users can create users with any role (user or admin)</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "user_name": "John Doe",
@@ -495,7 +506,7 @@
     "user_password": "StrongPassword123",
     "user_role": "user"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -514,7 +525,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -532,7 +543,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -550,7 +561,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -569,7 +580,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="remove-user" class="endpoint">
                     <h3><i class="fas fa-user-minus"></i> Remove User</h3>
                     <div class="endpoint-header">
@@ -578,12 +589,12 @@
                     </div>
                     <p>Removes a user from the system</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "user_email": "johndoe@example.com"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -602,7 +613,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -620,7 +631,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -640,10 +651,10 @@
                     </div>
                 </div>
             </section>
-            
+
             <section id="tickets">
                 <h2><i class="fas fa-ticket-alt"></i> Tickets</h2>
-                
+
                 <div id="create-ticket" class="endpoint">
                     <h3><i class="fas fa-plus-circle"></i> Create Ticket</h3>
                     <div class="endpoint-header">
@@ -652,7 +663,7 @@
                     </div>
                     <p>Creates a new ticket in the system</p>
                     <p><strong>Authorized Roles:</strong> <code>user</code>, <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "ticket_name": "Router Problem",
@@ -670,16 +681,18 @@
         }
     ]
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
                     <ul>
                         <li>The <code>images</code> field is optional and can contain multiple images</li>
-                        <li>Each image must include <code>name</code>, <code>content</code> (base64 encoded), and <code>type</code> fields</li>
-                        <li>Supported image types: <code>image/jpeg</code>, <code>image/png</code>, <code>image/gif</code></li>
+                        <li>Each image must include <code>name</code>, <code>content</code> (base64 encoded), and
+                            <code>type</code> fields</li>
+                        <li>Supported image types: <code>image/jpeg</code>, <code>image/png</code>,
+                            <code>image/gif</code></li>
                         <li>Maximum file size per image: 5MB</li>
                         <li>Maximum number of images per ticket: 10</li>
                     </ul>
-                    
+
                     <h4>Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -698,7 +711,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -716,7 +729,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -734,7 +747,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -753,7 +766,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="update-ticket-status" class="endpoint">
                     <h3><i class="fas fa-edit"></i> Update Ticket Status</h3>
                     <div class="endpoint-header">
@@ -762,16 +775,16 @@
                     </div>
                     <p>Updates the status of an existing ticket</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
     "ticket_status": "doing"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-check-circle"></i> Valid Status Values</h4>
                     <p><code>pending</code>, <code>doing</code>, <code>conclued</code></p>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -790,7 +803,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -808,7 +821,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -826,7 +839,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -845,7 +858,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="update-ticket-history" class="endpoint">
                     <h3><i class="fas fa-history"></i> Update Ticket History</h3>
                     <div class="endpoint-header">
@@ -854,13 +867,13 @@
                     </div>
                     <p>Adds a new entry to the ticket history</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
     "ticket_history": "Requested additional information from the user"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -879,7 +892,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -897,7 +910,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -915,7 +928,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -933,15 +946,15 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
-                        <ul>
-                            <li>Updated history can be viewed through the <code>/ticket/info</code> endpoint</li>
-                            <li>Each update is recorded with date and time</li>
-                            <li>History is displayed in chronological order</li>
-                        </ul>
+                    <ul>
+                        <li>Updated history can be viewed through the <code>/ticket/info</code> endpoint</li>
+                        <li>Each update is recorded with date and time</li>
+                        <li>History is displayed in chronological order</li>
+                    </ul>
                 </div>
-                
+
                 <div id="list-tickets" class="endpoint">
                     <h3><i class="fas fa-list"></i> List Tickets</h3>
                     <div class="endpoint-header">
@@ -950,24 +963,28 @@
                     </div>
                     <p>Lists tickets from a specific author or all system tickets</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-search"></i> Query Parameters</h4>
                     <ul class="parameters">
-                        <li><code>author</code>: Author's email (optional, example: <code>author=johndoe@example.com</code>)</li>
+                        <li><code>author</code>: Author's email (optional, example:
+                            <code>author=johndoe@example.com</code>)</li>
                         <li><code>status</code>: Ticket status (optional, example: <code>status=pending</code>)</li>
-                        <li><code>date</code>: Tickets that were created after the date (optional, example: <code>date=2025-03-27</code>)</li>
+                        <li><code>date</code>: Tickets that were created after the date (optional, example:
+                            <code>date=2025-03-27</code>)</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-check-circle"></i> Valid Status Values</h4>
                     <p><code>pending</code>, <code>doing</code>, <code>conclued</code></p>
-                    
+
                     <h4><i class="fas fa-sticky-note"></i> Notes</h4>
                     <ul>
-                        <li>If <code>status</code> parameter is not provided, tickets of all statuses will be returned</li>
-                        <li>If <code>author</code> parameter is not provided, tickets from all authors will be returned</li>
+                        <li>If <code>status</code> parameter is not provided, tickets of all statuses will be returned
+                        </li>
+                        <li>If <code>author</code> parameter is not provided, tickets from all authors will be returned
+                        </li>
                         <li>If <code>date</code> parameter is not provided, tickets from all dates will be returned</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -1001,7 +1018,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1056,7 +1073,57 @@
                         </div>
                     </div>
                 </div>
-                
+
+                <div id="count-tickets" class="endpoint">
+                    <h3><i class="fas fa-table"></i> Get Tickets Count</h3>
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code>/ticket/count</code>
+                    </div>
+                    <p>Get count of tickets</p>
+                    <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
+
+                    <h4><i class="fas fa-reply"></i> Responses</h4>
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "tickets_total": 5,
+    "tickets_pending": 2,
+    "tickets_doing": 3,
+    "tickets_conclued": 0,
+    "status": true
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status error">403</span>
+                                <span>Unauthorized Role</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "message": "User role not authorized for this endpoint",
+    "status": false
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="get-ticket-information" class="endpoint">
                     <h3><i class="fas fa-info-circle"></i> Get Ticket Information</h3>
                     <div class="endpoint-header">
@@ -1065,17 +1132,19 @@
                     </div>
                     <p>Retrieves detailed information about a specific ticket, including its complete history</p>
                     <p><strong>Authorized Roles:</strong> <code>admin</code>, <code>master</code></p>
-                    
+
                     <h4><i class="fas fa-search"></i> Query Parameters</h4>
                     <ul class="parameters">
-                        <li><code>ticket_id</code>: Ticket ID (required, example: <code>ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code>)</li>
+                        <li><code>ticket_id</code>: Ticket ID (required, example:
+                            <code>ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code>)</li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-code"></i> Examples</h4>
                     <ul>
-                        <li>Get ticket information: <code>/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code></li>
+                        <li>Get ticket information:
+                            <code>/ticket/info?ticket_id=ticket_123e4567-e89b-12d3-a456-426614174000</code></li>
                     </ul>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -1128,7 +1197,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1146,7 +1215,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1164,7 +1233,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1183,7 +1252,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="remove-ticket" class="endpoint">
                     <h3><i class="fas fa-trash-alt"></i> Remove Ticket</h3>
                     <div class="endpoint-header">
@@ -1191,13 +1260,14 @@
                         <code>/ticket/remove</code>
                     </div>
                     <p>Removes a ticket from the system</p>
-                    <p><strong>Authorized Roles:</strong> <code>user</code> (ticket author only), <code>admin</code>, <code>master</code></p>
-                    
+                    <p><strong>Authorized Roles:</strong> <code>user</code> (ticket author only), <code>admin</code>,
+                        <code>master</code></p>
+
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
     "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000"
 }</code></pre>
-                    
+
                     <h4><i class="fas fa-reply"></i> Responses</h4>
                     <div class="response-container">
                         <div class="response-toggle">
@@ -1216,7 +1286,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1234,7 +1304,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1252,7 +1322,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -1272,408 +1342,13 @@
                     </div>
                 </div>
             </section>
-            
-            <section id="axios-examples" class="section">
-                <h2><i class="fas fa-code"></i> Axios Examples</h2>
-                <p>These examples demonstrate how to use the HCall API with the Axios HTTP client library for JavaScript/Node.js.</p>
-                
-                <div id="authentication-flow-axios" class="endpoint">
-                    <h3><i class="fas fa-exchange-alt"></i> Authentication Flow Example</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-// Function to obtain a JWT token
-async function getToken() {
-    try {
-        const response = await axios.post('domain/api/auth/register', {
-            "user_name": "John Doe",
-            "user_email": "johndoe@example.com",
-            "user_password": "Password123"
-        });
-
-        // Extract token from response
-        const token = response.data.jwt_token;
-        console.log('Token received:', token);
-
-        // Return token for later use
-        return token;
-    } catch (error) {
-        console.error('Error obtaining token:', error);
-        throw error;
-    }
-}
-
-// Function to make authenticated requests using JWT token
-async function makeAuthenticatedRequest(token) {
-    try {
-        const response = await axios.get('domain/api/user/fetch', {
-            headers: {
-                'Authorization': `Bearer ${token}` // Pass token in Authorization header
-            }
-        });
-
-        console.log('Response from authenticated request:', response.data);
-    } catch (error) {
-        console.error('Error in authenticated request:', error);
-    }
-}
-
-// Execute complete flow
-async function completeFlow() {
-    try {
-        // 1. Get token
-        const token = await getToken();
-
-        // 2. Make authenticated request with token
-        await makeAuthenticatedRequest(token);
-    } catch (error) {
-        console.error('Error in complete flow:', error);
-    }
-}
-
-// Start flow
-completeFlow();</code></pre>
-    </div>
-    
-                <div id="login-axios" class="endpoint">
-                    <h3><i class="fas fa-sign-in-alt"></i> Login with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function login() {
-    try {
-        const response = await axios.post('domain/api/auth/enter', {
-            "user_email": "johndoe@example.com",
-            "user_password": "Password123"
-        });
-        
-        console.log('Login successful:', response.data);
-        return response.data.token;
-    } catch (error) {
-        console.error('Login error:', error.response?.data || error.message);
-    }
-}
-
-login();</code></pre>
-                </div>
-                
-                <div id="create-master-user-axios" class="endpoint">
-                    <h3><i class="fas fa-user-shield"></i> Create Master User with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function createMasterUser() {
-    try {
-        const response = await axios.post('domain/api/master/create', {
-            "user_email": "admin@example.com",
-            "user_password": "StrongPassword123"
-        });
-        
-        console.log('Master user created:', response.data);
-        return response.data.token;
-    } catch (error) {
-        console.error('Error creating master user:', error.response?.data || error.message);
-    }
-}
-
-createMasterUser();</code></pre>
-                </div>
-                
-                <div id="delete-master-user-axios" class="endpoint">
-                    <h3><i class="fas fa-user-minus"></i> Delete Master User with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function deleteMasterUser() {
-    try {
-        const response = await axios.post('domain/api/master/delete', {
-            "user_email": "admin@example.com",
-            "user_password": "StrongPassword123"
-        });
-        
-        console.log('Master user deleted:', response.data);
-        return response.data.status;
-    } catch (error) {
-        console.error('Error deleting master user:', error.response?.data || error.message);
-    }
-}
-
-deleteMasterUser();</code></pre>
-                </div>
-                
-                <div id="create-user-axios" class="endpoint">
-                    <h3><i class="fas fa-user-plus"></i> Create User with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function createUser(token) {
-    try {
-        const response = await axios.post('domain/api/user/create', 
-            {
-                "user_name": "John Doe",
-                "user_email": "johndoe@example.com",
-                "user_password": "Password123",
-                "user_role": "user"
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('User created:', response.data);
-    } catch (error) {
-        console.error('Error creating user:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// createUser(jwtToken);</code></pre>
-                </div>
-                
-                <div id="get-user-info-axios" class="endpoint">
-                    <h3><i class="fas fa-user-check"></i> Get User Information with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function getUserInfo(token, email = null, role = null) {
-    try {
-        // Build query parameters
-        let url = 'domain/api/user/fetch';
-        const params = {};
-        
-        if (email) params.email = email;
-        if (role) params.role = role;
-        
-        const response = await axios.get(url, {
-            params: params,
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        console.log('User information:', response.data);
-    } catch (error) {
-        console.error('Error fetching user info:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// getUserInfo(jwtToken); // Get all users
-// getUserInfo(jwtToken, 'johndoe@example.com'); // Get specific user
-// getUserInfo(jwtToken, null, 'admin'); // Get users with admin role</code></pre>
-                </div>
-                
-                <div id="remove-user-axios" class="endpoint">
-                    <h3><i class="fas fa-user-minus"></i> Remove User with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function removeUser(token, email) {
-    try {
-        const response = await axios.post('domain/api/user/delete', 
-            {
-                "user_email": email
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('User removed:', response.data);
-    } catch (error) {
-        console.error('Error removing user:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// removeUser(jwtToken, 'johndoe@example.com');</code></pre>
-                </div>
-                
-                <div id="create-ticket-axios" class="endpoint">
-                    <h3><i class="fas fa-ticket-alt"></i> Create Ticket with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function createTicket(token, ticketData) {
-    try {
-        const response = await axios.post('domain/api/ticket/create', 
-            ticketData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket created:', response.data);
-    } catch (error) {
-        console.error('Error creating ticket:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// const ticketData = {
-//     "ticket_name": "Router Problem",
-//     "ticket_explain": "Need to configure the router in room 302",
-//     "ticket_images": [
-//         {
-//             "image_name": "router_front.jpg",
-//             "image_content": "[base64 encoded image data]",
-//             "image_type": "image/jpeg"
-//         },
-//         {
-//             "image_name": "router_back.jpg", 
-//             "image_content": "[base64 encoded image data]",
-//             "image_type": "image/jpeg"
-//         }
-//     ]
-// };
-// createTicket(jwtToken, ticketData);</code></pre>
-                </div>
-                
-                <div id="update-ticket-status-axios" class="endpoint">
-                    <h3><i class="fas fa-tasks"></i> Update Ticket Status with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function updateTicketStatus(token, ticketId, status) {
-    try {
-        const response = await axios.post('domain/api/ticket/edit', 
-            {
-                "ticket_id": ticketId,
-                "ticket_status": status
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket status updated:', response.data);
-    } catch (error) {
-        console.error('Error updating ticket status:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// updateTicketStatus(jwtToken, 'ticket_123e4567-e89b-12d3-a456-426614174000', 'doing');</code></pre>
-                </div>
-                
-                <div id="update-ticket-history-axios" class="endpoint">
-                    <h3><i class="fas fa-history"></i> Update Ticket History with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function updateTicketHistory(token, ticketId, update) {
-    try {
-        const response = await axios.post('domain/api/ticket/update', 
-            {
-                "ticket_id": ticketId,
-                "ticket_return": update
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket history updated:', response.data);
-    } catch (error) {
-        console.error('Error updating ticket history:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// updateTicketHistory(jwtToken, 'ticket_028492wsd88178', 'Purchasing routers');</code></pre>
-                </div>
-                
-                <div id="list-tickets-axios" class="endpoint">
-                    <h3><i class="fas fa-list-alt"></i> List Tickets with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function listTickets(token, author = null, status = null) {
-    try {
-        // Build query parameters
-        let url = 'domain/api/ticket/fetch';
-        const params = {};
-        
-        if (author) params.author = author;
-        if (status) params.status = status;
-        if (date) params.date = date;
-        
-        const response = await axios.get(url, {
-            params: params,
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        console.log('Tickets:', response.data);
-    } catch (error) {
-        console.error('Error fetching tickets:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// listTickets(jwtToken); // Get all tickets
-// listTickets(jwtToken, 'johndoe@example.com'); // Get tickets by author
-// listTickets(jwtToken, null, 'pending'); // Get pending tickets</code></pre>
-                </div>
-                
-                <div id="get-ticket-info-axios" class="endpoint">
-                    <h3><i class="fas fa-info-circle"></i> Get Ticket Information with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function getTicketInfo(token, ticketId) {
-    try {
-        const response = await axios.get('domain/api/ticket/info', {
-            params: {
-                ticket_id: ticketId
-            },
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        console.log('Ticket information:', response.data);
-    } catch (error) {
-        console.error('Error fetching ticket info:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// getTicketInfo(jwtToken, 'ticket_028492wsd88178');</code></pre>
-                </div>
-                
-                <div id="remove-ticket-axios" class="endpoint">
-                    <h3><i class="fas fa-trash-alt"></i> Remove Ticket with Axios</h3>
-                    <pre><code class="language-javascript">const axios = require('axios');
-
-async function removeTicket(token, ticketId) {
-    try {
-        const response = await axios.post('domain/api/ticket/remove', 
-            {
-                "ticket_id": ticketId
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
-        
-        console.log('Ticket removed:', response.data);
-    } catch (error) {
-        console.error('Error removing ticket:', error.response?.data || error.message);
-    }
-}
-
-// Example usage
-// removeTicket(jwtToken, 'ticket_123e4567-e89b-12d3-a456-426614174000');</code></pre>
-                </div>
-            </section>
         </main>
-    
+
         <div id="footer-container"></div>
     </div>
 
     <div id="overlay" class="overlay"></div>
     <button id="sidebar-toggle" class="sidebar-toggle"><i class="fas fa-bars"></i></button>
 </body>
+
 </html>
