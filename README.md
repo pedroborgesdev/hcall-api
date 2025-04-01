@@ -172,14 +172,6 @@ The HCall API implements multiple layers of security:
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
 
-## Support & Contribution
-
-For support:
-- Open an issue in our [GitHub repository](https://github.com/pedroborgesdev/hcall-api/issues)
-- Contact the maintainers at support@example.com
-
-Contributions are welcome! Please review our [contribution guidelines](CONTRIBUTING.md) before submitting pull requests.
-
 ## Acknowledgments
 
 - [Gin Web Framework](https://gin-gonic.com/) for high-performance API routing
