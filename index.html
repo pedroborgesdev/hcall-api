@@ -41,35 +41,279 @@
                 </ul>
 
                 <h3 id="base-url"><i class="fas fa-globe"></i> Base URL</h3>
-                <pre><code class="language-text">https://api.hcall.com/v1</code></pre>
+                <pre><code class="language-text">domain/api</code></pre>
 
                 <div class="section-spacer"></div>
 
+                <section id="environment-variables" class="section">
+                    <h2><i class="fas fa-cogs"></i> Environment Variables</h2>
+                    <p>The API relies on environment variables for configuration. These are set in a <code>.env</code> file in the root directory of the project. This section describes all available configuration options and their default values.</p>
+
+                    <div id="db-config" class="endpoint">
+                        <h3><i class="fas fa-database"></i> Database Configuration</h3>
+                        <p>These variables control the connection to your PostgreSQL database:</p>
+                        <table class="env-table">
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Description</th>
+                                    <th>Default</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>DB_HOST</code></td>
+                                    <td>Database server hostname or IP address</td>
+                                    <td>localhost</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DB_PORT</code></td>
+                                    <td>Database server port</td>
+                                    <td>5432</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DB_USER</code></td>
+                                    <td>Database username</td>
+                                    <td>-</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DB_PASSWORD</code></td>
+                                    <td>Database password</td>
+                                    <td>-</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DB_NAME</code></td>
+                                    <td>Database name</td>
+                                    <td>-</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>DB_SSLMODE</code></td>
+                                    <td>SSL mode for database connection</td>
+                                    <td>disable</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="security-settings" class="endpoint">
+                        <h3><i class="fas fa-lock"></i> Security Settings</h3>
+                        <p>Configure password and username requirements:</p>
+                        <table class="env-table">
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Description</th>
+                                    <th>Default</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>USERNAME_MIN_CHAR</code></td>
+                                    <td>Minimum characters for username</td>
+                                    <td>6</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>PASSWORD_MIN_CHAR</code></td>
+                                    <td>Minimum characters for password</td>
+                                    <td>8</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>PASSWORD_SPECIAL</code></td>
+                                    <td>Require special characters in password</td>
+                                    <td>True</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>PASSWORD_DIGITS</code></td>
+                                    <td>Require digits in password</td>
+                                    <td>True</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>PASSWORD_UPPERCASE</code></td>
+                                    <td>Require uppercase letters in password</td>
+                                    <td>True</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>PASSWORD_LOWERCASE</code></td>
+                                    <td>Require lowercase letters in password</td>
+                                    <td>True</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="jwt-config" class="endpoint">
+                        <h3><i class="fas fa-key"></i> JWT Configuration</h3>
+                        <p>Configure JSON Web Token settings:</p>
+                        <table class="env-table">
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Description</th>
+                                    <th>Default</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>JWT_SECRET</code></td>
+                                    <td>Secret key used for JWT token signing</td>
+                                    <td>-</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td><code>JWT_EXPIRATION_HOURS</code></td>
+                                    <td>Hours until JWT token expires</td>
+                                    <td>24</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="worker-config" class="endpoint">
+                        <h3><i class="fas fa-clock"></i> Worker Configuration</h3>
+                        <p>Configure background workers for ticket management:</p>
+                        <table class="env-table">
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Description</th>
+                                    <th>Default</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>WORKER_TICKET_LOOPTIME</code></td>
+                                    <td>Hours between ticket worker runs</td>
+                                    <td>24</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>WORKER_TICKET_REMOVE_AFTER</code></td>
+                                    <td>Days after which to remove tickets</td>
+                                    <td>30</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td><code>WORKER_TICKET_REMOVE_STATUS</code></td>
+                                    <td>Status of tickets to remove</td>
+                                    <td>conclued</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="server-config" class="endpoint">
+                        <h3><i class="fas fa-server"></i> Server Configuration</h3>
+                        <p>Configure server settings:</p>
+                        <table class="env-table">
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Description</th>
+                                    <th>Default</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>PORT</code></td>
+                                    <td>Port on which to run the API server</td>
+                                    <td>8080</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="endpoint">
+                        <h3><i class="fas fa-file-code"></i> Example .env File</h3>
+                        <p>Here's a complete example of what your .env file might look like:</p>
+                        <pre><code class="language-plaintext">DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=yourpassword
+DB_NAME=hcall
+DB_SSLMODE=disable
+
+USERNAME_MIN_CHAR=6
+PASSWORD_MIN_CHAR=8
+PASSWORD_SPECIAL=True
+PASSWORD_DIGITS=True
+PASSWORD_UPPERCASE=True
+PASSWORD_LOWERCASE=True
+
+WORKER_TICKET_LOOPTIME=24
+WORKER_TICKET_REMOVE_AFTER=30
+WORKER_TICKET_REMOVE_STATUS=conclued
+
+PORT=8080
+JWT_SECRET=your_secret_key_here
+JWT_EXPIRATION_HOURS=24</code></pre>
+                    </div>
+                </section>
+
                 <h3 id="authentication-requirements"><i class="fas fa-lock"></i> Authentication Requirements</h3>
-                <p>All endpoints, except <code>/user/create</code> and <code>/auth/login</code>, require a valid JWT
-                    token. The token is passed via the Authorization header.</p>
+                <p>All API endpoints require a valid JWT token in the Authorization header except for the <code>/auth</code> endpoints and <code>/master</code> endpoints. The token is passed via the Authorization header.</p>
 
                 <h4><i class="fas fa-key"></i> Authorization Header</h4>
-                <pre><code class="language-text">Authorization: Bearer &lt;your_token&gt;</code></pre>
+                <pre><code class="language-text">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
 
-                <h4><i class="fas fa-exclamation-triangle"></i> Unauthorized Access</h4>
-                <p>If a token is invalid or expired, the API will return a <code>401 Unauthorized</code> status with the
-                    following response:</p>
-                <pre><code class="language-json">{
-    "message": "Unauthorized",
-    "status": false
-}</code></pre>
+                <p>JWT tokens are obtained through the login or register endpoints. These tokens expire after 24 hours and must be renewed by logging in again.</p>
+
+                <p>The JWT token is used to identify the user making the request. All actions performed by the API will be associated with the user identified by the token, so there is no need to send user identification in the request body.</p>
 
                 <h3 id="user-roles"><i class="fas fa-users-cog"></i> User Roles and Permissions</h3>
                 <p>The API supports three user roles, each with different permission levels:</p>
-                <ul>
-                    <li><strong>User:</strong> Can create tickets, update their own tickets, and view their ticket
-                        history</li>
-                    <li><strong>Admin:</strong> Can do everything a User can, plus manage other users' tickets and view
-                        all tickets</li>
-                    <li><strong>Master:</strong> Can do everything an Admin can, plus create and remove users, including
-                        other masters</li>
-                </ul>
+                <ol>
+                    <li><strong>User</strong>
+                        <ul>
+                            <li>Default role for regular users</li>
+                            <li>Access limited to:
+                                <ul>
+                                    <li>Authentication endpoints (<code>/auth/*</code>)</li>
+                                    <li>Creating tickets (<code>/ticket/create</code>)</li>
+                                    <li>Removing tickets (<code>/ticket/remove</code>)</li>
+                                    <li>Viewing ticket count (<code>/ticket/count</code>)</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Admin</strong>
+                        <ul>
+                            <li>Administrative role with broader access</li>
+                            <li>Access to all endpoints except:
+                                <ul>
+                                    <li>Can only create users with the "user" role</li>
+                                </ul>
+                            </li>
+                            <li>When using <code>/user/create</code>, can only create users with the "user" role</li>
+                        </ul>
+                    </li>
+                    <li><strong>Master</strong>
+                        <ul>
+                            <li>Highest privileged role</li>
+                            <li>Full access to all endpoints</li>
+                            <li>Created using the <code>/master/create</code> endpoint</li>
+                        </ul>
+                    </li>
+                </ol>
             </section>
 
             <section id="master-creation" class="section">
@@ -128,6 +372,7 @@
                             <div class="response">
                                 <pre><code class="language-json">{
     "message": "Master user already exists",
+    "reason": "error message",
     "status": false
 }</code></pre>
                             </div>
@@ -151,8 +396,8 @@
 
                     <h4><i class="fas fa-paper-plane"></i> Request Body</h4>
                     <pre><code class="language-json">{
-    "user_email": "master@example.com",
-    "user_password": "StrongPassword123"
+    "master_email": "master@example.com",
+    "master_password": "StrongPassword123"
 }</code></pre>
 
                     <h4><i class="fas fa-reply"></i> Responses</h4>
@@ -185,7 +430,8 @@
                         <div class="response-content">
                             <div class="response">
                                 <pre><code class="language-json">{
-    "message": "Invalid master credentials",
+    "message": "Invalid master password",
+    "reason": "error message",
     "status": false
 }</code></pre>
                             </div>
@@ -204,6 +450,7 @@
                             <div class="response">
                                 <pre><code class="language-json">{
     "message": "Master user not found",
+    "reason": "error message",
     "status": false
 }</code></pre>
                             </div>
@@ -242,7 +489,7 @@
                         <div class="response-content">
                             <div class="response">
                                 <pre><code class="language-json">{
-    "message": "User has been loged in",
+    "message": "User has been logged in",
     "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }</code></pre>
@@ -254,32 +501,15 @@
                         <div class="response-toggle">
                             <div class="response-toggle-left">
                                 <span class="status error">400</span>
-                                <span>Email Not Registered</span>
+                                <span>Invalid Credentials</span>
                             </div>
                             <span class="arrow">▼</span>
                         </div>
                         <div class="response-content">
                             <div class="response">
                                 <pre><code class="language-json">{
-    "message": "Email aren't registered",
-    "status": false
-}</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="response-container">
-                        <div class="response-toggle">
-                            <div class="response-toggle-left">
-                                <span class="status error">400</span>
-                                <span>Incorrect Password</span>
-                            </div>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="response-content">
-                            <div class="response">
-                                <pre><code class="language-json">{
-    "message": "Password is incorrect",
+    "message": "Invalid credentials",
+    "reason": "error message",
     "status": false
 }</code></pre>
                             </div>
@@ -327,32 +557,15 @@
                         <div class="response-toggle">
                             <div class="response-toggle-left">
                                 <span class="status error">400</span>
-                                <span>Email Already Exists</span>
+                                <span>Error</span>
                             </div>
                             <span class="arrow">▼</span>
                         </div>
                         <div class="response-content">
                             <div class="response">
                                 <pre><code class="language-json">{
-    "message": "Email already exists",
-    "status": false
-}</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="response-container">
-                        <div class="response-toggle">
-                            <div class="response-toggle-left">
-                                <span class="status error">400</span>
-                                <span>Invalid Password</span>
-                            </div>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="response-content">
-                            <div class="response">
-                                <pre><code class="language-json">{
-    "message": "Password is invalid",
+    "message": "Error message",
+    "reason": "error details",
     "status": false
 }</code></pre>
                             </div>
@@ -404,7 +617,29 @@
                         <div class="response-toggle">
                             <div class="response-toggle-left">
                                 <span class="status success">200</span>
-                                <span>Success</span>
+                                <span>Success - Specific User</span>
+                            </div>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="response-content">
+                            <div class="response">
+                                <pre><code class="language-json">{
+    "user_name": "John Doe",
+    "user_email": "johndoe@example.com",
+    "user_password": "********",
+    "user_created_at": "2023-01-01T12:00:00Z",
+    "user_role": "user",
+    "status": true
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="response-container">
+                        <div class="response-toggle">
+                            <div class="response-toggle-left">
+                                <span class="status success">200</span>
+                                <span>Success - User List</span>
                             </div>
                             <span class="arrow">▼</span>
                         </div>
@@ -441,12 +676,13 @@
                             <div class="response">
                                 <pre><code class="language-json">{
     "message": "Email aren't registered",
+    "reason": "error message",
     "status": false
 }</code></pre>
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="response-container">
                         <div class="response-toggle">
                             <div class="response-toggle-left">
@@ -459,24 +695,7 @@
                             <div class="response">
                                 <pre><code class="language-json">{
     "message": "No users found with specified role",
-    "status": false
-}</code></pre>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="response-container">
-                        <div class="response-toggle">
-                            <div class="response-toggle-left">
-                                <span class="status error">403</span>
-                                <span>Unauthorized Role</span>
-                            </div>
-                            <span class="arrow">▼</span>
-                        </div>
-                        <div class="response-content">
-                            <div class="response">
-                                <pre><code class="language-json">{
-    "message": "User role not authorized for this endpoint",
+    "reason": "error message",
     "status": false
 }</code></pre>
                             </div>

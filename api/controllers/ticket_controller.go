@@ -22,17 +22,6 @@ func NewTicketController() *TicketController {
 	}
 }
 
-// CreateTicket handles ticket creation
-// @Summary Create a new ticket
-// @Description Creates a new ticket with the provided information
-// @Accept json
-// @Produce json
-// @Param body body utils.CreateTicketRequest true "Ticket details"
-// @Success 200 {object} utils.MessageResponse
-// @Failure 400 {object} utils.MessageResponse
-// @Failure 403 {object} utils.MessageResponse
-// @Security Bearer
-// @Router /ticket/create [post]
 func (c *TicketController) CreateTicket(ctx *gin.Context) {
 	var request utils.CreateTicketRequest
 
@@ -76,17 +65,6 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 	})
 }
 
-// GetTickets handles listing tickets
-// @Summary List tickets
-// @Description Lists tickets from a specific author or all system tickets
-// @Accept json
-// @Produce json
-// @Param author query string false "Author's email"
-// @Param status query string false "Ticket status"
-// @Success 200 {object} utils.TicketsListResponse
-// @Failure 404 {object} utils.MessageResponse
-// @Security Bearer
-// @Router /ticket/fetch [get]
 func (c *TicketController) GetTickets(ctx *gin.Context) {
 	author := ctx.Query("author")
 	status := ctx.Query("status")
@@ -131,16 +109,6 @@ func (c *TicketController) GetTickets(ctx *gin.Context) {
 	})
 }
 
-// GetTicketDetails handles getting ticket details
-// @Summary Get ticket details
-// @Description Retrieves detailed information about a specific ticket
-// @Accept json
-// @Produce json
-// @Param ticket_id query string true "Ticket ID"
-// @Success 200 {object} utils.TicketResponse
-// @Failure 404 {object} utils.MessageResponse
-// @Security Bearer
-// @Router /ticket/info [get]
 func (c *TicketController) GetTicketDetails(ctx *gin.Context) {
 	ticketID := ctx.Query("ticket_id")
 	if ticketID == "" {
@@ -184,16 +152,6 @@ func (c *TicketController) GetTicketDetails(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, response)
 }
 
-// UpdateTicketStatus handles updating ticket status
-// @Summary Update ticket status
-// @Description Updates the status of a specific ticket
-// @Accept json
-// @Produce json
-// @Param body body utils.UpdateTicketStatusRequest true "Ticket status update details"
-// @Success 200 {object} utils.MessageResponse
-// @Failure 400 {object} utils.MessageResponse
-// @Security Bearer
-// @Router /ticket/edit [post]
 func (c *TicketController) UpdateTicketStatus(ctx *gin.Context) {
 	var request utils.UpdateTicketStatusRequest
 
@@ -224,16 +182,6 @@ func (c *TicketController) UpdateTicketStatus(ctx *gin.Context) {
 	})
 }
 
-// UpdateTicketHistory handles updating ticket history
-// @Summary Update ticket history
-// @Description Adds a new entry to the ticket's history
-// @Accept json
-// @Produce json
-// @Param body body utils.UpdateTicketHistoryRequest true "Ticket history update details"
-// @Success 200 {object} utils.MessageResponse
-// @Failure 400 {object} utils.MessageResponse
-// @Security Bearer
-// @Router /ticket/update [post]
 func (c *TicketController) UpdateTicketHistory(ctx *gin.Context) {
 	var request utils.UpdateTicketHistoryRequest
 
@@ -264,16 +212,6 @@ func (c *TicketController) UpdateTicketHistory(ctx *gin.Context) {
 	})
 }
 
-// DeleteTicket handles ticket deletion
-// @Summary Delete ticket
-// @Description Deletes a specific ticket
-// @Accept json
-// @Produce json
-// @Param body body utils.RemoveTicketRequest true "Ticket deletion details"
-// @Success 200 {object} utils.MessageResponse
-// @Failure 400 {object} utils.MessageResponse
-// @Security Bearer
-// @Router /ticket/remove [post]
 func (c *TicketController) DeleteTicket(ctx *gin.Context) {
 	var request utils.RemoveTicketRequest
 

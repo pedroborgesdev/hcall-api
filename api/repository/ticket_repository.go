@@ -36,82 +36,70 @@ func (r *TicketRepository) RemoveTicketsWithStatus(status models.TicketStatus, r
 }
 
 // CreateTicket creates a new ticket
-// CreateTicket creates a new ticket
 func (r *TicketRepository) CreateTicket(ticket *models.Ticket) error {
-	// First, verify if the user exists
-	var user models.User
-	if err := r.DB.Where("email = ?", ticket.AuthorEmail).First(&user).Error; err != nil {
-		return errors.New("author not found")
-	}
+	return database.ExecuteInTransaction(r.DB, func(tx *gorm.DB) error {
+		// First, verify if the user exists
+		var user models.User
+		if err := tx.Where("email = ?", ticket.AuthorEmail).First(&user).Error; err != nil {
+			return errors.New("author not found")
+		}
 
-	// Set the correct author_id from the found user
-	ticket.AuthorID = user.ID
+		// Set the correct author_id from the found user
+		ticket.AuthorID = user.ID
 
-	// Now create the ticket
-	return r.DB.Create(ticket).Error
+		// Now create the ticket
+		return tx.Create(ticket).Error
+	})
 }
 
 func (r *TicketRepository) CountTicket(status string) error {
-	// Start transaction
-	tx := r.DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
+	return database.ExecuteInTransaction(r.DB, func(tx *gorm.DB) error {
+		var counters models.Counters
+		counters.ID = 1
 
-	var counters models.Counters
-	counters.ID = 1
-
-	// Get the current counter or create if not exists - within transaction
-	if err := tx.First(&counters).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			counters = models.Counters{Pending: 0, Doing: 0, Conclued: 0}
-			if err := tx.Create(&counters).Error; err != nil {
-				tx.Rollback()
+		// Get the current counter or create if not exists - within transaction
+		if err := tx.First(&counters).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				counters = models.Counters{Pending: 0, Doing: 0, Conclued: 0}
+				if err := tx.Create(&counters).Error; err != nil {
+					return err
+				}
+			} else {
 				return err
 			}
-		} else {
-			tx.Rollback()
-			return err
 		}
-	}
 
-	if status == "pending" {
-		log.Println("pending")
+		if status == "pending" {
+			log.Println("pending")
+			if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+				Update("pending", gorm.Expr("pending +?", 1)).Error; err != nil {
+				return err
+			}
+		}
+
+		if status == "doing" {
+			log.Println("doing")
+			if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+				Update("doing", gorm.Expr("doing +?", 1)).Error; err != nil {
+				return err
+			}
+		}
+
+		if status == "conclued" {
+			log.Println("conclued")
+			if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
+				Update("conclued", gorm.Expr("conclued +?", 1)).Error; err != nil {
+				return err
+			}
+		}
+
 		if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
-			Update("pending", gorm.Expr("pending +?", 1)).Error; err != nil {
-			tx.Rollback()
+			Update("total", gorm.Expr("total +?", 1)).Error; err != nil {
 			return err
 		}
-	}
 
-	if status == "doing" {
-		log.Println("doing")
-		if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
-			Update("doing", gorm.Expr("doing +?", 1)).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	if status == "conclued" {
-		log.Println("conclued")
-		if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
-			Update("conclued", gorm.Expr("conclued +?", 1)).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	if err := tx.Model(&models.Counters{}).Where("id =?", counters.ID).
-		Update("total", gorm.Expr("total +?", 1)).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	// Commit the transaction
-	return tx.Commit().Error
+		return nil
+	})
 }
 
 func (r *TicketRepository) GetCounters() (*models.Counters, error) {
@@ -292,26 +280,28 @@ func (r *TicketRepository) GetTicketsByAuthorAndStatusAndDate(authorEmail string
 
 // UpdateTicketStatus updates a ticket's status
 func (r *TicketRepository) UpdateTicketStatus(id string, status models.TicketStatus) error {
-	//get status of ticket id
-	var ticket models.Ticket
-	if err := r.DB.Where("id =?", id).First(&ticket).Error; err != nil {
-		return err
-	}
+	return database.ExecuteInTransaction(r.DB, func(tx *gorm.DB) error {
+		//get status of ticket id
+		var ticket models.Ticket
+		if err := tx.Where("id =?", id).First(&ticket).Error; err != nil {
+			return err
+		}
 
-	// get current status of ticket
-	currentStatus := ticket.Status
+		// get current status of ticket
+		currentStatus := ticket.Status
 
-	if currentStatus == status {
-		return errors.New("New status is the same as the current status")
-	}
+		if currentStatus == status {
+			return errors.New("New status is the same as the current status")
+		}
 
-	result := r.DB.Model(&models.Ticket{}).Where("id = ?", id).Update("status", status)
+		result := tx.Model(&models.Ticket{}).Where("id = ?", id).Update("status", status)
 
-	if result.RowsAffected == 0 {
-		return errors.New("ticket not found")
-	}
+		if result.RowsAffected == 0 {
+			return errors.New("ticket not found")
+		}
 
-	return result.Error
+		return result.Error
+	})
 }
 
 // AddTicketHistory adds a new entry to the ticket's history
@@ -321,39 +311,29 @@ func (r *TicketRepository) AddTicketHistory(history *models.TicketHistory) error
 
 // DeleteTicket deletes a ticket
 func (r *TicketRepository) DeleteTicket(id string) error {
-	// Start a transaction
-	tx := r.DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
+	return database.ExecuteInTransaction(r.DB, func(tx *gorm.DB) error {
+		// Delete images associated with the ticket
+		if err := tx.Where("ticket_id = ?", id).Delete(&models.Image{}).Error; err != nil {
+			return err
 		}
-	}()
 
-	// Delete images associated with the ticket
-	if err := tx.Where("ticket_id = ?", id).Delete(&models.Image{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
+		// Delete history associated with the ticket
+		if err := tx.Where("ticket_id = ?", id).Delete(&models.TicketHistory{}).Error; err != nil {
+			return err
+		}
 
-	// Delete history associated with the ticket
-	if err := tx.Where("ticket_id = ?", id).Delete(&models.TicketHistory{}).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
+		// Delete the ticket
+		result := tx.Where("id = ?", id).Delete(&models.Ticket{})
+		if result.RowsAffected == 0 {
+			return errors.New("ticket not found")
+		}
 
-	// Delete the ticket
-	result := tx.Where("id = ?", id).Delete(&models.Ticket{})
-	if result.RowsAffected == 0 {
-		tx.Rollback()
-		return errors.New("ticket not found")
-	}
+		if result.Error != nil {
+			return result.Error
+		}
 
-	if result.Error != nil {
-		tx.Rollback()
-		return result.Error
-	}
-
-	return tx.Commit().Error
+		return nil
+	})
 }
 
 // CreateImage creates a new image

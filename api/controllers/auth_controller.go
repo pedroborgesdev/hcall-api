@@ -21,15 +21,6 @@ func NewAuthController() *AuthController {
 	}
 }
 
-// Register handles user registration
-// @Summary Register a new user
-// @Description Register a new user in the system
-// @Accept json
-// @Produce json
-// @Param body body utils.RegisterRequest true "Registration details"
-// @Success 200 {object} utils.AuthResponse
-// @Failure 400 {object} utils.MessageResponse
-// @Router /auth/register [post]
 func (c *AuthController) Register(ctx *gin.Context) {
 	var request utils.RegisterRequest
 
@@ -62,14 +53,6 @@ func (c *AuthController) Register(ctx *gin.Context) {
 	})
 }
 
-// Login handles user login
-// @Summary Login user
-// @Description Authenticates a user and returns a JWT token
-// @Accept json
-// @Produce json
-// @Param body body utils.LoginRequest true "Login credentials"
-// @Success 200 {object} utils.AuthResponse
-// @Failure 400 {object} utils.MessageResponse
 // @Router /auth/enter [post]
 func (c *AuthController) Login(ctx *gin.Context) {
 	var request utils.LoginRequest
@@ -104,15 +87,6 @@ func (c *AuthController) Login(ctx *gin.Context) {
 	})
 }
 
-// CreateMaster handles the creation of a master user
-// @Summary Create a master user
-// @Description Creates a user with master privileges (only works when no master exists)
-// @Accept json
-// @Produce json
-// @Param body body utils.CreateMasterRequest true "Master user details"
-// @Success 200 {object} utils.AuthResponse
-// @Failure 403 {object} utils.MessageResponse
-// @Router /master/create [post]
 func (c *AuthController) CreateMaster(ctx *gin.Context) {
 	var request utils.CreateMasterRequest
 
@@ -146,16 +120,6 @@ func (c *AuthController) CreateMaster(ctx *gin.Context) {
 	})
 }
 
-// DeleteMaster handles the deletion of a master user
-// @Summary Delete a master user
-// @Description Removes a user with master privileges
-// @Accept json
-// @Produce json
-// @Param body body utils.DeleteMasterRequest true "Master user credentials"
-// @Success 200 {object} utils.MessageResponse
-// @Failure 403 {object} utils.MessageResponse
-// @Failure 404 {object} utils.MessageResponse
-// @Router /master/delete [post]
 func (c *AuthController) DeleteMaster(ctx *gin.Context) {
 	var request utils.DeleteMasterRequest
 

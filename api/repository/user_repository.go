@@ -97,22 +97,51 @@ func (r *UserRepository) GetUsersByRole(role models.Role) ([]models.User, error)
 
 // DeleteUser deletes a user by email
 func (r *UserRepository) DeleteUser(email string) error {
-	result := r.DB.Where("email = ?", email).Delete(&models.User{})
+	return database.ExecuteInTransaction(r.DB, func(tx *gorm.DB) error {
+		// Verifique se existe algum ticket associado a este usuário
+		var count int64
+		if err := tx.Model(&models.Ticket{}).Where("author_email = ?", email).Count(&count).Error; err != nil {
+			return err
+		}
 
-	if result.RowsAffected == 0 {
-		return errors.New("user not found")
-	}
+		if count > 0 {
+			return errors.New("cannot delete user with existing tickets")
+		}
 
-	return result.Error
+		result := tx.Where("email = ?", email).Delete(&models.User{})
+
+		if result.RowsAffected == 0 {
+			return errors.New("user not found")
+		}
+
+		return result.Error
+	})
 }
 
 // DeleteMaster deletes the master user
 func (r *UserRepository) DeleteMaster() error {
-	result := r.DB.Where("role = ?", models.MasterRole).Delete(&models.User{})
+	return database.ExecuteInTransaction(r.DB, func(tx *gorm.DB) error {
+		// Verifique se existe algum ticket associado ao master
+		var master models.User
+		if err := tx.Where("role = ?", models.MasterRole).First(&master).Error; err != nil {
+			return errors.New("master user not found")
+		}
 
-	if result.RowsAffected == 0 {
-		return errors.New("master user not found")
-	}
+		var count int64
+		if err := tx.Model(&models.Ticket{}).Where("author_email = ?", master.Email).Count(&count).Error; err != nil {
+			return err
+		}
 
-	return result.Error
+		if count > 0 {
+			return errors.New("cannot delete master with existing tickets")
+		}
+
+		result := tx.Where("role = ?", models.MasterRole).Delete(&models.User{})
+
+		if result.RowsAffected == 0 {
+			return errors.New("master user not found")
+		}
+
+		return result.Error
+	})
 }

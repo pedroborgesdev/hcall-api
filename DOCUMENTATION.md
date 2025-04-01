@@ -13,9 +13,41 @@
 domain/api
 ```
 
+## Environment Configuration
+
+The API relies on environment variables for configuration. These can be set in a `.env` file in the root directory. Below are the key environment variables used:
+
+### Database Configuration
+- `DB_HOST`: Database host (default: "localhost")
+- `DB_PORT`: Database port (default: "5432")
+- `DB_USER`: Database username
+- `DB_PASSWORD`: Database password
+- `DB_NAME`: Database name
+- `DB_SSLMODE`: SSL mode for database connection (default: "disable")
+
+### Security Settings
+- `USERNAME_MIN_CHAR`: Minimum characters for username (default: 6)
+- `PASSWORD_MIN_CHAR`: Minimum characters for password (default: 8)
+- `PASSWORD_SPECIAL`: Require special characters in password (default: True)
+- `PASSWORD_DIGITS`: Require digits in password (default: True)
+- `PASSWORD_UPPERCASE`: Require uppercase letters in password (default: True)
+- `PASSWORD_LOWERCASE`: Require lowercase letters in password (default: True)
+
+### JWT Configuration
+- `JWT_SECRET`: Secret key used for JWT token signing
+- `JWT_EXPIRATION_HOURS`: Hours until JWT token expires (default: 24)
+
+### Worker Configuration
+- `WORKER_TICKET_LOOPTIME`: Hours between ticket worker runs (default: 24)
+- `WORKER_TICKET_REMOVE_AFTER`: Days after which to remove tickets (default: 30)
+- `WORKER_TICKET_REMOVE_STATUS`: Status of tickets to remove (default: "conclued")
+
+### Server Configuration
+- `PORT`: Port on which to run the API server (default: 8080)
+
 ## Authentication Requirements
 
-All API endpoints require a valid JWT token in the Authorization header except for the `/auth` endpoints. The token must be included as a Bearer token in the following format:
+All API endpoints require a valid JWT token in the Authorization header except for the `/auth` endpoints and `/master` endpoints. The token must be included as a Bearer token in the following format:
 
 ```
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -35,11 +67,12 @@ The API supports three user roles with different access levels:
      - Authentication endpoints (`/auth/*`)
      - Creating tickets (`/ticket/create`)
      - Removing tickets (`/ticket/remove`)
+     - Viewing ticket count (`/ticket/count`)
 
 2. **Admin**
    - Administrative role with broader access
    - Access to all endpoints except:
-     - Cannot create tickets
+     - Can only create users with the "user" role
    - When using `/user/create`, can only create users with the "user" role
 
 3. **Master**
@@ -74,6 +107,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Master user already exists",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -86,8 +120,8 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "user_email": "master@example.com",
-    "user_password": "StrongPassword123"
+    "master_email": "master@example.com",
+    "master_password": "StrongPassword123"
 }
 ```
 - **Responses:**
@@ -101,7 +135,8 @@ The API supports three user roles with different access levels:
   - Invalid Credentials (403):
 ```json
 {
-    "message": "Invalid master credentials",
+    "message": "Invalid master password",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -109,6 +144,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Master user not found",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -130,22 +166,16 @@ The API supports three user roles with different access levels:
   - Success (200):
 ```json
 {
-    "message": "User has been loged in",
+    "message": "User has been logged in",
     "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "status": true
 }
 ```
-  - Email Not Registered (400):
+  - Email Not Registered/Incorrect Password (400):
 ```json
 {
-    "message": "Email aren't registered",
-    "status": false
-}
-```
-  - Incorrect Password (400):
-```json
-{
-    "message": "Password is incorrect",
+    "message": "Invalid credentials",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -174,14 +204,8 @@ The API supports three user roles with different access levels:
   - Email Already Exists (400):
 ```json
 {
-    "message": "Email already exists",
-    "status": false
-}
-```
-  - Invalid Password (400):
-```json
-{
-    "message": "Password is invalid",
+    "message": "Error message",
+    "reason": "error details",
     "status": false
 }
 ```
@@ -238,6 +262,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Email aren't registered",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -245,13 +270,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "No users found with specified role",
-    "status": false
-}
-```
-  - Unauthorized Role (403):
-```json
-{
-    "message": "User role not authorized for this endpoint",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -281,29 +300,16 @@ The API supports three user roles with different access levels:
     "status": true
 }
 ```
-  - Email Already Exists (400):
+  - Error (400):
 ```json
 {
-    "message": "Email already exists",
-    "status": false
-}
-```
-  - Invalid Data (400):
-```json
-{
-    "message": "Invalid data",
-    "status": false
-}
-```
-  - Unauthorized Role (403):
-```json
-{
-    "message": "User role not authorized for this endpoint",
+    "message": "User creation failed",
+    "reason": "error message",
     "status": false
 }
 ```
 
-### Remove User
+### Delete User
 - **Endpoint:** `POST /user/delete`
 - **Description:** Removes a user from the system
 - **Authorized Roles:** `admin`, `master`
@@ -324,14 +330,16 @@ The API supports three user roles with different access levels:
   - User Not Found (404):
 ```json
 {
-    "message": "Email aren't registered",
+    "message": "User not found",
+    "reason": "error message",
     "status": false
 }
 ```
-  - Unauthorized Role (403):
+  - Internal Server Error (500):
 ```json
 {
-    "message": "User role not authorized for this endpoint",
+    "message": "Internal server error",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -341,13 +349,13 @@ The API supports three user roles with different access levels:
 ### Create Ticket
 - **Endpoint:** `POST /ticket/create`
 - **Description:** Creates a new ticket in the system
-- **Authorized Roles:** `user`, `admin`, `master`
+- **Authorized Roles:** `user`
 - **Request Body:**
 ```json
 {
     "ticket_name": "Router Problem",
     "ticket_explain": "Need to configure the router in room 302",
-    "tickes_images": [
+    "ticket_images": [
         {
             "image_name": "router_front.jpg",
             "image_content": "base64_encoded_image_data...",
@@ -356,7 +364,7 @@ The API supports three user roles with different access levels:
         {
             "image_name": "router_back.jpg",
             "image_content": "base64_encoded_image_data...",
-            "image_ype": "image/jpeg"
+            "image_type": "image/jpeg"
         }
     ]
 }
@@ -364,9 +372,7 @@ The API supports three user roles with different access levels:
 - **Notes:**
   - The `ticket_images` field is optional and can contain multiple images
   - Each image must include `image_name`, `image_content` (base64 encoded), and `image_type` fields
-  - Supported image types: `image/jpeg`, `image/png`
-  - Maximum file size per image: 5MB
-  - Maximum number of images per ticket: 10
+  - Supported image types: `image/jpeg`, `image/png`, `image/gif`
 - **Responses:**
   - Success (200):
 ```json
@@ -375,17 +381,11 @@ The API supports three user roles with different access levels:
     "status": true
 }
 ```
-  - Invalid Data (400):
+  - Error (400):
 ```json
 {
-    "message": "Invalid data",
-    "status": false
-}
-```
-  - Unauthorized Role (403):
-```json
-{
-    "message": "Admin role not authorized to create tickets",
+    "message": "Ticket creation failed",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -406,28 +406,15 @@ The API supports three user roles with different access levels:
   - Success (200):
 ```json
 {
-    "message": "Ticket has been edited",
+    "message": "Ticket status has been updated",
     "status": true
 }
 ```
-  - Ticket Not Found (404):
+  - Error (400):
 ```json
 {
-    "message": "Ticket hasn't found",
-    "status": false
-}
-```
-  - Invalid Status (400):
-```json
-{
-    "message": "Invalid data",
-    "status": false
-}
-```
-  - Unauthorized Role (403):
-```json
-{
-    "message": "User role not authorized for this endpoint",
+    "message": "Ticket status update failed",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -439,7 +426,7 @@ The API supports three user roles with different access levels:
 - **Request Body:**
 ```json
 {
-    "ticket_id": "ticket_028492wsd88178",
+    "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
     "ticket_return": "Purchasing routers"
 }
 ```
@@ -447,14 +434,15 @@ The API supports three user roles with different access levels:
   - Success (200):
 ```json
 {
-    "message": "Update has been setting up",
+    "message": "Ticket history has been added",
     "status": true
 }
 ```
-  - Ticket Not Found (404):
+  - Error (400):
 ```json
 {
-    "message": "Ticket hasn't found",
+    "message": "Ticket history add failed",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -462,13 +450,6 @@ The API supports three user roles with different access levels:
   - Updated history can be viewed through the `/ticket/info` endpoint
   - Each update is recorded with date and time
   - History is displayed in chronological order
-  - Unauthorized Role (403):
-```json
-{
-    "message": "User role not authorized for this endpoint",
-    "status": false
-}
-```
 
 ### List Tickets
 - **Endpoint:** `GET /ticket/fetch`
@@ -478,6 +459,7 @@ The API supports three user roles with different access levels:
   - `author`: Author's email (optional, example: `author=johndoe@example.com`)
   - `status`: Ticket status (optional, example: `status=pending`)
   - `date`: Tickets that were created after the date (optional, example: `date=2025-03-27`)
+  - `name`: Ticket name for filtering (optional, example: `name=Router`)
 - **Valid Status Values:** `pending`, `doing`, `conclued`
 - **Notes:**
   - If `status` parameter is not provided, tickets of all statuses will be returned
@@ -487,7 +469,8 @@ The API supports three user roles with different access levels:
   - List pending tickets: `/ticket/fetch?status=pending`
   - List tickets by author: `/ticket/fetch?author=johndoe@example.com`
   - List pending tickets by author: `/ticket/fetch?author=johndoe@example.com&status=pending`
-  - List tickets by author were created after the date: `/ticket/fetch?author=johndoe@example.com&date=2025-01-20`
+  - List tickets by author created after the date: `/ticket/fetch?author=johndoe@example.com&date=2025-01-20`
+  - List tickets by name: `/ticket/fetch?name=Router`
 - **Responses:**
   - Success (200):
 ```json
@@ -496,12 +479,16 @@ The API supports three user roles with different access levels:
         {
             "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
             "ticket_name": "Printer Problem",
-            "ticket_status": "pending"
+            "ticket_status": "pending",
+            "ticket_author": "John Doe",
+            "ticket_date": "2023-07-15T14:30:45Z"
         },
         {
             "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174001",
             "ticket_name": "Monitor Problem",
-            "ticket_status": "doing"
+            "ticket_status": "doing",
+            "ticket_author": "Jane Smith",
+            "ticket_date": "2023-07-16T09:15:22Z"
         }
     ],
     "status": true
@@ -510,7 +497,7 @@ The API supports three user roles with different access levels:
   - No Tickets Found (404):
 ```json
 {
-    "message": "Author don't have tickets",
+    "message": "No tickets found",
     "status": false
 }
 ```
@@ -518,21 +505,15 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Invalid date format",
-    "status": false
-}
-```
-  - Unauthorized Role (403):
-```json
-{
-    "message": "User role not authorized for this endpoint",
+    "reason": "error message",
     "status": false
 }
 ```
 
 ### Get Tickets Count
 - **Endpoint:** `GET /ticket/count`
-- **Description:** Lists tickets count
-- **Authorized Roles:** `admin`, `master`
+- **Description:** Lists tickets count by status
+- **Authorized Roles:** `user`, `admin`, `master`
 - **Responses:**
   - Success (200):
 ```json
@@ -544,10 +525,11 @@ The API supports three user roles with different access levels:
     "status": true
 }
 ```
-  - Unauthorized Role (403):
+  - Error (404):
 ```json
 {
-    "message": "User role not authorized for this endpoint",
+    "message": "Ticket not found",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -562,22 +544,23 @@ The API supports three user roles with different access levels:
   - Success (200):
 ```json
 {
-    "ticket_id": "ticket_028492wsd88178",
+    "ticket_id": "ticket_123e4567-e89b-12d3-a456-426614174000",
     "ticket_name": "Router Problem",
-    "ticket_status": "doing",
+    "tickt_status": "doing",
     "ticket_explain": "Need to purchase new routers",
+    "ticket_email": "johndoe@example.com",
     "ticket_images": [
         {
             "image_id": "img_12345678",
             "image_name": "router_front.jpg",
-            "image_url": "base64_encoded_image_data...",
+            "image_base64": "base64_encoded_image_data...",
             "image_type": "image/jpeg",
             "image_uploaded_at": "2023-07-15T13:30:22Z"
         },
         {
-            "image_id": "img_872394737",
+            "image_id": "img_87654321",
             "image_name": "router_back.png",
-            "image_url": "base64_encoded_image_data...",
+            "image_base64": "base64_encoded_image_data...",
             "image_type": "image/png",
             "image_uploaded_at": "2023-07-15T13:30:22Z"
         }
@@ -590,13 +573,9 @@ The API supports three user roles with different access levels:
         {
             "ticket_return": "Configuring notebook",
             "ticket_date": "2023-07-16T09:15:22Z"
-        },
-        {
-            "ticket_return": "Clean screen",
-            "ticket_date": "2023-07-17T11:45:30Z"
         }
     ],
-    "ticket_date": "2025-03-27T22:37:14.722128-03:00",
+    "ticket_date": "2023-07-15T13:30:22Z",
     "status": true
 }
 ```
@@ -604,6 +583,7 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Ticket hasn't found",
+    "reason": "error message",
     "status": false
 }
 ```
@@ -611,20 +591,14 @@ The API supports three user roles with different access levels:
 ```json
 {
     "message": "Invalid data",
-    "status": false
-}
-```
-  - Unauthorized Role (403):
-```json
-{
-    "message": "User role not authorized for this endpoint",
+    "reason": "Ticket ID is required",
     "status": false
 }
 ```
 
 ### Remove Ticket
 - **Endpoint:** `POST /ticket/remove`
-- **Description:** Removes a ticket from the system. Only the ticket author can remove it.
+- **Description:** Removes a ticket from the system
 - **Authorized Roles:** `user` (only their own tickets), `admin`, `master`
 - **Request Body:**
 ```json
@@ -640,24 +614,11 @@ The API supports three user roles with different access levels:
     "status": true
 }
 ```
-  - Ticket Not Found or Incorrect Author (404):
+  - Error (400):
 ```json
 {
-    "message": "Ticket hasn't found",
-    "status": false
-}
-```
-  - Invalid Data (400):
-```json
-{
-    "message": "Invalid data",
-    "status": false
-}
-```
-  - Not Ticket Author (403): 
-```json
-{
-    "message": "User can only remove their own tickets",
+    "message": "No permission to delete",
+    "reason": "error message",
     "status": false
 }
 ```
