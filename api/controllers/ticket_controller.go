@@ -1,10 +1,8 @@
 package controllers
 
 import (
-	"log"
-	"net/http"
-
 	"hcall/api/dictionaries"
+	"hcall/api/logger"
 	"hcall/api/models"
 	"hcall/api/services"
 	"hcall/api/utils"
@@ -27,11 +25,7 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
 
@@ -49,20 +43,24 @@ func (c *TicketController) CreateTicket(ctx *gin.Context) {
 	)
 
 	if err != nil {
-		log.Printf("Error creating ticket: %v", err)
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.TicketCreationFailed,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Ticket Controller: Ticket creation failed", map[string]interface{}{
+			"user_id": userID,
+			"email":   userEmail,
+			"name":    request.Name,
+			"error":   err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeInvalidInput, dictionaries.TicketCreationFailed, err)
 		return
 	}
 
-	// Return success
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.TicketCreatedSuccess,
-		Status:  true,
+	logger.Info("Ticket Controller: Ticket created successfully", map[string]interface{}{
+		"user_id": userID,
+		"email":   userEmail,
+		"name":    request.Name,
 	})
+
+	// Return success
+	utils.SendSuccess(ctx, dictionaries.TicketCreatedSuccess, nil)
 }
 
 func (c *TicketController) GetTickets(ctx *gin.Context) {
@@ -76,20 +74,28 @@ func (c *TicketController) GetTickets(ctx *gin.Context) {
 
 	if err != nil {
 		if err.Error() == "Invalid date format" {
-			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-				Message: dictionaries.InvalidDateFormat,
-				Reason:  err.Error(),
-				Status:  false,
+			logger.Error("Ticket Controller: Invalid date format in ticket query", map[string]interface{}{
+				"date":  date,
+				"error": err.Error(),
 			})
+			utils.SendError(ctx, utils.CodeInvalidInput, dictionaries.InvalidDateFormat, err)
 			return
 		}
 
-		ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-			Message: dictionaries.NoTicketsFound,
-			Status:  false,
+		logger.Error("Ticket Controller: Failed to get tickets", map[string]interface{}{
+			"author": author,
+			"status": status,
+			"date":   date,
+			"name":   name,
+			"error":  err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeNotFound, dictionaries.NoTicketsFound, err)
 		return
 	}
+
+	logger.Info("Ticket Controller: Tickets retrieved successfully", map[string]interface{}{
+		"count": len(tickets),
+	})
 
 	// Convert to response format
 	responseTickets := make([]models.BasicTicketResponse, len(tickets))
@@ -103,33 +109,32 @@ func (c *TicketController) GetTickets(ctx *gin.Context) {
 		responseTickets[i] = ticket.ToBasicResponse(username)
 	}
 
-	ctx.JSON(http.StatusOK, utils.TicketsListResponse{
-		Tickets: responseTickets,
-		Status:  true,
+	utils.SendSuccess(ctx, "Tickets found", gin.H{
+		"tickets": responseTickets,
 	})
 }
 
 func (c *TicketController) GetTicketDetails(ctx *gin.Context) {
 	ticketID := ctx.Query("ticket_id")
 	if ticketID == "" {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  "Ticket ID is required",
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, "Ticket ID is required", nil)
 		return
 	}
 
 	// Call the service
 	ticket, err := c.ticketService.GetTicketDetails(ticketID)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-			Message: dictionaries.TicketNotFound,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Ticket Controller: Failed to get ticket details", map[string]interface{}{
+			"ticket_id": ticketID,
+			"error":     err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeNotFound, dictionaries.TicketNotFound, err)
 		return
 	}
+
+	logger.Info("Ticket Controller: Ticket details retrieved successfully", map[string]interface{}{
+		"ticket_id": ticketID,
+	})
 
 	// Garantir explicitamente que o histórico seja um array vazio, se for nil
 	if ticket.History == nil {
@@ -144,12 +149,9 @@ func (c *TicketController) GetTicketDetails(ctx *gin.Context) {
 	// Convert to response format
 	detailedResponse := ticket.ToDetailedResponse(true)
 
-	response := utils.TicketResponse{
-		DetailedTicketResponse: detailedResponse,
-		Status:                 true,
-	}
-
-	ctx.JSON(http.StatusOK, response)
+	utils.SendSuccess(ctx, "Ticket details found", gin.H{
+		"ticket": detailedResponse,
+	})
 }
 
 func (c *TicketController) UpdateTicketStatus(ctx *gin.Context) {
@@ -157,29 +159,28 @@ func (c *TicketController) UpdateTicketStatus(ctx *gin.Context) {
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
 
 	// Call the service
 	err := c.ticketService.UpdateTicketStatus(request.TicketID, request.Status)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.TicketStatusUpdateFailed,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Ticket Controller: Failed to update ticket status", map[string]interface{}{
+			"ticket_id": request.TicketID,
+			"status":    request.Status,
+			"error":     err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeInvalidInput, dictionaries.TicketStatusUpdateFailed, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.TicketStatusUpdated,
-		Status:  true,
+	logger.Info("Ticket Controller: Ticket status updated successfully", map[string]interface{}{
+		"ticket_id": request.TicketID,
+		"status":    request.Status,
 	})
+
+	utils.SendSuccess(ctx, dictionaries.TicketStatusUpdated, nil)
 }
 
 func (c *TicketController) UpdateTicketHistory(ctx *gin.Context) {
@@ -187,29 +188,26 @@ func (c *TicketController) UpdateTicketHistory(ctx *gin.Context) {
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
 
 	// Call the service
 	err := c.ticketService.AddTicketHistory(request.TicketID, request.Message)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.TicketHistoryAddFailed,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Ticket Controller: Failed to update ticket history", map[string]interface{}{
+			"ticket_id": request.TicketID,
+			"error":     err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeInvalidInput, dictionaries.TicketHistoryAddFailed, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.TicketHistoryAdded,
-		Status:  true,
+	logger.Info("Ticket Controller: Ticket history updated successfully", map[string]interface{}{
+		"ticket_id": request.TicketID,
 	})
+
+	utils.SendSuccess(ctx, dictionaries.TicketHistoryAdded, nil)
 }
 
 func (c *TicketController) DeleteTicket(ctx *gin.Context) {
@@ -217,11 +215,7 @@ func (c *TicketController) DeleteTicket(ctx *gin.Context) {
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
 
@@ -232,36 +226,45 @@ func (c *TicketController) DeleteTicket(ctx *gin.Context) {
 	// Call the service
 	err := c.ticketService.DeleteTicket(request.TicketID, userID.(uint), userRole.(models.Role))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.NoPermissionToDelete,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Ticket Controller: Failed to delete ticket", map[string]interface{}{
+			"ticket_id": request.TicketID,
+			"user_id":   userID,
+			"role":      userRole,
+			"error":     err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeForbidden, dictionaries.NoPermissionToDelete, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.TicketDeletedSuccess,
-		Status:  true,
+	logger.Info("Ticket Controller: Ticket deleted successfully", map[string]interface{}{
+		"ticket_id": request.TicketID,
+		"user_id":   userID,
 	})
+
+	utils.SendSuccess(ctx, dictionaries.TicketDeletedSuccess, nil)
 }
 
 func (c *TicketController) CountTicket(ctx *gin.Context) {
 	count, err := c.ticketService.GetCounters()
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-			Message: dictionaries.TicketNotFound,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Ticket Controller: Failed to get ticket counters", map[string]interface{}{
+			"error": err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeNotFound, dictionaries.TicketNotFound, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, utils.GetCountersResponse{
-		Total:    count.Total,
-		Pending:  count.Pending,
-		Doing:    count.Doing,
-		Conclued: count.Conclued,
-		Status:   true,
+	logger.Info("Ticket Controller: Ticket counters retrieved successfully", map[string]interface{}{
+		"total":    count.Total,
+		"pending":  count.Pending,
+		"doing":    count.Doing,
+		"conclued": count.Conclued,
+	})
+
+	utils.SendSuccess(ctx, "Ticket counters retrieved", gin.H{
+		"total":    count.Total,
+		"pending":  count.Pending,
+		"doing":    count.Doing,
+		"conclued": count.Conclued,
 	})
 }

@@ -8,66 +8,66 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SetupRoutes sets up all routes for the API
 func SetupRoutes(router *gin.Engine) {
-	// Create controllers
+	// CORS aplicado GLOBALMENTE (inclui /health e todas as rotas /api)
+
+	// Controllers
 	authController := controllers.NewAuthController()
 	userController := controllers.NewUserController()
 	ticketController := controllers.NewTicketController()
 
-	// Apply CORS middleware to all routes
-	router.Use(middlewares.CORSMiddleware())
+	// Rota de health check (pública)
+	router.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
 
-	// Grupo de rotas com prefixo '/api'
+	// Grupo /api
 	api := router.Group("/api")
 	{
-		// Rotas de autenticação - públicas
+		// Rotas PÚBLICAS (sem autenticação)
 		auth := api.Group("/auth")
 		{
 			auth.POST("/register", authController.Register)
-			auth.POST("/enter", authController.Login)
+			auth.POST("/enter", authController.Login) // Rota de login
 		}
 
-		// Rotas para Master - públicas
+		// Rotas MASTER (protegidas por outro mecanismo, não por JWT)
 		master := api.Group("/master")
 		{
 			master.POST("/create", authController.CreateMaster)
 			master.POST("/delete", authController.DeleteMaster)
 		}
 
-		// Rotas protegidas - requerem autenticação
+		// Rotas PROTEGIDAS (exigem JWT)
 		protected := api.Group("/")
-		protected.Use(middlewares.AuthMiddleware())
-
-		// Rotas de usuário - apenas admin e master
-		user := protected.Group("/user")
-		user.Use(middlewares.RoleAuthorization(models.AdminRole, models.MasterRole))
+		protected.Use(middlewares.AuthMiddleware()) // Middleware de JWT
 		{
-			user.GET("/fetch", userController.GetUsers)
-			user.POST("/create", userController.CreateUser)
-			user.POST("/delete", userController.DeleteUser)
-		}
-
-		// Rotas de tickets
-		ticket := protected.Group("/ticket")
-		{
-			// Rotas acessíveis a usuários, admins e masters
-			ticket.POST("/create", ticketController.CreateTicket)
-			ticket.POST("/remove", ticketController.DeleteTicket)
-			ticket.GET("/count", ticketController.CountTicket)
-
-			// Rotas acessíveis apenas a admins e masters
-			authTicket := ticket.Group("/")
-			authTicket.Use(middlewares.RoleAuthorization(models.AdminRole, models.MasterRole))
+			// Rotas de usuário (apenas admin e master)
+			user := protected.Group("/user")
+			user.Use(middlewares.RoleAuthorization(models.AdminRole, models.MasterRole))
 			{
-				authTicket.GET("/fetch", ticketController.GetTickets)
-				authTicket.GET("/info", ticketController.GetTicketDetails)
-				authTicket.POST("/edit", ticketController.UpdateTicketStatus)
-				authTicket.POST("/update", ticketController.UpdateTicketHistory)
+				user.GET("/fetch", userController.GetUsers)
+				user.POST("/create", userController.CreateUser)
+				user.POST("/delete", userController.DeleteUser)
+			}
+
+			// Rotas de tickets
+			ticket := protected.Group("/ticket")
+			{
+				ticket.POST("/create", ticketController.CreateTicket)
+				ticket.POST("/remove", ticketController.DeleteTicket)
+				ticket.GET("/count", ticketController.CountTicket)
+
+				// Subgrupo com permissão adicional (admin/master)
+				authTicket := ticket.Group("/")
+				authTicket.Use(middlewares.RoleAuthorization(models.AdminRole, models.MasterRole))
+				{
+					authTicket.GET("/fetch", ticketController.GetTickets)
+					authTicket.GET("/info", ticketController.GetTicketDetails)
+					authTicket.POST("/edit", ticketController.UpdateTicketStatus)
+					authTicket.POST("/update", ticketController.UpdateTicketHistory)
+				}
 			}
 		}
 	}
-
-	// Start the ticket worker
-
 }

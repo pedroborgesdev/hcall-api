@@ -24,10 +24,9 @@ func NewTicketRepository() *TicketRepository {
 // create a function that remove tickets with specified status
 func (r *TicketRepository) RemoveTicketsWithStatus(status models.TicketStatus, remove_after int) error {
 	// Get atual date and refator now to YYYY/MM/DD format
-	now := time.Now().Format("2006/01/02")
 
 	// subtract remove_after (days) from now
-	now = time.Now().AddDate(0, 0, -remove_after).Format("2006/01/02")
+	now := time.Now().AddDate(0, 0, -remove_after).Format("2006/01/02")
 	log.Println(now) // debugg
 
 	// remove tickets with specified status and created_at before now

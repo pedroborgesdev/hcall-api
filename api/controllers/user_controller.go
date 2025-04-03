@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"net/http"
-
 	"hcall/api/dictionaries"
 	"hcall/api/models"
 	"hcall/api/services"
@@ -44,22 +42,18 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 			userRole := models.Role(role)
 			user, err := c.userService.GetUserByEmailAndRole(email, userRole)
 			if err != nil {
-				ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-					Message: "Email aren't registered",
-					Reason:  err.Error(),
-					Status:  false,
-				})
+				utils.SendError(ctx, utils.CodeNotFound, "Email aren't registered", err)
 				return
 			}
 
 			// Return user details
-			ctx.JSON(http.StatusOK, utils.UserResponse{
-				Username:  user.Username,
-				Email:     user.Email,
-				Password:  "********",
-				CreatedAt: user.CreatedAt.Format("2006-01-02T15:04:05Z"),
-				Role:      user.Role,
-				Status:    true,
+			utils.SendSuccess(ctx, "User found", gin.H{
+				"user": gin.H{
+					"username":  user.Username,
+					"email":     user.Email,
+					"createdAt": user.CreatedAt.Format("2006-01-02T15:04:05Z"),
+					"role":      user.Role,
+				},
 			})
 			return
 		}
@@ -67,22 +61,18 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 		// Get user by email
 		user, err := c.userService.GetUserByEmail(email)
 		if err != nil {
-			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-				Message: "Email aren't registered",
-				Reason:  err.Error(),
-				Status:  false,
-			})
+			utils.SendError(ctx, utils.CodeNotFound, "Email aren't registered", err)
 			return
 		}
 
 		// Return user details
-		ctx.JSON(http.StatusOK, utils.UserResponse{
-			Username:  user.Username,
-			Email:     user.Email,
-			Password:  "********",
-			CreatedAt: user.CreatedAt.Format("2006-01-02T15:04:05Z"),
-			Role:      user.Role,
-			Status:    true,
+		utils.SendSuccess(ctx, "User found", gin.H{
+			"user": gin.H{
+				"username":  user.Username,
+				"email":     user.Email,
+				"createdAt": user.CreatedAt.Format("2006-01-02T15:04:05Z"),
+				"role":      user.Role,
+			},
 		})
 		return
 	}
@@ -92,11 +82,7 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 		userRole := models.Role(role)
 		users, err := c.userService.GetUsersByRole(userRole)
 		if err != nil {
-			ctx.JSON(http.StatusNotFound, utils.MessageResponse{
-				Message: "No users found with specified role",
-				Reason:  err.Error(),
-				Status:  false,
-			})
+			utils.SendError(ctx, utils.CodeNotFound, "No users found with specified role", err)
 			return
 		}
 
@@ -106,9 +92,8 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 			responseUsers[i] = user.ToResponse(false)
 		}
 
-		ctx.JSON(http.StatusOK, utils.UsersListResponse{
-			Users:  responseUsers,
-			Status: true,
+		utils.SendSuccess(ctx, "Users found", gin.H{
+			"users": responseUsers,
 		})
 		return
 	}
@@ -116,11 +101,7 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 	// Get all users
 	users, err := c.userService.GetUsers()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, utils.MessageResponse{
-			Message: dictionaries.InternalServerError,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInternalError, utils.MsgInternalError, err)
 		return
 	}
 
@@ -130,9 +111,8 @@ func (c *UserController) GetUsers(ctx *gin.Context) {
 		responseUsers[i] = user.ToResponse(false)
 	}
 
-	ctx.JSON(http.StatusOK, utils.UsersListResponse{
-		Users:  responseUsers,
-		Status: true,
+	utils.SendSuccess(ctx, "Users found", gin.H{
+		"users": responseUsers,
 	})
 }
 
@@ -149,28 +129,17 @@ func (c *UserController) CreateUser(ctx *gin.Context) {
 	var request utils.CreateUserRequest
 
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
 
 	err := c.userService.CreateUser(request.Username, request.Email, request.Password, request.Role)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.UserCreationFailed,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, dictionaries.UserCreationFailed, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.UserCreatedSuccess,
-		Status:  true,
-	})
+	utils.SendSuccess(ctx, dictionaries.UserCreatedSuccess, nil)
 }
 
 // DeleteUser handles user deletion
@@ -187,22 +156,13 @@ func (c *UserController) DeleteUser(ctx *gin.Context) {
 
 	err := c.userService.DeleteUser(id)
 	if err != nil {
-		statusCode := http.StatusInternalServerError
-		message := dictionaries.InternalServerError
 		if err.Error() == "user not found" {
-			statusCode = http.StatusNotFound
-			message = dictionaries.UserNotFound
+			utils.SendError(ctx, utils.CodeNotFound, dictionaries.UserNotFound, err)
+			return
 		}
-		ctx.JSON(statusCode, utils.MessageResponse{
-			Message: message,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInternalError, utils.MsgInternalError, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.UserDeletedSuccess,
-		Status:  true,
-	})
+	utils.SendSuccess(ctx, dictionaries.UserDeletedSuccess, nil)
 }

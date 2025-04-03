@@ -1,10 +1,7 @@
 package controllers
 
 import (
-	"log"
-	"net/http"
-
-	"hcall/api/dictionaries"
+	"hcall/api/logger"
 	"hcall/api/services"
 	"hcall/api/utils"
 
@@ -21,140 +18,143 @@ func NewAuthController() *AuthController {
 	}
 }
 
+// Register handles user registration
 func (c *AuthController) Register(ctx *gin.Context) {
 	var request utils.RegisterRequest
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: err.Error(),
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
-	// Call the service
-	_, token, err := c.authService.Register(request.Username, request.Email, request.Password)
 
+	// Call the service
+	user, token, err := c.authService.Register(request.Username, request.Email, request.Password)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: err.Error(),
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Auth Controller: Registration failed", map[string]interface{}{
+			"email": request.Email,
+			"error": err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeInvalidInput, "Registration failed", err)
 		return
 	}
+
+	logger.Info("Auth Controller: User registered successfully", map[string]interface{}{
+		"email": user.Email,
+		"role":  user.Role,
+	})
 
 	// Return success
-	ctx.JSON(http.StatusOK, utils.AuthResponse{
-		Message: dictionaries.UserRegisteredSuccess,
-		Token:   token,
-		Status:  true,
+	utils.SendSuccess(ctx, "Registration successful", gin.H{
+		"token": token,
+		"user": gin.H{
+			"email": user.Email,
+			"role":  user.Role,
+		},
 	})
 }
 
-// @Router /auth/enter [post]
+// Login handles user login
 func (c *AuthController) Login(ctx *gin.Context) {
 	var request utils.LoginRequest
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
-	// Call the service
-	_, token, err := c.authService.Login(request.Email, request.Password)
 
+	// Call the service
+	user, token, err := c.authService.Login(request.Email, request.Password)
 	if err != nil {
-		log.Printf("Error in login: %v", err)
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidCredentials,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Auth Controller: Login failed", map[string]interface{}{
+			"email": request.Email,
+			"error": err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeUnauthorized, utils.MsgInvalidCredentials, err)
 		return
 	}
+
+	logger.Info("Auth Controller: User logged in successfully", map[string]interface{}{
+		"email": user.Email,
+		"role":  user.Role,
+	})
 
 	// Return success
-	ctx.JSON(http.StatusOK, utils.AuthResponse{
-		Message: dictionaries.UserLoggedSuccess,
-		Token:   token,
-		Status:  true,
+	utils.SendSuccess(ctx, "Login successful", gin.H{
+		"token": token,
+		"user": gin.H{
+			"email": user.Email,
+			"role":  user.Role,
+		},
 	})
 }
 
+// CreateMaster creates a master user
 func (c *AuthController) CreateMaster(ctx *gin.Context) {
 	var request utils.CreateMasterRequest
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
-	// Call the service
-	_, token, err := c.authService.CreateMaster(request.Email, request.Password)
 
+	// Call the service
+	master, token, err := c.authService.CreateMaster(request.Email, request.Password)
 	if err != nil {
-		log.Printf("Error creating master: %v", err)
-		ctx.JSON(http.StatusForbidden, utils.MessageResponse{
-			Message: dictionaries.MasterAlreadyExists,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Auth Controller: Master user creation failed", map[string]interface{}{
+			"email": request.Email,
+			"error": err.Error(),
 		})
+		utils.SendError(ctx, utils.CodeDuplicateEntry, "Master user already exists", err)
 		return
 	}
+
+	logger.Info("Auth Controller: Master user created successfully", map[string]interface{}{
+		"email": master.Email,
+		"role":  master.Role,
+	})
 
 	// Return success
-	ctx.JSON(http.StatusOK, utils.AuthResponse{
-		Message: dictionaries.MasterCreatedSuccess,
-		Token:   token,
-		Status:  true,
+	utils.SendSuccess(ctx, "Master user created successfully", gin.H{
+		"token": token,
+		"user": gin.H{
+			"email": master.Email,
+			"role":  master.Role,
+		},
 	})
 }
 
+// DeleteMaster deletes the master user
 func (c *AuthController) DeleteMaster(ctx *gin.Context) {
 	var request utils.DeleteMasterRequest
 
 	// Bind request body to struct
 	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.MessageResponse{
-			Message: dictionaries.InvalidData,
-			Reason:  err.Error(),
-			Status:  false,
-		})
+		utils.SendError(ctx, utils.CodeInvalidInput, utils.MsgInvalidInput, err)
 		return
 	}
 
 	// Call the service
 	err := c.authService.DeleteMaster(request.Email, request.Password)
-
 	if err != nil {
-		log.Printf("Error deleting master: %v", err)
-		statusCode := http.StatusForbidden
-		message := dictionaries.InvalidMasterPassword
-		if err.Error() == "master user not found" {
-			statusCode = http.StatusNotFound
-			message = dictionaries.MasterNotFound
-		}
-		ctx.JSON(statusCode, utils.MessageResponse{
-			Message: message,
-			Reason:  err.Error(),
-			Status:  false,
+		logger.Error("Auth Controller: Master user deletion failed", map[string]interface{}{
+			"email": request.Email,
+			"error": err.Error(),
 		})
+		if err.Error() == "master user not found" {
+			utils.SendError(ctx, utils.CodeNotFound, "Master user not found", err)
+			return
+		}
+		utils.SendError(ctx, utils.CodeUnauthorized, "Invalid master credentials", err)
 		return
 	}
 
-	// Return success
-	ctx.JSON(http.StatusOK, utils.MessageResponse{
-		Message: dictionaries.MasterDeletedSuccess,
-		Status:  true,
+	logger.Info("Auth Controller: Master user deleted successfully", map[string]interface{}{
+		"email": request.Email,
 	})
+
+	// Return success
+	utils.SendSuccess(ctx, "Master user deleted successfully", nil)
 }

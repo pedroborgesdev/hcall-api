@@ -2,9 +2,9 @@ package database
 
 import (
 	"fmt"
-	"log"
 
 	"hcall/api/config"
+	"hcall/api/logger"
 	"hcall/api/models"
 
 	"gorm.io/driver/postgres"
@@ -30,13 +30,17 @@ func InitDB() {
 	// Open database connection
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		logger.Fatal("Database: Failed to connect to database:", map[string]interface{}{
+			"error": err.Error(),
+		})
 	}
 
 	// Get the underlying SQL DB
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal("Failed to get database instance:", err)
+		logger.Fatal("Database: Failed to get database instance:", map[string]interface{}{
+			"error": err.Error(),
+		})
 	}
 
 	// Set connection pool settings
@@ -46,11 +50,13 @@ func InitDB() {
 	// Run migrations
 	err = runMigrations(db)
 	if err != nil {
-		log.Fatal("Failed to migrate database:", err)
+		logger.Fatal("Database: Failed to migrate database:", map[string]interface{}{
+			"error": err.Error(),
+		})
 	}
 
 	DB = db
-	log.Println("Connected to database successfully")
+	logger.Info("Database: Connected to database successfully", nil)
 }
 
 // runMigrations runs all database migrations

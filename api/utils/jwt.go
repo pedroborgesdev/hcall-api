@@ -2,10 +2,10 @@ package utils
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"hcall/api/config"
+	"hcall/api/logger"
 	"hcall/api/models"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -21,7 +21,10 @@ type JWTClaims struct {
 
 // GenerateToken generates a JWT token for a user
 func GenerateToken(user *models.User) (string, error) {
-	log.Printf("Generating token for user %s (ID: %d)", user.Email, user.ID)
+	logger.Info("Jwt Middleware: Generating token for user", map[string]interface{}{
+		"email": user.Email,
+		"id":    user.ID,
+	})
 
 	// Calculate expiration time
 	expirationTime := time.Now().Add(time.Hour * time.Duration(config.AppConfig.JWTExpirationHours))
@@ -40,11 +43,15 @@ func GenerateToken(user *models.User) (string, error) {
 	tokenString, err := token.SignedString([]byte(config.AppConfig.JWTSecret))
 
 	if err != nil {
-		log.Printf("Error generating token: %v", err)
+		logger.Error("Jwt middleware: Error generating token", map[string]interface{}{
+			"error": err.Error(),
+		})
 		return "", err
 	}
 
-	log.Printf("Token generated successfully for user %s", user.Email)
+	logger.Info("Jwt middleware: Token generated successfully", map[string]interface{}{
+		"email": user.Email,
+	})
 	return tokenString, nil
 }
 
@@ -57,15 +64,23 @@ func ValidateToken(tokenString string) (*JWTClaims, error) {
 	})
 
 	if err != nil {
-		log.Printf("Token validation error: %v", err)
+		logger.Error("Jwt middleware: Token validation error", map[string]interface{}{
+			"error": err.Error(),
+		})
 		return nil, err
 	}
 
 	if !token.Valid {
-		log.Printf("Token is invalid")
+		logger.Error("Jwt middleware: Token is invalid", map[string]interface{}{
+			"error": "invalid token",
+		})
 		return nil, errors.New("invalid token")
 	}
 
-	log.Printf("Token validated successfully for user %s (ID: %d) with role %s", claims.Email, claims.ID, claims.Role)
+	logger.Info("Jwt middleware: Token validated successfully", map[string]interface{}{
+		"email": claims.Email,
+		"id":    claims.ID,
+		"role":  claims.Role,
+	})
 	return claims, nil
 }

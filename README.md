@@ -43,11 +43,15 @@ Access our comprehensive API documentation:
 
 ### [Unreleased]
 - **Background Workers**: Automated ticket cleanup based on status and age
-- **Metrics Dashboard**: New `/ticket/count` endpoint for real-time analytics
 - **Database Optimizations**: Schema improvements for better performance
 - **ACID Transactions**: Enhanced data integrity across operations
+- **New Logs**: More detailed and beautiful logs
+- **Defense against DoS attack**: Using Rate Limit system by IP to block multiple requests
+- **Fix CORS Problems**: CORS errors in requests made by the browser or libraries like axios have been fixed
 
 *Check back regularly for updates on new features and improvements.*
+
+- Note: This version aren't stable!
 
 ## Prerequisites
 
@@ -88,15 +92,32 @@ go run .
 The application is highly configurable through environment variables:
 
 ```ini
+# Server Configuration
+PORT=8080
+HOST=localhost
+
 # Database Configuration
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=hcall
-DB_SSLMODE=disable
+DB_SSL_MODE=disable
 
-# Security Settings
+# JWT Configuration
+JWT_SECRET=your-secret-key
+JWT_EXPIRATION=24h
+
+# Rate Limiting
+RATE_LIMIT_REQUESTS=60
+RATE_LIMIT_WINDOW=5
+
+# Database Configuration
+DB_MAX_IDLE_CONNS=10
+DB_MAX_OPEN_CONNS=100
+DB_CONN_TIMEOUT=5
+
+# Other Preferences
 USERNAME_MIN_CHAR=6
 PASSWORD_MIN_CHAR=8
 PASSWORD_SPECIAL=True
@@ -104,15 +125,14 @@ PASSWORD_DIGITS=True
 PASSWORD_UPPERCASE=True
 PASSWORD_LOWERCASE=True
 
-# Worker Configuration
-WORKER_TICKET_LOOPTIME=24        # Hours between worker runs
-WORKER_TICKET_REMOVE_AFTER=30    # Days after which to remove tickets
+# Workers Configuration
+WORKER_TICKET_LOOPTIME=24
+WORKER_TICKET_REMOVE_AFTER=30
 WORKER_TICKET_REMOVE_STATUS=conclued
 
-# Server Settings
-PORT=8080
-JWT_SECRET=your_secure_jwt_secret_key
-JWT_EXPIRATION_HOURS=24
+# Debug Modes
+DEBUG=true
+GIN_MODE=false
 ```
 
 **⚠️ Security Note:** Never commit your `.env` file to version control. In production, use a strong, randomly generated JWT secret key.

@@ -1,10 +1,10 @@
 package middlewares
 
 import (
-	"log"
-	"net/http"
+	"fmt"
 	"strings"
 
+	"hcall/api/logger"
 	"hcall/api/models"
 	"hcall/api/utils"
 
@@ -19,10 +19,10 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		// Check if Authorization header exists
 		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized",
-				"status":  false,
+			logger.Warning("Auth Middleware: Missing Authorization header", map[string]interface{}{
+				"ip": c.ClientIP(),
 			})
+			utils.SendError(c, utils.CodeUnauthorized, utils.MsgUnauthorized, nil)
 			c.Abort()
 			return
 		}
@@ -31,10 +31,10 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Expected format: "Bearer [token]"
 		parts := strings.Split(authHeader, " ")
 		if len(parts) != 2 || parts[0] != "Bearer" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized",
-				"status":  false,
+			logger.Warning("Auth Middleware: Invalid Authorization header format", map[string]interface{}{
+				"ip": c.ClientIP(),
 			})
+			utils.SendError(c, utils.CodeUnauthorized, utils.MsgUnauthorized, nil)
 			c.Abort()
 			return
 		}
@@ -44,15 +44,20 @@ func AuthMiddleware() gin.HandlerFunc {
 		// Validate the token
 		claims, err := utils.ValidateToken(tokenString)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized",
-				"status":  false,
+			logger.Error("Auth Middleware: Token validation failed", map[string]interface{}{
+				"ip":    c.ClientIP(),
+				"error": err.Error(),
 			})
+			utils.SendError(c, utils.CodeUnauthorized, utils.MsgUnauthorized, err)
 			c.Abort()
 			return
 		}
 
-		log.Printf("Token claims - ID: %v, Email: %v, Role: %v", claims.ID, claims.Email, claims.Role)
+		logger.Info("Auth Middleware: Token validated successfully", map[string]interface{}{
+			"user_id": claims.ID,
+			"email":   claims.Email,
+			"role":    claims.Role,
+		})
 
 		// Set the user information in the context for later use
 		c.Set("userId", claims.ID)
@@ -69,27 +74,30 @@ func RoleAuthorization(allowedRoles ...models.Role) gin.HandlerFunc {
 		// Get user role from context (set by AuthMiddleware)
 		role, exists := c.Get("userRole")
 		if !exists {
-			log.Printf("User role not found in context")
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized",
-				"status":  false,
+			logger.Warning("Auth Middleware: User role not found in context", map[string]interface{}{
+				"ip": c.ClientIP(),
 			})
+			utils.SendError(c, utils.CodeUnauthorized, utils.MsgUnauthorized, nil)
 			c.Abort()
 			return
 		}
 
 		userRole, ok := role.(models.Role)
 		if !ok {
-			log.Printf("Failed to convert role to models.Role. Role type: %T, Value: %v", role, role)
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Unauthorized",
-				"status":  false,
+			logger.Error("Auth Middleware: Failed to convert role to models.Role", map[string]interface{}{
+				"ip":   c.ClientIP(),
+				"role": role,
+				"type": fmt.Sprintf("%T", role),
 			})
+			utils.SendError(c, utils.CodeUnauthorized, utils.MsgUnauthorized, nil)
 			c.Abort()
 			return
 		}
 
-		log.Printf("Checking role authorization - User Role: %v, Allowed Roles: %v", userRole, allowedRoles)
+		logger.Info("Auth Middleware: Checking role authorization", map[string]interface{}{
+			"user_role":     userRole,
+			"allowed_roles": allowedRoles,
+		})
 
 		// Check if user role is in allowed roles
 		allowed := false
@@ -106,11 +114,11 @@ func RoleAuthorization(allowedRoles ...models.Role) gin.HandlerFunc {
 		}
 
 		if !allowed {
-			log.Printf("Role not authorized - User Role: %v, Allowed Roles: %v", userRole, allowedRoles)
-			c.JSON(http.StatusForbidden, gin.H{
-				"message": "User role not authorized for this endpoint",
-				"status":  false,
+			logger.Warning("Auth Middleware: Role not authorized", map[string]interface{}{
+				"user_role":     userRole,
+				"allowed_roles": allowedRoles,
 			})
+			utils.SendError(c, utils.CodeForbidden, utils.MsgForbidden, nil)
 			c.Abort()
 			return
 		}
